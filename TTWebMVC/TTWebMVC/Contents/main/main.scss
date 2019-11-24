@@ -1,0 +1,49 @@
+﻿@charset "utf-8";
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+// Update ../bulma's global variables
+$family-sans-serif: "OpenSans", sans-serif;
+/*$primary: #211B1D;
+$text-in-primary: white;
+$grey-light: #d3d3d3;*/
+
+@import "../bulma/utilities/all";
+@import "../bulma/base/_all";
+@import "../bulma/elements/box";
+@import "../bulma/elements/button";
+@import "../bulma/elements/container";
+@import "../bulma/elements/content";
+@import "../bulma/elements/form";
+@import "../bulma/elements/icon";
+@import "../bulma/elements/notification";
+@import "../bulma/elements/other";
+/*@import "../bulma/elements/progress";*/
+/*@import "../bulma/elements/table";*/
+/*@import "../bulma/elements/tag";*/
+@import "../bulma/elements/title";
+@import "../bulma/form/shared";
+@import "../bulma/form/checkbox-radio";
+/*@import "../bulma/form/file";*/
+/*@import "../bulma/form/input-textarea";*/
+@import "../bulma/form/select";
+@import "../bulma/form/tools";
+/*@import "../bulma/components/breadcrumb";*/
+/*@import "../bulma/components/card";*/
+/*@import "../bulma/components/dropdown";*/
+@import "../bulma/components/level";
+/*@import "../bulma/components/list";*/
+/*@import "../bulma/components/media";*/
+@import "../bulma/components/menu";
+/*@import "../bulma/components/message";*/
+@import "../bulma/components/modal";
+@import "../bulma/components/navbar";
+/*@import "../bulma/components/pagination";*/
+/*@import "../bulma/components/panel";*/
+/*@import "../bulma/components/tabs";*/
+@import "../bulma/grid/columns";
+/*@import "../bulma/grid/tiles";*/
+/*@import "../bulma/layout/hero";*/
+@import "../bulma/layout/section";
+@import "../bulma/layout/footer";
