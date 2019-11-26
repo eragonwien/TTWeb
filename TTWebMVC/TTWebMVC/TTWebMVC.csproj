@@ -18,4 +18,11 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Reference Include="SNGCommon">
+      <HintPath>..\Libs\SNGCommon\SNGCommon.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
