@@ -6,7 +6,7 @@ using TTWebMVC.Models;
 
 namespace TTWebMVC.Controllers
 {
-   public class ErrorController : Controller
+   public class ErrorController : DefaultController
    {
       private readonly ILogger<ErrorController> log;
 

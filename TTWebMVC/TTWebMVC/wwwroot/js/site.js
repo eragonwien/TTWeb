@@ -13,10 +13,11 @@ if (modalTriggers && modalTriggers.length > 0) {
    modalTriggers.forEach(function (modalTrigger) {
       modalTrigger.addEventListener('click', function () {
          modalTrigger.closest('.modal').classList.add('is-active');
-      })
+      });
    });
 }
 
+// closes modal
 const modalCloseButtons = document.querySelectorAll('.modal-close, .modal-close-button');
 if (modalCloseButtons) {
    modalCloseButtons.forEach(function (closeButton) {

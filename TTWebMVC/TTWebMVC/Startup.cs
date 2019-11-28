@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using SNGCommon.Common;
 using System.Collections.Generic;
 using System.Globalization;
+using TTWebMVC.Models;
+using TTWebMVC.Models.SettingModels;
+using TTWebMVC.Services;
 
 namespace TTWebMVC
 {
@@ -24,6 +27,10 @@ namespace TTWebMVC
       // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
       {
+         services.AddScoped(s => new DatabaseContext(Configuration.GetConnectionString(Settings.DefaultConnectionString)));
+         services.AddScoped<IUserRepository, UserRepository>();
+         services.AddHttpClient<IFacebookClient, FacebookClient>();
+
          services.Configure<CookiePolicyOptions>(options =>
          {
             // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -56,6 +63,8 @@ namespace TTWebMVC
                o.AppId = Configuration["Facebook:AppId"];
                o.AppSecret = Configuration["Facebook:AppSecret"];
                o.SaveTokens = true;
+               o.Scope.Add("public_profile");
+               o.Scope.Add("email");
             });
 
          services.Configure<CookieAuthenticationOptions>(o =>
@@ -65,6 +74,9 @@ namespace TTWebMVC
             o.AccessDeniedPath = "/Error/403";
             o.SlidingExpiration = true;
          });
+
+         services.AddOptions();
+         services.Configure<FacebookConfig>(Configuration.GetSection(FacebookConfig.Name));
 
          services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
       }
@@ -93,7 +105,7 @@ namespace TTWebMVC
          {
             routes.MapRoute(
                name: "default",
-               template: "{controller=Account}/{action=Login}/{id?}",
+               template: "{controller}/{action}/{id?}",
                defaults: new { controller = "Home", action = "Index" },
                constraints: new { controller = "Home|Account|Error" }
             );

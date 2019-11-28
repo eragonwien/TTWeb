@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 using SNGCommon.Common;
@@ -11,9 +12,10 @@ namespace TTWebMVC
    {
       public static void Main(string[] args)
       {
-         var logger = NLogBuilder.ConfigureNLog(Settings.NlogConfigFileName).GetCurrentClassLogger();
+         NLog.Logger logger = null;
          try
          {
+            logger = NLogBuilder.ConfigureNLog(Settings.NlogConfigFileName).GetCurrentClassLogger(); 
             logger.Info("Program's Initialization starts");
             var host = CreateWebHostBuilder(args).Build();
             host.Run();
