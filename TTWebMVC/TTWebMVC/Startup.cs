@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SNGCommon.Common;
 using System.Collections.Generic;
 using System.Globalization;
@@ -65,6 +67,12 @@ namespace TTWebMVC
                o.SaveTokens = true;
                o.Scope.Add("public_profile");
                o.Scope.Add("email");
+               o.Scope.Add("user_friends");
+               o.Scope.Add("user_posts");
+               o.Scope.Add("user_photos");
+               o.Scope.Add("user_likes");
+               o.Scope.Add("manage_pages");
+               o.Scope.Add("publish_pages");
             });
 
          services.Configure<CookieAuthenticationOptions>(o =>
@@ -78,7 +86,15 @@ namespace TTWebMVC
          services.AddOptions();
          services.Configure<FacebookConfig>(Configuration.GetSection(FacebookConfig.Name));
 
-         services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+         services
+            .AddMvc()
+            .AddJsonOptions(o =>
+            {
+               o.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+               o.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
+               o.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

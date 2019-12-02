@@ -5,14 +5,17 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <title>@ViewData["Title"] - TTWebMVC</title>
    <link rel="stylesheet" href="~/css/site.css" />
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 <body>
-   <div class="container">
-      <partial name="_CookieConsentPartial" />
-      <main role="main" class="pb-3">
-         @RenderBody()
-      </main>
-   </div>
+   <header>
+      <partial name="_NavbarPartial" />
+   </header>
+   <partial name="_CookieConsentPartial" />
+   <main role="main">
+      @RenderBody()
+   </main>
    <script src="~/js/site.js" asp-append-version="true"></script>
    @RenderSection("Scripts", required: false)
 </body>

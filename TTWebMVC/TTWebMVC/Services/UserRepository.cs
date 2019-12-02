@@ -1,20 +1,16 @@
 ﻿using MySql.Data.MySqlClient;
+using SNGCommon.Common;
 using System;
 using System.Threading.Tasks;
 using TTWebMVC.Models;
-using SNGCommon.Common;
 
 namespace TTWebMVC.Services
 {
    public interface IUserRepository
    {
       Task Create(AppUser appUser);
-      Task Create(Partner partner);
       Task<AppUser> GetUser(string email);
-      Task<Partner> GetPartner(string email);
       Task Update(AppUser appUser);
-      Task Update(Partner partner);
-      Task Delete(long id);
       Task<bool> Exists(string email);
    }
 
@@ -31,7 +27,7 @@ namespace TTWebMVC.Services
       {
          using (var con = db.GetConnection())
          {
-            string cmdStr = "INSERT INTO appuser(email, firstname, lastname, facebook_id, access_token, access_token_expiration_date, create_date) VALUES(@email, @firstname, @lastname, @facebook_id, @access_token, @access_token_expiration_date, @create_date)";
+            string cmdStr = "INSERT INTO appuser(email, firstname, lastname, facebook_id, access_token, access_token_expiration_date) VALUES(@email, @firstname, @lastname, @facebook_id, @access_token, @access_token_expiration_date)";
             using (var cmd = new MySqlCommand(cmdStr, con))
             {
                cmd.Parameters.Add(new MySqlParameter("@email", user.Email));
@@ -39,22 +35,11 @@ namespace TTWebMVC.Services
                cmd.Parameters.Add(new MySqlParameter("@lastname", user.Lastname));
                cmd.Parameters.Add(new MySqlParameter("@facebook_id", user.FacebookId));
                cmd.Parameters.Add(new MySqlParameter("@access_token", user.AccessToken));
-               cmd.Parameters.Add(new MySqlParameter("@access_token_expiration_date", user.AccessTokenExpirationDate));
-               cmd.Parameters.Add(new MySqlParameter("@create_date", DateTime.Now));
+               cmd.Parameters.Add(new MySqlParameter("@access_token_expiration_date", ((DateTimeOffset)user.AccessTokenExpirationDate).ToTimeStamp()));
                await con.OpenAsync();
                await cmd.ExecuteNonQueryAsync();
             }
          }
-      }
-
-      public Task Create(Partner partner)
-      {
-         throw new NotImplementedException();
-      }
-
-      public Task Delete(long id)
-      {
-         throw new NotImplementedException();
       }
 
       public async Task<bool> Exists(string email)
@@ -69,11 +54,6 @@ namespace TTWebMVC.Services
                return cmd.ReadScalarBoolean();
             }
          }
-      }
-
-      public Task<Partner> GetPartner(string email)
-      {
-         throw new NotImplementedException();
       }
 
       public async Task<AppUser> GetUser(string email)
@@ -107,14 +87,23 @@ namespace TTWebMVC.Services
          return user;
       }
 
-      public Task Update(AppUser appUser)
+      public async Task Update(AppUser user)
       {
-         throw new NotImplementedException();
-      }
-
-      public Task Update(Partner partner)
-      {
-         throw new NotImplementedException();
+         using (var con = db.GetConnection())
+         {
+            string cmdStr = "UPDATE appuser set firstname=@firstname, lastname=@lastname, facebook_id=@facebook_id, access_token=@access_token, access_token_expiration_date=@access_token_expiration_date where email=@email";
+            using (var cmd = new MySqlCommand(cmdStr, con))
+            {
+               cmd.Parameters.Add(new MySqlParameter("@firstname", user.Firstname));
+               cmd.Parameters.Add(new MySqlParameter("@lastname", user.Lastname));
+               cmd.Parameters.Add(new MySqlParameter("@facebook_id", user.FacebookId));
+               cmd.Parameters.Add(new MySqlParameter("@access_token", user.AccessToken));
+               cmd.Parameters.Add(new MySqlParameter("@access_token_expiration_date", user.AccessTokenExpirationDate));
+               cmd.Parameters.Add(new MySqlParameter("@email", user.Email));
+               await con.OpenAsync();
+               await cmd.ExecuteNonQueryAsync();
+            }
+         }
       }
    }
 }

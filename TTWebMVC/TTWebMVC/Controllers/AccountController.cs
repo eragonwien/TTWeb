@@ -48,37 +48,26 @@ namespace TTWebMVC.Controllers
             return RedirectToAction(nameof(Login));
          }
 
-         AppUser appUser = new AppUser
-         {
-            Email = authResult.Principal.FindFirstValue(ClaimTypes.Email),
-            Firstname = authResult.Principal.FindFirstValue(ClaimTypes.GivenName),
-            Lastname = authResult.Principal.FindFirstValue(ClaimTypes.Surname),
-            FacebookId = authResult.Principal.FindFirstValue(ClaimTypes.NameIdentifier),
-            AccessToken = authResult.Properties.GetTokenValue(AuthenticationSettings.TokenAccessToken),
-            AccessTokenExpirationDate = DateTime.TryParse(authResult.Properties.GetTokenValue(AuthenticationSettings.TokenExpiredAt), out DateTime tempExpirationDate) ? (DateTime?)tempExpirationDate : null
-         };
+         AppUser appUser = AppUser.FromAuthentication(authResult);
 
-         // TODO: Get longlived access token
-         string accessToken = facebookClient.GetLongLivedAccessToken(appUser.AccessToken);
+         // Gets longlived access token
+         var tokenResult = await facebookClient.GetLongLivedAccessToken(appUser.AccessToken);
+         appUser.UpdateToken(tokenResult);
 
          // Retrieves user from database
          if (!await userRepository.Exists(appUser.Email))
          {
             await userRepository.Create(appUser);
          }
+         else
+         {
+            await userRepository.Update(appUser);
+         }
          appUser = await userRepository.GetUser(appUser.Email);
 
          // Sign-in 
-         var claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-         claimsIdentity.AddClaim(new Claim(ClaimTypes.Email, appUser.Email));
-         claimsIdentity.AddClaim(new Claim(ClaimTypes.Surname, appUser.Firstname));
-         claimsIdentity.AddClaim(new Claim(ClaimTypes.GivenName, appUser.Lastname));
-         claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, appUser.Id.ToString()));
-         claimsIdentity.AddClaim(new Claim(AuthenticationSettings.ClaimTypeFacebookId, appUser.FacebookId));
-         claimsIdentity.AddClaim(new Claim(AuthenticationSettings.ClaimTypeAccessToken, appUser.AccessToken));
-         claimsIdentity.AddClaim(new Claim(AuthenticationSettings.ClaimTypeAccessTokenExpiredAt, appUser.AccessTokenExpirationDate.ToString()));
-
-         var authProperties = new AuthenticationProperties
+         ClaimsIdentity claimsIdentity = appUser.BuildClaimIdentity();
+         AuthenticationProperties authProperties = new AuthenticationProperties
          {
             AllowRefresh = true,
             ExpiresUtc = DateTimeOffset.Now.AddHours(1),
@@ -91,6 +80,8 @@ namespace TTWebMVC.Controllers
          return RedirectToHome();
       }
 
+      [HttpPost]
+      [ValidateAntiForgeryToken]
       public async Task<IActionResult> Logout()
       {
          await HttpContext.SignOutAsync();

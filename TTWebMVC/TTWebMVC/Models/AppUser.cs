@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using SNGCommon.Common;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
+using TTWebMVC.Models.Facebook;
 
 namespace TTWebMVC.Models
 {
@@ -9,26 +12,48 @@ namespace TTWebMVC.Models
    {
       public long Id { get; set; } = 0;
       public string Email { get; set; }
+      public string Password { get; set; }
       public string Firstname { get; set; }
       public string Lastname { get; set; }
       public string FacebookId { get; set; }
-
-      public bool IsValid()
-      {
-         return Id > 0 && !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(FacebookId);
-      }
    }
 
    public class AppUser : BaseUser
    {
       public string AccessToken { get; set; }
-      public DateTime? AccessTokenExpirationDate { get; set; }
+      public DateTimeOffset? AccessTokenExpirationDate { get; set; }
+      public List<ScheduleJob> ScheduleJobs { get; set; } = new List<ScheduleJob>();
 
+      public static AppUser FromAuthentication(AuthenticateResult authResult)
+      {
+         return new AppUser
+         {
+            Email = authResult.Principal.FindFirstValue(ClaimTypes.Email),
+            Firstname = authResult.Principal.FindFirstValue(ClaimTypes.GivenName),
+            Lastname = authResult.Principal.FindFirstValue(ClaimTypes.Surname),
+            FacebookId = authResult.Principal.FindFirstValue(ClaimTypes.NameIdentifier),
+            AccessToken = authResult.Properties.GetTokenValue(AuthenticationSettings.TokenAccessToken),
+            AccessTokenExpirationDate = DateTime.TryParse(authResult.Properties.GetTokenValue(AuthenticationSettings.TokenExpiredAt), out DateTime tempExpirationDate) ? (DateTime?)tempExpirationDate : null
+         };
+      }
 
-   }
+      public void UpdateToken(FacebookTokenInfo tokenResult)
+      {
+         AccessToken = tokenResult.AccessToken;
+         AccessTokenExpirationDate = tokenResult.ExpirationDate;
+      }
 
-   public class Partner : BaseUser
-   {
-      public List<UserGroup> UserGroups { get; set; }
+      public ClaimsIdentity BuildClaimIdentity()
+      {
+         var claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+         claimsIdentity.AddClaim(new Claim(ClaimTypes.Email, Email));
+         claimsIdentity.AddClaim(new Claim(ClaimTypes.Surname, Firstname));
+         claimsIdentity.AddClaim(new Claim(ClaimTypes.GivenName, Lastname));
+         claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, Id.ToString()));
+         claimsIdentity.AddClaim(new Claim(AuthenticationSettings.ClaimTypeFacebookId, FacebookId));
+         claimsIdentity.AddClaim(new Claim(AuthenticationSettings.ClaimTypeAccessToken, AccessToken));
+         claimsIdentity.AddClaim(new Claim(AuthenticationSettings.ClaimTypeAccessTokenExpiredAt, AccessTokenExpirationDate.ToString()));
+         return claimsIdentity;
+      }
    }
 }
