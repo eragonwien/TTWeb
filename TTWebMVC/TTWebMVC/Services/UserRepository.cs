@@ -98,7 +98,7 @@ namespace TTWebMVC.Services
                cmd.Parameters.Add(new MySqlParameter("@lastname", user.Lastname));
                cmd.Parameters.Add(new MySqlParameter("@facebook_id", user.FacebookId));
                cmd.Parameters.Add(new MySqlParameter("@access_token", user.AccessToken));
-               cmd.Parameters.Add(new MySqlParameter("@access_token_expiration_date", user.AccessTokenExpirationDate));
+               cmd.Parameters.Add(new MySqlParameter("@access_token_expiration_date", ((DateTimeOffset)user.AccessTokenExpirationDate).ToTimeStamp()));
                cmd.Parameters.Add(new MySqlParameter("@email", user.Email));
                await con.OpenAsync();
                await cmd.ExecuteNonQueryAsync();

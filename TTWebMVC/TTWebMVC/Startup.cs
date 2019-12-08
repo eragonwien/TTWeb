@@ -31,6 +31,7 @@ namespace TTWebMVC
       {
          services.AddScoped(s => new DatabaseContext(Configuration.GetConnectionString(Settings.DefaultConnectionString)));
          services.AddScoped<IUserRepository, UserRepository>();
+         services.AddScoped<IJobService, JobService>();
          services.AddHttpClient<IFacebookClient, FacebookClient>();
 
          services.Configure<CookiePolicyOptions>(options =>
@@ -68,11 +69,6 @@ namespace TTWebMVC
                o.Scope.Add("public_profile");
                o.Scope.Add("email");
                o.Scope.Add("user_friends");
-               o.Scope.Add("user_posts");
-               o.Scope.Add("user_photos");
-               o.Scope.Add("user_likes");
-               o.Scope.Add("manage_pages");
-               o.Scope.Add("publish_pages");
             });
 
          services.Configure<CookieAuthenticationOptions>(o =>
@@ -123,7 +119,7 @@ namespace TTWebMVC
                name: "default",
                template: "{controller}/{action}/{id?}",
                defaults: new { controller = "Home", action = "Index" },
-               constraints: new { controller = "Home|Account|Error" }
+               constraints: new { controller = "Home|Account|Error|Schedule" }
             );
 
             routes.MapRoute(

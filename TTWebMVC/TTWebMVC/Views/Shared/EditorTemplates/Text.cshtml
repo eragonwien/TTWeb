@@ -1,0 +1,7 @@
+﻿<div class="field">
+   @Html.LabelFor(m => m, new { @class = "label" })
+   <div class="control">
+      @Html.TextBoxFor(m => m, new { @class = "input" })
+   </div>
+   <p class="help is-danger">@Html.ValidationMessageFor(m => m)</p>
+</div>

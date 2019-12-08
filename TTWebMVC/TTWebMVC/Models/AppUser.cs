@@ -12,7 +12,6 @@ namespace TTWebMVC.Models
    {
       public long Id { get; set; } = 0;
       public string Email { get; set; }
-      public string Password { get; set; }
       public string Firstname { get; set; }
       public string Lastname { get; set; }
       public string FacebookId { get; set; }
@@ -43,12 +42,26 @@ namespace TTWebMVC.Models
          AccessTokenExpirationDate = tokenResult.ExpirationDate;
       }
 
+      public static AppUser FromUser(ClaimsPrincipal user)
+      {
+         return new AppUser
+         {
+            AccessToken = user.FindFirstValue(AuthenticationSettings.ClaimTypeAccessToken),
+            AccessTokenExpirationDate = DateTimeOffset.Parse(user.FindFirstValue(AuthenticationSettings.ClaimTypeAccessTokenExpiredAt)),
+            FacebookId = user.FindFirstValue(AuthenticationSettings.ClaimTypeFacebookId),
+            Email = user.FindFirstValue(ClaimTypes.Email),
+            Firstname = user.FindFirstValue(ClaimTypes.GivenName),
+            Lastname = user.FindFirstValue(ClaimTypes.Surname),
+            Id = Convert.ToInt64(user.FindFirstValue(ClaimTypes.NameIdentifier))
+         };
+      }
+
       public ClaimsIdentity BuildClaimIdentity()
       {
          var claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
          claimsIdentity.AddClaim(new Claim(ClaimTypes.Email, Email));
-         claimsIdentity.AddClaim(new Claim(ClaimTypes.Surname, Firstname));
-         claimsIdentity.AddClaim(new Claim(ClaimTypes.GivenName, Lastname));
+         claimsIdentity.AddClaim(new Claim(ClaimTypes.Surname, Lastname));
+         claimsIdentity.AddClaim(new Claim(ClaimTypes.GivenName, Firstname));
          claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, Id.ToString()));
          claimsIdentity.AddClaim(new Claim(AuthenticationSettings.ClaimTypeFacebookId, FacebookId));
          claimsIdentity.AddClaim(new Claim(AuthenticationSettings.ClaimTypeAccessToken, AccessToken));

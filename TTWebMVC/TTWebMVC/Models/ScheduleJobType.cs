@@ -1,6 +1,6 @@
 ﻿namespace TTWebMVC.Models
 {
-   public enum ScheduleJobDefinition
+   public enum ScheduleJobType
    {
       POST
    }

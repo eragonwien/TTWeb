@@ -1,6 +1,6 @@
 use ttweb;
 
-drop table if exists ScheduleJobParameter, ScheduleJobParameterType, ScheduleJob, ScheduleJobDef, AppUser;
+drop table if exists ScheduleJobParameter, ScheduleJobParameterType, ScheduleJob, ScheduleJobType, AppUser;
 
 CREATE TABLE AppUser (
 	id INT AUTO_INCREMENT PRIMARY KEY,
@@ -14,7 +14,7 @@ CREATE TABLE AppUser (
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 
-create table ScheduleJobDef (
+create table ScheduleJobType (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(16) UNIQUE NOT NULL,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -23,9 +23,10 @@ create table ScheduleJobDef (
 
 create table ScheduleJob (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-    schedulejobdef_id INT NOT NULL,
+    schedulejobtype_id INT NOT NULL,
     appuser_id INT NOT NULL,
-    FOREIGN KEY (schedulejobdef_id) REFERENCES schedulejobdef(id),
+    name VARCHAR(16),
+    FOREIGN KEY (schedulejobtype_id) REFERENCES schedulejobtype(id),
     FOREIGN KEY (appuser_id) REFERENCES appuser(id),
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
