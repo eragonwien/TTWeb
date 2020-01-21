@@ -1,4 +1,4 @@
-﻿@model TTWebAuto.Models.Comment
+﻿@model TTWebAuto.Models.FacebookModel
 
 @{
     ViewData["Title"] = "Index";
@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Index">
+        <form asp-antiforgery="true" ass>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
@@ -29,11 +29,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Target" class="control-label"></label>
-                <input asp-for="Target" class="form-control" />
+                <input asp-for="Target" class="form-control" value="https://www.facebook.com/kim.truong.90260403" />
                 <span asp-validation-for="Target" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+               <button type="submit" class="btn btn-primary" asp-action="Comment">Comment</button>
+               <button type="submit" class="btn btn-primary" asp-action="Friends">Friends</button>
+               <button type="submit" class="btn btn-primary" asp-action="SearchFriend">Search</button>
             </div>
         </form>
     </div>

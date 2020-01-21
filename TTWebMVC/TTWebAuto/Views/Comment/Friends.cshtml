@@ -1,0 +1,13 @@
+﻿@model IEnumerable<FacebookFriends>
+@{
+    ViewData["Title"] = "Friends";
+}
+
+<h1>Friends</h1>
+<ul>
+   @foreach (var friend in Model)
+   {
+      <li>@friend.Name: @friend.Link</li>
+   }
+</ul>
+

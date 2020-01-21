@@ -13,17 +13,26 @@ namespace TTWebAuto.Controllers
 
       [HttpPost]
       [ValidateAntiForgeryToken]
-      public IActionResult Index(Comment comment)
+      public IActionResult Comment(FacebookModel model)
       {
-         try
-         {
-            comment.Execute();
-            return RedirectToAction();
-         }
-         catch (Exception ex)
-         {
-            return View(comment);
-         }
+         model.Comment();
+         return RedirectToAction();
+      }
+
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      public IActionResult Friends(FacebookModel model)
+      {
+         var friends = model.FriendList();
+         return View(friends);
+      }
+
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      public IActionResult SearchFriend(FacebookModel model)
+      {
+         var friends = model.SearchFriend();
+         return View("Friends", friends);
       }
    }
 }
