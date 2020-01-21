@@ -10,4 +10,16 @@ namespace TTWebAuto.Models
       public string Link { get; set; }
       public string Name { get; set; }
    }
+
+   public class FacebookCredentials
+   {
+      public string Email { get; set; }
+      public string Password { get; set; }
+
+      public FacebookCredentials(string email, string password)
+      {
+         Email = email;
+         Password = password;
+      }
+   }
 }

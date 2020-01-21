@@ -35,8 +35,7 @@ namespace TTWebAuto.Extensions
 
       public static void Like(this ChromeDriver browser, IWebElement entry)
       {
-         var likeButton = entry.FindElement(By.XPath(".//a[@data-testid='UFI2ReactionLink']"));
-         if (bool.TryParse(likeButton.GetAttribute("aria-pressed"), out bool liked) && !liked)
+         if (browser.TryGetElement(By.XPath(".//a[@data-testid='UFI2ReactionLink' and @aria-pressed='false']"), out IWebElement likeButton))
          {
             likeButton.Click();
          }
@@ -92,6 +91,34 @@ namespace TTWebAuto.Extensions
          catch (NoSuchElementException)
          {
             return null;
+         }
+      }
+
+      private static bool TryGetElement(this ChromeDriver browser, By byPath, out IWebElement element)
+      {
+         element = null;
+         try
+         {
+            element = browser.FindElement(byPath);
+            return true;
+         }
+         catch (NoSuchElementException)
+         {
+            return false;
+         }
+      }
+
+      private static bool TryGetElement(this IWebElement parent, By byPath, out IWebElement element)
+      {
+         element = null;
+         try
+         {
+            element = parent.FindElement(byPath);
+            return true;
+         }
+         catch (NoSuchElementException)
+         {
+            return false;
          }
       }
 
