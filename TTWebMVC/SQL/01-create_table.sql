@@ -5,11 +5,9 @@ drop table if exists ScheduleJobParameter, ScheduleJobParameterType, ScheduleJob
 CREATE TABLE AppUser (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(64) UNIQUE NOT NULL,
+    password VARCHAR(256) NOT NULL,
     firstname VARCHAR(64),
     lastname VARCHAR(64),
-    facebook_id VARCHAR(64),
-	access_token VARCHAR(1024),
-    access_token_expiration_date TIMESTAMP NULL DEFAULT NULL ,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 );

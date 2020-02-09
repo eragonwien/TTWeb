@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using TTWebAuto.Models;
+using TTWebInterface.Models;
 
-namespace TTWebAuto.Controllers
+namespace TTWebInterface.Controllers
 {
-   public class HomeController : DefaultController
+   public class HomeController : Controller
    {
       public IActionResult Index()
       {

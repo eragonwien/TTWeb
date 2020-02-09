@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using TTWebAuto.Extensions;
@@ -25,6 +26,7 @@ namespace TTWebAuto.Models
       public string Target { get; set; }
       private readonly ChromeOptions BrowserOptions = new ChromeOptions();
       private readonly string DriverDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+      private readonly RemoteWebDriver webDriver;
 
       private readonly string BrowserArgumentHeadless = "headless";
       private readonly string BrowserArgumentDisableExtensions = "--disable-extensions";
@@ -34,16 +36,18 @@ namespace TTWebAuto.Models
       public FacebookModel()
       {
          //BrowserOptions.AddArgument(BrowserArgumentHeadless);
-
-         BrowserOptions.AddArgument(BrowserArgumentDisableExtensions);
-         BrowserOptions.AddArgument(BrowserArgumentDisableNotifications);
-         BrowserOptions.AddArgument(BrowserArgumentDisableCache);
-
-         BrowserOptions.UnhandledPromptBehavior = UnhandledPromptBehavior.Dismiss;
+         //BrowserOptions.AddArgument(BrowserArgumentDisableExtensions);
+         //BrowserOptions.AddArgument(BrowserArgumentDisableNotifications);
+         //BrowserOptions.AddArgument(BrowserArgumentDisableCache);
+         //BrowserOptions.UnhandledPromptBehavior = UnhandledPromptBehavior.Dismiss;
       }
 
       public void Comment()
       {
+         using (var browser = new RemoteWebDriver(BrowserOptions))
+         {
+
+         }
          using (var browser = new ChromeDriver(DriverDir, BrowserOptions))
          {
             browser.Login(Email, Password);

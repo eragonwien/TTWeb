@@ -4,7 +4,7 @@ using TTWebAuto.Models;
 
 namespace TTWebAuto.Controllers
 {
-   public class CommentController : Controller
+   public class CommentController : DefaultController
    {
       public IActionResult Index()
       {
