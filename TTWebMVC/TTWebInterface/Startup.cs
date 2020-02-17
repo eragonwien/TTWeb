@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TTWebCommon.Facebook;
 using TTWebInterface.Models;
 
 namespace TTWebInterface
@@ -27,8 +28,8 @@ namespace TTWebInterface
             options.CheckConsentNeeded = context => false;
             options.MinimumSameSitePolicy = SameSiteMode.None;
          });
-
          services.AddDbContext<TTWebDbContext>(o => o.UseMySQL(Configuration.GetConnectionString("TTWeb")));
+         services.AddScoped<IFacebookService, FacebookService>();
 
          services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
       }

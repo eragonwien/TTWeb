@@ -15,6 +15,7 @@ namespace TTWebInterface.Models
       public DbSet<AppUser> AppUserSet { get; set; }
       public DbSet<ScheduleJob> ScheduleJobSet { get; set; }
       public DbSet<ScheduleJobType> ScheduleJobTypeSet { get; set; }
+      public DbSet<ScheduleJobParameter> ScheduleJobParameterSet { get; set; }
       public DbSet<ScheduleJobParameterType> ScheduleJobParameterTypeSet { get; set; }
 
    }
