@@ -21,12 +21,12 @@ namespace TTWebNetCommon.Facebook
          var result = new ProcessingResult();
          try
          {
-            using (webClient = new FacebookTTWebDriver(BrowserVersion.FIREFOX_38))
+            using (webClient = new FacebookTTWebDriver(BrowserVersion.CHROME))
             {
                switch (parameter.ActionType)
                {
                   case FacebookServiceActionType.LOGIN:
-                     webClient.Login(parameter.Email, parameter.Password);
+                     result.Result = webClient.Login(parameter.Email, parameter.Password);
                      break;
                   case FacebookServiceActionType.LIKE:
                      webClient.Like(parameter);

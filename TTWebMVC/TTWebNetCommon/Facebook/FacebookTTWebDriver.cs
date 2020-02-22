@@ -19,9 +19,10 @@ namespace TTWebNetCommon.Facebook
       {
          Options.JavaScriptEnabled = true;
          Options.ThrowExceptionOnFailingStatusCode = false;
+         Options.ThrowExceptionOnScriptError = false;
       }
 
-      public HtmlPage Comment(FacebookServiceParameter parameter)
+      public void Comment(FacebookServiceParameter parameter)
       {
          throw new NotImplementedException();
       }
@@ -54,18 +55,19 @@ namespace TTWebNetCommon.Facebook
       public string TestHtml(string targetUrl)
       {
          var page = Navigate(targetUrl);
-         return page.IsHtmlPage().ToString();
+         return page.AsXml();
       }
 
-      public void Login(string user, string password)
+      public string Login(string user, string password)
       {
          var page = GetHtmlPage(LoginUrl);
          var emailInput = page.GetHtmlElementById("email");
          emailInput.Type(user);
          var passwordInput = page.GetHtmlElementById("pass");
          passwordInput.Type(password);
-         var loginButton = page.GetHtmlElementById("loginbutton");
-         loginButton.Click();
+         var loginButton = page.GetHtmlElementById("loginbutton").GetFirstByXPath("//input[@type='submit']") as HtmlElement;
+         var mainpage = (HtmlPage)loginButton.Click();
+         return mainpage.AsXml();
       }
 
       private bool TryGetElementByXpath(HtmlElement parent, string xpath, out HtmlElement element)

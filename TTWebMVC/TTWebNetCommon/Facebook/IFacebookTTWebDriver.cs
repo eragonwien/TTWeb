@@ -8,9 +8,9 @@ namespace TTWebNetCommon.Facebook
 {
    public interface IFacebookTTWebDriver
    {
-      void Login(string user, string password);
+      string Login(string user, string password);
       void Like(FacebookServiceParameter parameter);
-      HtmlPage Comment(FacebookServiceParameter parameter);
+      void Comment(FacebookServiceParameter parameter);
       string TestHtml(string targetUrl);
    }
 }

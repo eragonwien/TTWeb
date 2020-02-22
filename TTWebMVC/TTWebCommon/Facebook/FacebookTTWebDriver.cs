@@ -5,11 +5,11 @@ using System;
 
 namespace TTWebCommon.Facebook
 {
-   public class FacebookTTWebDriver : FirefoxDriver, IFacebookTTWebDriver
+   public class FacebookTTWebDriver : ChromeDriver, IFacebookTTWebDriver
    {
       private const string LoginUrl = "https://www.facebook.com";
 
-      public FacebookTTWebDriver(string driverDir, FirefoxOptions options) : base(driverDir, options)
+      public FacebookTTWebDriver(string driverDir, ChromeOptions options) : base(driverDir, options)
       {
 
       }

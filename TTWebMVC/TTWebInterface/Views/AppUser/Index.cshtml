@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TTWebInterface.Models.AppUser>
+﻿@model IEnumerable<TTWebCommon.Models.AppUser>
 
 @{
     ViewData["Title"] = "Index";
@@ -16,6 +16,9 @@
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Password)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Firstname)
             </th>
             <th>
@@ -29,6 +32,9 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Password)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Firstname)

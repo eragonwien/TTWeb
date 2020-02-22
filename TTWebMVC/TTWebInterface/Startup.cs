@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TTWebCommon.Facebook;
+using TTWebCommon.Models;
 using TTWebInterface.Models;
 
 namespace TTWebInterface
@@ -31,7 +32,7 @@ namespace TTWebInterface
          services.AddDbContext<TTWebDbContext>(o => o.UseMySQL(Configuration.GetConnectionString("TTWeb")));
          services.AddScoped<IFacebookService, FacebookService>();
 
-         services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+         services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_0);
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,12 +44,12 @@ namespace TTWebInterface
          }
          else
          {
-            app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/Error/Index");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
          }
 
-         app.UseHttpsRedirection();
+         //app.UseHttpsRedirection();
          app.UseStaticFiles();
          app.UseCookiePolicy();
 
@@ -56,7 +57,7 @@ namespace TTWebInterface
          {
             routes.MapRoute(
                    name: "default",
-                   template: "{controller=Home}/{action=Index}/{id?}");
+                   template: "{controller=AppUser}/{action=Index}/{id?}");
          });
       }
    }

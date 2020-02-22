@@ -5,19 +5,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using TTWebCommon.Facebook;
-using TTWebInterface.Models;
+using TTWebCommon.Models;
+
 namespace TTWebInterface.Controllers
 {
    public class ScheduleJobController : Controller
    {
       private readonly TTWebDbContext _context;
-      private readonly IFacebookService facebookService;
 
-      public ScheduleJobController(TTWebDbContext context, IFacebookService facebookService)
+      public ScheduleJobController(TTWebDbContext context)
       {
          _context = context;
-         this.facebookService = facebookService;
       }
 
       // GET: ScheduleJob
@@ -156,25 +154,6 @@ namespace TTWebInterface.Controllers
          var scheduleJob = await _context.ScheduleJobSet.FindAsync(id);
          _context.ScheduleJobSet.Remove(scheduleJob);
          await _context.SaveChangesAsync();
-         return RedirectToAction(nameof(Index));
-      }
-
-      public async Task<IActionResult> Test(int? id)
-      {
-         if (id == null)
-         {
-            return NotFound();
-         }
-         var scheduleJob = await _context.ScheduleJobSet
-             .Include(s => s.AppUser)
-             .Include(s => s.Type)
-             .Include(s => s.Parameters).ThenInclude(p => p.Type)
-             .FirstOrDefaultAsync(m => m.Id == id);
-         if (scheduleJob == null)
-         {
-            return NotFound();
-         }
-         facebookService.Execute(scheduleJob.ToFacebookParameters());
          return RedirectToAction(nameof(Index));
       }
 
