@@ -28,6 +28,7 @@ create table ScheduleJob (
     FOREIGN KEY (appuser_id) REFERENCES appuser(id),
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    process_date TIMESTAMP NULL DEFAULT NULL,
     CONSTRAINT appuser_type_unique UNIQUE (schedulejobtype_id, appuser_id)
 );
 

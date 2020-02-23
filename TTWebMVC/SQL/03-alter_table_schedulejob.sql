@@ -1,0 +1,1 @@
+alter table ScheduleJob add process_date TIMESTAMP null default null;
