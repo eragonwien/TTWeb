@@ -13,6 +13,7 @@ namespace TTWebCommon.Models
       }
 
       public DbSet<AppUser> AppUserSet { get; set; }
+      public DbSet<LoginUser> LoginUserSet { get; set; }
       public DbSet<ScheduleJob> ScheduleJobSet { get; set; }
       public DbSet<ScheduleJobType> ScheduleJobTypeSet { get; set; }
       public DbSet<ScheduleJobParameter> ScheduleJobParameterSet { get; set; }
@@ -20,6 +21,11 @@ namespace TTWebCommon.Models
 
       protected override void OnModelCreating(ModelBuilder modelBuilder)
       {
+         modelBuilder.Entity<LoginUser>()
+            .HasMany(lu => lu.AppUsers)
+            .WithOne(au => au.LoginUser)
+            .HasForeignKey(au => au.LoginId);
+
          modelBuilder.Entity<AppUser>()
             .HasMany(a => a.ScheduleJobs)
             .WithOne(j => j.AppUser)

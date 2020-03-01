@@ -2,30 +2,24 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
 namespace TTWebCommon.Models
 {
-   [Table("AppUser")]
-   public class AppUser
+   [Table("LoginUser")]
+   public class LoginUser
    {
+      [Required]
       public int Id { get; set; }
       [Required]
+      [DataType(DataType.EmailAddress)]
       public string Email { get; set; }
       [Required]
       [DataType(DataType.Password)]
       public string Password { get; set; }
-      [Required]
+      public string Title { get; set; }
       public string Firstname { get; set; }
-      [Required]
       public string Lastname { get; set; }
-
-      [Column("login_id")]
-      public int LoginId { get; set; }
-
-      public LoginUser LoginUser { get; set; }
-
-      public virtual ICollection<ScheduleJob> ScheduleJobs { get; set; }
+      public virtual ICollection<AppUser> AppUsers { get; set; }
    }
 }

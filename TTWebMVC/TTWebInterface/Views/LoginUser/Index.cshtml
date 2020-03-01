@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TTWebCommon.Models.AppUser>
+﻿@model IEnumerable<TTWebCommon.Models.LoginUser>
 
 @{
     ViewData["Title"] = "Index";
@@ -19,13 +19,13 @@
                 @Html.DisplayNameFor(model => model.Password)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Firstname)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Lastname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LoginUser)
             </th>
             <th></th>
         </tr>
@@ -40,13 +40,13 @@
                 @Html.DisplayFor(modelItem => item.Password)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Firstname)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Lastname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LoginUser.Email)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

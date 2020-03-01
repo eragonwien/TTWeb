@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWebCommon", "TTWebCommon\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWebInterface", "TTWebInterface\TTWebInterface.csproj", "{6FB8CCF4-6872-41FC-8C52-218F38109C19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTWebWorker", "TTWebWorker\TTWebWorker.csproj", "{358A1401-7535-412F-8ECA-293A4B93CCC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWebWorker", "TTWebWorker\TTWebWorker.csproj", "{358A1401-7535-412F-8ECA-293A4B93CCC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTWebApi", "TTWebApi\TTWebApi.csproj", "{81C629EE-9780-4AFB-B616-E88A1CAC2EA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{358A1401-7535-412F-8ECA-293A4B93CCC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{358A1401-7535-412F-8ECA-293A4B93CCC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{358A1401-7535-412F-8ECA-293A4B93CCC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81C629EE-9780-4AFB-B616-E88A1CAC2EA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81C629EE-9780-4AFB-B616-E88A1CAC2EA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81C629EE-9780-4AFB-B616-E88A1CAC2EA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81C629EE-9780-4AFB-B616-E88A1CAC2EA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -29,8 +29,8 @@ namespace TTWebCommon.Models
 
       public virtual ICollection<ScheduleJobParameter> Parameters { get; set; }
 
-      [Column("process_date")]
-      public DateTimeOffset? ProcessDate { get; set; }
+      [Column("planned_date")]
+      public DateTimeOffset? PlannedDate { get; set; }
 
       public FacebookServiceParameter ToFacebookParameters()
       {
