@@ -21,8 +21,8 @@ namespace TTWebCommon.Models
       [Required]
       public string Lastname { get; set; }
 
-      [Column("login_id")]
-      public int LoginId { get; set; }
+      [Column("loginuser_id")]
+      public int LoginUserId { get; set; }
 
       public LoginUser LoginUser { get; set; }
 

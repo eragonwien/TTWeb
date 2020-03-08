@@ -24,7 +24,11 @@ namespace TTWebCommon.Models
          modelBuilder.Entity<LoginUser>()
             .HasMany(lu => lu.AppUsers)
             .WithOne(au => au.LoginUser)
-            .HasForeignKey(au => au.LoginId);
+            .HasForeignKey(au => au.LoginUserId);
+
+         modelBuilder.Entity<LoginUserRole>()
+            .Property(r => r.Name)
+            .HasConversion(r => r.ToString(), r => (LoginUserRoleEnum)Enum.Parse(typeof(LoginUserRoleEnum), r));
 
          modelBuilder.Entity<AppUser>()
             .HasMany(a => a.ScheduleJobs)

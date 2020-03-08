@@ -4,37 +4,23 @@
    <meta charset="utf-8" />
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <title>@ViewData["Title"] - TTWebInterface</title>
-   <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
    <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-   <div>
-      <header id="header">
-         <partial name="_SideNavPartial" />
-      </header>
-      <main id="main">
-         @RenderBody()
-      </main>
+   <header id="header">
+      <partial name="_NavbarPartial" />
+   </header>
+   <main id="main" class="container is-fluid">
+      @RenderBody()
+   </main>
 
-      <footer id="footer" class="border-top footer text-muted">
-         <div class="container">
+   <footer class="footer">
+      <div class="content has-text-centered">
+         <p>
             &copy; 2020 - TTWebInterface - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-         </div>
-      </footer>
-   </div>
-
-   <environment include="Development">
-      <script src="~/lib/jquery/dist/jquery.js"></script>
-      <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-   </environment>
-   <environment exclude="Development">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
-              asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-              asp-fallback-test="window.jQuery"
-              crossorigin="anonymous"
-              integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
-      </script>
-   </environment>
+         </p>
+      </div>
+   </footer>
    <script src="~/js/site.js" asp-append-version="true"></script>
 
    @RenderSection("Scripts", required: false)

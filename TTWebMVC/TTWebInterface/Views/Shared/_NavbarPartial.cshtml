@@ -1,0 +1,38 @@
+﻿<nav class="navbar" role="navigation" aria-label="main navigation">
+   <div class="navbar-brand">
+      <a class="navbar-item" href="https://bulma.io">
+         <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+      </a>
+
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+         <span aria-hidden="true"></span>
+         <span aria-hidden="true"></span>
+         <span aria-hidden="true"></span>
+      </a>
+   </div>
+
+   <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+         <a class="navbar-item" asp-controller="home" asp-action="index">Home</a>
+         <a class="navbar-item" asp-controller="loginuser" asp-action="index">LoginUsers</a>
+         <a class="navbar-item" asp-controller="appuser" asp-action="index">AppUsers</a>
+         <a class="navbar-item" asp-controller="schedulejob" asp-action="index">Jobs</a>
+         <a class="navbar-item" asp-controller="schedulejobtype" asp-action="index">Job Types</a>
+         <a class="navbar-item" asp-controller="schedulejobparameter" asp-action="index">Parameters</a>
+         <a class="navbar-item" asp-controller="schedulejobparametertype" asp-action="index">Parameter Types</a>
+      </div>
+
+      <div class="navbar-end">
+         <div class="navbar-item">
+            <div class="buttons">
+               <a asp-controller="account" asp-action="login" class="button is-primary">
+                  Login
+               </a>
+               <button id="logout-button" class="button is-light">
+                  Logout
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+</nav>

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TTWebApi.Services;
 using TTWebCommon.Models;
 
 namespace TTWebApi.Controllers
@@ -13,25 +16,25 @@ namespace TTWebApi.Controllers
    [ApiController]
    public class LoginUserController : ControllerBase
    {
-      private readonly TTWebDbContext _context;
+      private readonly ILoginUserService loginUserService;
 
-      public LoginUserController(TTWebDbContext context)
+      public LoginUserController(ILoginUserService loginUserService)
       {
-         _context = context;
+         this.loginUserService = loginUserService;
       }
 
       // GET: api/LoginUser
       [HttpGet]
       public async Task<ActionResult<IEnumerable<LoginUser>>> GetLoginUserSet()
       {
-         return await _context.LoginUserSet.ToListAsync();
+         return await loginUserService.GetAll();
       }
 
       // GET: api/LoginUser/5
       [HttpGet("{id}")]
       public async Task<ActionResult<LoginUser>> GetLoginUser(int id)
       {
-         var loginUser = await _context.LoginUserSet.FindAsync(id);
+         var loginUser = await loginUserService.GetOne(id);
 
          if (loginUser == null)
          {
@@ -39,67 +42,41 @@ namespace TTWebApi.Controllers
          }
 
          return loginUser;
-      }
-
-      // PUT: api/LoginUser/5
-      [HttpPut("{id}")]
-      public async Task<IActionResult> PutLoginUser(int id, LoginUser loginUser)
-      {
-         if (id != loginUser.Id)
-         {
-            return BadRequest();
-         }
-
-         _context.Entry(loginUser).State = EntityState.Modified;
-
-         try
-         {
-            await _context.SaveChangesAsync();
-         }
-         catch (DbUpdateConcurrencyException)
-         {
-            if (!LoginUserExists(id))
-            {
-               return NotFound();
-            }
-            else
-            {
-               throw;
-            }
-         }
-
-         return NoContent();
       }
 
       // POST: api/LoginUser
       [HttpPost]
       public async Task<ActionResult<LoginUser>> PostLoginUser(LoginUser loginUser)
       {
-         _context.LoginUserSet.Add(loginUser);
-         await _context.SaveChangesAsync();
+         await loginUserService.Create(loginUser);
 
-         return CreatedAtAction("GetLoginUser", new { id = loginUser.Id }, loginUser);
+         return CreatedAtAction(nameof(GetLoginUser), new { id = loginUser.Id }, loginUser);
       }
 
       // DELETE: api/LoginUser/5
       [HttpDelete("{id}")]
       public async Task<ActionResult<LoginUser>> DeleteLoginUser(int id)
       {
-         var loginUser = await _context.LoginUserSet.FindAsync(id);
+         var loginUser = await loginUserService.GetOne(id);
          if (loginUser == null)
          {
             return NotFound();
          }
-
-         _context.LoginUserSet.Remove(loginUser);
-         await _context.SaveChangesAsync();
+         await loginUserService.Remove(loginUser);
 
          return loginUser;
       }
 
-      private bool LoginUserExists(int id)
+      [AllowAnonymous]
+      [HttpPost("authenticate")]
+      public async Task<IActionResult> Authenticate(string email, string password)
       {
-         return _context.LoginUserSet.Any(e => e.Id == id);
+         var user = await loginUserService.Authenticate(email, password);
+         if (user == null)
+         {
+            return BadRequest();
+         }
+         return Ok(user);
       }
    }
 }

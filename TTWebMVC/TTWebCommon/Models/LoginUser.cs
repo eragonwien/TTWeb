@@ -20,6 +20,12 @@ namespace TTWebCommon.Models
       public string Title { get; set; }
       public string Firstname { get; set; }
       public string Lastname { get; set; }
+      [NotMapped]
+      public string Token { get; set; }
+      public string RefreshToken { get; set; }
+      [Column("loginuserrole_id")]
+      public int LoginUserRoleId { get; set; }
       public virtual ICollection<AppUser> AppUsers { get; set; }
+      public virtual LoginUserRole LoginUserRole { get; set; }
    }
 }
