@@ -1,6 +1,6 @@
 use ttweb;
 
-drop table if exists ScheduleJobParameter, ScheduleJobParameterType, ScheduleJob, ScheduleJobStatus, ScheduleJobType, AppUser, LoginUser_LoginUserRole, LoginUser, LoginUserRole;
+drop table if exists ScheduleJobParameter, ScheduleJobParameterType, ScheduleJob, ScheduleJobStatus, ScheduleJobType, AppUser, LoginUser, LoginUserRole;
 
 create table LoginUserRole (
 	id INT AUTO_INCREMENT PRIMARY KEY,
@@ -13,22 +13,14 @@ CREATE TABLE LoginUser (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(64) UNIQUE NOT NULL,
     password VARCHAR(256) NOT NULL,
+    loginuserrole_id int NOT NULL,
     title VARCHAR(64),
     firstname VARCHAR(64),
     lastname VARCHAR(64),
+    refresh_token VARCHAR(64),
+    FOREIGN KEY (loginuserrole_id) REFERENCES loginuserrole(id),
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE LoginUser_LoginUserRole (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-    loginuser_id INT NOT NULL,
-    loginuserrole_id INT NOT NULL,
-    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (loginuser_id) REFERENCES loginuser(id),
-    FOREIGN KEY (loginuserrole_id) REFERENCES loginuserrole(id),
-    CONSTRAINT loginuser_loginuserrole_unique UNIQUE (loginuser_id, loginuserrole_id)
 );
 
 CREATE TABLE AppUser (
