@@ -78,5 +78,17 @@ namespace TTWebApi.Controllers
          }
          return Ok(user);
       }
+
+      [AllowAnonymous]
+      [HttpPost("reauthenticate")]
+      public async Task<IActionResult> Reauthenticate(string accessToken, string refreshToken)
+      {
+         var user = await loginUserService.Reauthenticate(accessToken, refreshToken);
+         if (user == null)
+         {
+            return BadRequest();
+         }
+         return Ok(user);
+      }
    }
 }

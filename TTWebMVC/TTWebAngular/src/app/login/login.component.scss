@@ -1,0 +1,17 @@
+#login-form {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  margin-top: 20vh;
+
+  fieldset {
+    width: 100%;
+    max-width: 500px;
+    border: none;
+  }
+
+  mat-form-field {
+    width: 100%;
+    max-width: 500px;
+  }
+}

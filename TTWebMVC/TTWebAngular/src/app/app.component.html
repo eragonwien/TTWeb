@@ -1,0 +1,19 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button *ngIf="isMobile" style="margin-right: 20px;" (click)="sidenav.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Application Title</span>
+  <span style="flex: 1 1 auto;"></span>
+  <span *ngIf="!isMobile">Right Aligned Text</span>
+</mat-toolbar>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav [opened]="!isMobile" [mode]="isMobile ? 'over' : 'side'">
+    <mat-nav-list>
+      <a mat-list-item routerLink="home">Home</a>
+      <a mat-list-item routerLink="login">Login</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

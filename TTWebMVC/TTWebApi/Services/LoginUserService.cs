@@ -29,7 +29,6 @@ namespace TTWebApi.Services
       Task Remove(LoginUser user);
       Task<bool> Exist(int id);
       Task<bool> Exist(string username);
-      Task SaveChanges();
    }
    public class LoginUserService : ILoginUserService
    {
@@ -52,7 +51,7 @@ namespace TTWebApi.Services
             return null;
          }
          // generates JWT token
-         user.Token = CreateAuthToken(user);
+         user.AccessToken = CreateAuthToken(user);
 
          // generates refresh token
          user.RefreshToken = CreateRefreshAuthToken();
@@ -70,7 +69,7 @@ namespace TTWebApi.Services
          return AuthenticationHelper.GenerateRandomToken(appSettings.RefreshAuthTokenLength);
       }
 
-      private string CreateAuthToken(LoginUser user)
+      private string CreateAuthToken(LoginUser loginUser)
       {
          var tokenHandler = new JwtSecurityTokenHandler();
          var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.AuthSecret));
@@ -80,12 +79,12 @@ namespace TTWebApi.Services
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
             claims: new Claim[]
             {
-               new Claim(ClaimTypes.Email, user.Email),
-               new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-               new Claim(ClaimTypes.GivenName, user.Firstname),
-               new Claim(ClaimTypes.Name, user.Lastname),
+               new Claim(ClaimTypes.Email, loginUser.Email),
+               new Claim(ClaimTypes.NameIdentifier, loginUser.Id.ToString()),
+               new Claim(ClaimTypes.GivenName, loginUser.Firstname),
+               new Claim(ClaimTypes.Name, loginUser.Lastname),
                new Claim(ClaimTypes.AuthenticationMethod, AuthenticationMethod.JWT.ToString()),
-               new Claim(ClaimTypes.Role, string.Join(";",user.LoginUserRole.Name)),
+               new Claim(ClaimTypes.Role, string.Join(";",loginUser.LoginUserRole.Name)),
             }
          );
          return tokenHandler.WriteToken(jwtToken);
@@ -108,14 +107,14 @@ namespace TTWebApi.Services
             throw new SecurityTokenException("Invalid Token");
          }
 
-         int userId = Convert.ToInt32(principal.FindFirst(ClaimTypes.NameIdentifier));
-         var loginUser = await GetOne(userId);
+         int loginUserId = Convert.ToInt32(principal.FindFirst(ClaimTypes.NameIdentifier));
+         var loginUser = await GetOne(loginUserId);
          return loginUser;
       }
 
-      public async Task Create(LoginUser user)
+      public async Task Create(LoginUser loginUser)
       {
-         db.LoginUserSet.Add(user);
+         db.LoginUserSet.Add(loginUser);
          await db.SaveChangesAsync();
       }
 
@@ -169,17 +168,12 @@ namespace TTWebApi.Services
          {
             return loginUser;
          }
-         loginUser.Token = CreateAuthToken(loginUser);
+         loginUser.AccessToken = CreateAuthToken(loginUser);
          loginUser.RefreshToken = CreateRefreshAuthToken();
-         db.Entry(loginUser).Property(u => u.Token).IsModified = true;
+         db.Entry(loginUser).Property(u => u.AccessToken).IsModified = true;
          db.Entry(loginUser).Property(u => u.RefreshToken).IsModified = true;
          await db.SaveChangesAsync();
          return loginUser;
-      }
-
-      public Task SaveChanges()
-      {
-         return db.SaveChangesAsync();
       }
    }
 }
