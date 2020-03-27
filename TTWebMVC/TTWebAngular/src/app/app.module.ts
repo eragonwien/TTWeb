@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,33 +16,39 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
+import { SettingService } from './setting.service';
 
 @NgModule({
-   declarations: [
-      AppComponent,
-      LoginComponent,
-      HomeComponent,
-   ],
-   imports: [
-      BrowserModule,
-      AppRoutingModule,
-      FormsModule,
-      ReactiveFormsModule,
-      HttpClientModule,
-      BrowserAnimationsModule,
-      MatSidenavModule,
-      MatFormFieldModule,
-      MatSelectModule,
-      MatListModule,
-      MatToolbarModule,
-      MatIconModule,
-      MatButtonModule,
-      MatMenuModule,
-      MatInputModule
-   ],
-   providers: [],
-   bootstrap: [
-      AppComponent
-   ]
+  declarations: [AppComponent, LoginComponent, HomeComponent],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatSidenavModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatListModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatInputModule,
+  ],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [SettingService],
+      useFactory: (settingService: SettingService) => {
+        return () => {
+          return settingService.loadRuntimeSettings();
+        };
+      },
+    },
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

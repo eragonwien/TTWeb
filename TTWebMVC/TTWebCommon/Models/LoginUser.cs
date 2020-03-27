@@ -22,6 +22,7 @@ namespace TTWebCommon.Models
       public string Lastname { get; set; }
       [NotMapped]
       public string AccessToken { get; set; }
+      [Column("refresh_token")]
       public string RefreshToken { get; set; }
       [Column("loginuserrole_id")]
       public int LoginUserRoleId { get; set; }

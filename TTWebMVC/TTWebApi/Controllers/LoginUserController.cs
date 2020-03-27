@@ -5,8 +5,10 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.V3.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TTWebApi.Models;
 using TTWebApi.Services;
 using TTWebCommon.Models;
 
@@ -69,9 +71,9 @@ namespace TTWebApi.Controllers
 
       [AllowAnonymous]
       [HttpPost("authenticate")]
-      public async Task<IActionResult> Authenticate(string email, string password)
+      public async Task<IActionResult> Authenticate([FromBody] LoginViewModel loginModel)
       {
-         var user = await loginUserService.Authenticate(email, password);
+         var user = await loginUserService.Authenticate(loginModel.Email, loginModel.Password);
          if (user == null)
          {
             return BadRequest();

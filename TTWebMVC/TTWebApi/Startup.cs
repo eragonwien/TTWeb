@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using TTWebApi.Middlewares;
 using TTWebApi.Models;
 using TTWebApi.Services;
 using TTWebCommon.Models;
@@ -93,6 +94,7 @@ namespace TTWebApi
          app.UseAuthentication();
 
          app.UseHttpsRedirection();
+         app.UseMiddleware(typeof(ErrorHandlingMiddleware));
          app.UseMvc();
       }
    }
