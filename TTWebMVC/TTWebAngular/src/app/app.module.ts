@@ -16,7 +16,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
-import { SettingService } from './setting.service';
+import { SettingService } from './services/setting.service';
+import { LoginActive } from './guards/logginActivate';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, HomeComponent],
@@ -48,6 +49,7 @@ import { SettingService } from './setting.service';
         };
       },
     },
+    LoginActive,
   ],
   bootstrap: [AppComponent],
 })

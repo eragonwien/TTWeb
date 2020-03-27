@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { RuntimeSettings } from './../models/runtime.settings';
+import { RuntimeSettings } from '../../models/runtime.settings';
 import { Injectable } from '@angular/core';
 
 @Injectable({
