@@ -1,9 +1,10 @@
 import { SettingService } from './setting.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { shareReplay, tap } from 'rxjs/operators';
 import { LoginUser } from 'src/models/login.user';
 import { throwError } from 'rxjs';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,16 +12,11 @@ import { throwError } from 'rxjs';
 export class AuthService {
   private accessTokenStore = 'access_token';
   private refreshTokenStore = 'refresh_token';
-  constructor(private http: HttpClient, private appSettings: SettingService) {}
+  private loginUserIdStore = 'login_id';
+  constructor() {}
 
-  login(email: string, password: string) {
-    return this.http
-      .post(this.appSettings.runtimeSettings.apiAuthenticateRoute, { email, password })
-      .pipe(tap((loginUser: LoginUser) => this.saveLoginToken(loginUser)))
-      .pipe(shareReplay(1));
-  }
-
-  private saveLoginToken(loginUser: LoginUser) {
+  public saveLoginToken(loginUser: LoginUser) {
+    localStorage.setItem(this.loginUserIdStore, loginUser.id.toString());
     localStorage.setItem(this.accessTokenStore, loginUser.accessToken);
     localStorage.setItem(this.refreshTokenStore, loginUser.refreshToken);
   }
@@ -28,20 +24,6 @@ export class AuthService {
   public logout() {
     localStorage.removeItem(this.accessTokenStore);
     localStorage.removeItem(this.refreshTokenStore);
-  }
-
-  public reauthenticate() {
-    const refreshToken = this.getRefreshToken();
-    if (refreshToken === null) {
-      throwError('refresh token is empty');
-    }
-    return this.http
-      .post(this.appSettings.runtimeSettings.apiReauthenticateRoute, {
-        accessToken: this.getAccessToken(),
-        refreshToken,
-      })
-      .pipe(tap((loginUser) => this.saveLoginToken))
-      .pipe(shareReplay(1));
   }
 
   public isLoggedIn() {
@@ -58,5 +40,17 @@ export class AuthService {
 
   public getRefreshToken() {
     return localStorage.getItem(this.refreshTokenStore);
+  }
+
+  public getInjectedRequest(req: HttpRequest<any>) {
+    const token = this.getAccessToken();
+    if (!token) {
+      return req;
+    }
+    return req.clone({
+      setHeaders: {
+        Authorization: 'Bearer ' + token,
+      },
+    });
   }
 }

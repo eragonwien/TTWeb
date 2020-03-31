@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-login',
@@ -11,9 +12,13 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
-  private loginUser: LoginUser;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private api: ApiService,
+    private auth: AuthService,
+    private router: Router
+  ) {
     this.form = this.formBuilder.group({
       email: ['', Validators.required],
       password: ['', Validators.required],
@@ -26,8 +31,8 @@ export class LoginComponent implements OnInit {
     const val = this.form.value;
 
     if (val.email && val.password) {
-      this.authService.login(val.email, val.password).subscribe((loginUser: LoginUser) => {
-        this.loginUser = loginUser;
+      this.api.login(val.email, val.password).subscribe((loginUser: LoginUser) => {
+        this.auth.saveLoginToken(loginUser);
         this.router.navigateByUrl('/');
       });
     }

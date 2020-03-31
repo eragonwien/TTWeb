@@ -83,14 +83,20 @@ namespace TTWebApi.Controllers
 
       [AllowAnonymous]
       [HttpPost("reauthenticate")]
-      public async Task<IActionResult> Reauthenticate(string accessToken, string refreshToken)
+      public async Task<IActionResult> Reauthenticate([FromBody] ReauthenticationViewModel model)
       {
-         var user = await loginUserService.Reauthenticate(accessToken, refreshToken);
+         var user = await loginUserService.Reauthenticate(model.AccessToken, model.RefreshToken);
          if (user == null)
          {
             return BadRequest();
          }
          return Ok(user);
+      }
+
+      [HttpPost("ping")]
+      public IActionResult Ping()
+      {
+         return Ok();
       }
    }
 }

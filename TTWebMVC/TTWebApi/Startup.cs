@@ -55,7 +55,8 @@ namespace TTWebApi
                   ValidateIssuerSigningKey = true,
                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appsettings.AuthSecret)),
                   ValidateIssuer = false,
-                  ValidateAudience = false
+                  ValidateAudience = false,
+                  ClockSkew = TimeSpan.Zero
                };
             });
 

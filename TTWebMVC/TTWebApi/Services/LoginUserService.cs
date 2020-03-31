@@ -75,7 +75,7 @@ namespace TTWebApi.Services
          var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.AuthSecret));
          var jwtToken = new JwtSecurityToken(
             notBefore: DateTime.UtcNow,
-            expires: DateTime.UtcNow.AddDays(appSettings.AuthTokenDurationDay),
+            expires: DateTime.UtcNow.AddMinutes(appSettings.AuthTokenDurationMinute),
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
             claims: new Claim[]
             {
@@ -107,7 +107,7 @@ namespace TTWebApi.Services
             throw new SecurityTokenException("Invalid Token");
          }
 
-         int loginUserId = Convert.ToInt32(principal.FindFirst(ClaimTypes.NameIdentifier));
+         int loginUserId = Convert.ToInt32(principal.FindFirst(ClaimTypes.NameIdentifier)?.Value);
          var loginUser = await GetOne(loginUserId);
          return loginUser;
       }
@@ -143,8 +143,14 @@ namespace TTWebApi.Services
 
       public async Task<LoginUser> GetOne(int id)
       {
-         var user = await db.LoginUserSet.FindAsync(id);
-         user.Password = null;
+         var user = await db.LoginUserSet
+            .Include(u => u.LoginUserRole)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id);
+         if (user != null)
+         {
+            user.Password = null;
+         }
          return user;
       }
 
@@ -169,8 +175,8 @@ namespace TTWebApi.Services
             return loginUser;
          }
          loginUser.AccessToken = CreateAuthToken(loginUser);
+
          loginUser.RefreshToken = CreateRefreshAuthToken();
-         db.Entry(loginUser).Property(u => u.AccessToken).IsModified = true;
          db.Entry(loginUser).Property(u => u.RefreshToken).IsModified = true;
          await db.SaveChangesAsync();
          return loginUser;
