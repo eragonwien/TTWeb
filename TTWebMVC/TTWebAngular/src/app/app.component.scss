@@ -3,5 +3,13 @@ mat-sidenav-container {
 }
 
 mat-sidenav {
-  width: 250px;
+  width: 300px;
+}
+
+.fullscreen {
+  width: 100vw;
+}
+
+mat-toolbar {
+  background-color: transparent;
 }
