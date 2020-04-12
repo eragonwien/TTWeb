@@ -16,13 +16,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
 import { SettingService } from './services/setting.service';
 import { LoginActivateGuard } from './guards/logginActivate.guard';
 import { GlobalErrorHandlerService } from './guards/globalErrorHandler';
 import { TokenInterceptorService } from './services/token-interceptor.service';
+import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ChangePasswordDialogComponent } from './change-password/change-password-dialog/change-password-dialog.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HomeComponent],
+  declarations: [AppComponent, LoginComponent, HomeComponent, ChangePasswordComponent, ChangePasswordDialogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -39,6 +42,7 @@ import { TokenInterceptorService } from './services/token-interceptor.service';
     MatButtonModule,
     MatMenuModule,
     MatInputModule,
+    MatDialogModule,
   ],
   providers: [
     {

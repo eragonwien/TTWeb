@@ -16,4 +16,10 @@
     <ProjectReference Include="..\TTWebCommon\TTWebCommon.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="SNGCommon">
+      <HintPath>..\Libs\SNGCommon\SNGCommon.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

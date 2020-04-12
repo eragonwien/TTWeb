@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,6 +16,7 @@ namespace TTWebCommon.Models
       [DataType(DataType.EmailAddress)]
       public string Email { get; set; }
       [Required]
+      [JsonIgnore]
       [DataType(DataType.Password)]
       public string Password { get; set; }
       public string Title { get; set; }
@@ -24,9 +26,18 @@ namespace TTWebCommon.Models
       public string AccessToken { get; set; }
       [Column("refresh_token")]
       public string RefreshToken { get; set; }
-      [Column("loginuserrole_id")]
-      public int LoginUserRoleId { get; set; }
+      [Column("change_password")]
+      public int ChangePassword { get; set; }
+      [NotMapped]
+      public bool ChangePasswordRequired
+      {
+         get
+         {
+            return ChangePassword == 1;
+         }
+      }
+
       public virtual ICollection<AppUser> AppUsers { get; set; }
-      public virtual LoginUserRole LoginUserRole { get; set; }
+      public virtual ICollection<LoginUserRoleMapping> LoginUserRolesMapping { get; set; }
    }
 }

@@ -6,4 +6,5 @@ export class LoginUser {
   lastname: string;
   accessToken: string;
   refreshToken: string;
+  changePasswordRequired: boolean;
 }

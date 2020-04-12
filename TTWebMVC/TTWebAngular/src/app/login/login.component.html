@@ -2,14 +2,15 @@
   <fieldset>
     <mat-form-field appearance="outline">
       <mat-label>Email</mat-label>
-      <input matInput type="email" name="email" formControlName="email" />
+      <input matInput type="email" name="email" formControlName="email" autocomplete="current-email" />
     </mat-form-field>
     <br />
     <mat-form-field appearance="outline">
       <mat-label>Password</mat-label>
-      <input matInput type="password" name="password" formControlName="password" />
+      <input matInput type="password" name="password" formControlName="password" autocomplete="current-password" />
     </mat-form-field>
     <br />
     <button mat-raised-button color="primary" (click)="login()">Login</button>
   </fieldset>
 </form>
+<app-change-password></app-change-password>

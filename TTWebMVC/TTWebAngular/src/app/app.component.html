@@ -1,5 +1,10 @@
 <mat-sidenav-container>
-  <mat-sidenav #sidenav [opened]="!isMobile" [mode]="isMobile ? 'over' : 'side'" [ngClass]="{ fullscreen: isMobile }">
+  <mat-sidenav
+    #sidenav
+    [opened]="!isMobile && !forceHidden"
+    [mode]="isMobile ? 'over' : 'side'"
+    [class.fullscreen]="isMobile"
+  >
     <mat-toolbar>
       <span style="flex: 1 1 auto;"></span>
       <button mat-icon-button *ngIf="isMobile" (click)="sidenav.close()">

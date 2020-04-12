@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using OpenQA.Selenium;
+using SNGCommon.Authentication;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -34,18 +35,20 @@ namespace TTWebApi.Services
    {
       private readonly TTWebDbContext db;
       private readonly AppSettings appSettings;
+      private readonly IAuthenticationService authService;
 
-      public LoginUserService(TTWebDbContext db, IOptions<AppSettings> appSettings)
+      public LoginUserService(TTWebDbContext db, IOptions<AppSettings> appSettings, IAuthenticationService authService)
       {
          this.db = db;
          this.appSettings = appSettings.Value;
+         this.authService = authService;
       }
 
       public async Task<LoginUser> Authenticate(string username, string password)
       {
          var user = await db.LoginUserSet
-            .Include(u => u.LoginUserRole)
-            .FirstOrDefaultAsync(u => u.Email == username);
+            .Include(u => u.LoginUserRolesMapping).ThenInclude(rm => rm.LoginUserRole)
+            .FirstOrDefaultAsync(u => u.Email == username && (u.ChangePasswordRequired || authService.IsPasswordValid(password, u.Password)));
          if (user == null)
          {
             return null;
@@ -77,17 +80,26 @@ namespace TTWebApi.Services
             notBefore: DateTime.UtcNow,
             expires: DateTime.UtcNow.AddMinutes(appSettings.AuthTokenDurationMinute),
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
-            claims: new Claim[]
-            {
-               new Claim(ClaimTypes.Email, loginUser.Email),
-               new Claim(ClaimTypes.NameIdentifier, loginUser.Id.ToString()),
-               new Claim(ClaimTypes.GivenName, loginUser.Firstname),
-               new Claim(ClaimTypes.Name, loginUser.Lastname),
-               new Claim(ClaimTypes.AuthenticationMethod, AuthenticationMethod.JWT.ToString()),
-               new Claim(ClaimTypes.Role, string.Join(";",loginUser.LoginUserRole.Name)),
-            }
+            claims: AddClaims(loginUser)
          );
          return tokenHandler.WriteToken(jwtToken);
+      }
+
+      private IEnumerable<Claim> AddClaims(LoginUser loginUser)
+      {
+         var claims = new List<Claim>()
+         {
+            new Claim(ClaimTypes.Email, loginUser.Email),
+            new Claim(ClaimTypes.NameIdentifier, loginUser.Id.ToString()),
+            new Claim(ClaimTypes.GivenName, loginUser.Firstname),
+            new Claim(ClaimTypes.Name, loginUser.Lastname),
+            new Claim(ClaimTypes.AuthenticationMethod, AuthenticationMethod.JWT.ToString()),
+         };
+         foreach (var role in loginUser.LoginUserRolesMapping.Select(r => r.LoginUserRole))
+         {
+            claims.Add(new Claim(ClaimTypes.Role, role.Name.ToString()));
+         }
+         return claims;
       }
 
       private async Task<LoginUser> GetUserFromExpiredToken(string expiredToken)
@@ -144,7 +156,7 @@ namespace TTWebApi.Services
       public async Task<LoginUser> GetOne(int id)
       {
          var user = await db.LoginUserSet
-            .Include(u => u.LoginUserRole)
+            .Include(u => u.LoginUserRolesMapping).ThenInclude(rm => rm.LoginUserRole)
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == id);
          if (user != null)
@@ -156,7 +168,10 @@ namespace TTWebApi.Services
 
       public async Task<LoginUser> GetOne(string username)
       {
-         var user = await db.LoginUserSet.FirstOrDefaultAsync(u => u.Email == username);
+         var user = await db.LoginUserSet
+            .Include(u => u.LoginUserRolesMapping).ThenInclude(rm => rm.LoginUserRole)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == username);
          user.Password = null;
          return user;
       }

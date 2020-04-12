@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using SNGCommon.Authentication;
 using TTWebApi.Middlewares;
 using TTWebApi.Models;
 using TTWebApi.Services;
@@ -38,6 +39,7 @@ namespace TTWebApi
          services.AddCors();
          services.AddDbContext<TTWebDbContext>(o => o.UseMySQL(Configuration.GetConnectionString("TTWeb")));
          services.AddScoped<ILoginUserService, LoginUserService>();
+         services.AddScoped<IAuthenticationService, AuthenticationService>();
 
          var appSettingsSection = Configuration.GetSection("AppSettings");
          services.Configure<AppSettings>(appSettingsSection);
@@ -71,6 +73,8 @@ namespace TTWebApi
             .AddJsonOptions(o =>
             {
                o.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+               o.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+               o.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
       }

@@ -21,10 +21,18 @@ namespace TTWebCommon.Models
 
       protected override void OnModelCreating(ModelBuilder modelBuilder)
       {
-         modelBuilder.Entity<LoginUser>()
-            .HasMany(lu => lu.AppUsers)
-            .WithOne(au => au.LoginUser)
-            .HasForeignKey(au => au.LoginUserId);
+         modelBuilder.Entity<LoginUserRoleMapping>()
+            .HasKey(rm => new { rm.LoginUserId, rm.LoginUserRoleId });
+
+         modelBuilder.Entity<LoginUserRoleMapping>()
+            .HasOne(rm => rm.LoginUser)
+            .WithMany(u => u.LoginUserRolesMapping)
+            .HasForeignKey(rm => rm.LoginUserId);
+
+         modelBuilder.Entity<LoginUserRoleMapping>()
+            .HasOne(rm => rm.LoginUserRole)
+            .WithMany(u => u.LoginUsersRoleMapping)
+            .HasForeignKey(rm => rm.LoginUserId);
 
          modelBuilder.Entity<LoginUserRole>()
             .Property(r => r.Name)
