@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.V3.Pages.Account.Internal;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TTWebApi.Models;
@@ -67,6 +68,17 @@ namespace TTWebApi.Controllers
          await loginUserService.Remove(loginUser);
 
          return loginUser;
+      }
+
+      [HttpPatch("changepassword/{id}")]
+      public async Task<IActionResult> ChangePassword(int id, ChangePasswordModel model)
+      {
+         var user = await loginUserService.GetOne(id);
+         if (user == null)
+         {
+            return NotFound(id);
+         }
+         return Ok(id);
       }
 
       [AllowAnonymous]

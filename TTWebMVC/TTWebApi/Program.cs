@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SNGCommon.Authentication;
+using TTWebApi.Models;
+using TTWebCommon.Models;
 
 namespace TTWebApi
 {
@@ -14,11 +18,23 @@ namespace TTWebApi
    {
       public static void Main(string[] args)
       {
-         CreateWebHostBuilder(args).Build().Run();
+         var host = CreateWebHostBuilder(args).Build();
+         InitializeDatabase(host);
+         host.Run();
       }
 
       public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
           WebHost.CreateDefaultBuilder(args)
               .UseStartup<Startup>();
+
+      private static void InitializeDatabase(IWebHost host)
+      {
+         using (var scope = host.Services.CreateScope())
+         {
+            var dbContext = scope.ServiceProvider.GetRequiredService<TTWebDbContext>();
+            var authService = scope.ServiceProvider.GetRequiredService<IAuthenticationService>();
+            DatabaseInitializer.Initialize(dbContext, authService);
+         }
+      }
    }
 }

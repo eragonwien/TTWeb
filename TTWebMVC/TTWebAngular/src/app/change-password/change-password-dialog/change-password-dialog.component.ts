@@ -1,8 +1,12 @@
+import { ChangePasswordModel } from './../../../models/changePasswordModel';
+import { LoginUser } from 'src/models/login.user';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import { FormService } from 'src/app/services/form.service';
+import { ApiService } from 'src/app/services/api.service';
 
 @Component({
   selector: 'app-change-password-dialog',
@@ -11,18 +15,25 @@ import { Router } from '@angular/router';
 })
 export class ChangePasswordDialogComponent implements OnInit {
   form: FormGroup;
+  loginUser: LoginUser;
+  @ViewChild('changePasswordForm', { static: true }) changePasswordForm: NgForm;
   constructor(
     public dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
     private formBuilder: FormBuilder,
     private auth: AuthService,
-    private router: Router
+    private formService: FormService,
+    private api: ApiService
   ) {
+    this.loginUser = this.auth.getLoginUser();
     this.initiateForm();
   }
 
   ngOnInit() {}
 
-  submit() {}
+  submit() {
+    if (this.form.valid) {
+    }
+  }
 
   cancel() {
     this.auth.logout();
@@ -32,7 +43,8 @@ export class ChangePasswordDialogComponent implements OnInit {
   private initiateForm() {
     this.form = this.formBuilder.group(
       {
-        email: ['', Validators.required],
+        id: [this.loginUser.id, Validators.required],
+        'old-password': ['', Validators.required],
         'new-password': ['', Validators.required],
         'new-password-confirm': ['', Validators.required],
       },
@@ -40,10 +52,16 @@ export class ChangePasswordDialogComponent implements OnInit {
     );
   }
 
-  private validateChangePassword(form: FormGroup) {
-    const newPassword = form.get('new-password');
-    const confirmPassword = form.get('new-password-confirm');
+  private validateChangePassword(formGroup: FormGroup) {
+    const newPassword = formGroup.get('new-password').value;
+    const confirmPassword = formGroup.get('new-password-confirm').value;
 
-    return newPassword === confirmPassword ? null : { notSame: true };
+    if (newPassword !== confirmPassword) {
+      formGroup.controls['new-password-confirm'].setErrors({ notMatch: true });
+    }
+  }
+
+  displayError(field: string, includes: string[] = [], excludes: string[] = []) {
+    return this.formService.displayError(this.form, this.changePasswordForm, field, includes, excludes);
   }
 }

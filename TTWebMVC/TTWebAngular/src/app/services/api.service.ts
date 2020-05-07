@@ -27,4 +27,17 @@ export class ApiService {
       )
       .pipe(shareReplay(1));
   }
+
+  public changePassword(loginUserId: number, password: string) {
+    return this.http
+      .patch(
+        `${this.settings.runtimeSettings.apiBaseUrl}/${this.settings.runtimeSettings.apiLoginUserController}/${loginUserId}`,
+        this.patchPayLoad('replace', 'password', password)
+      )
+      .pipe(shareReplay(1));
+  }
+
+  private patchPayLoad(operation: string, key: string, value: string) {
+    return { op: operation, path: key, value };
+  }
 }

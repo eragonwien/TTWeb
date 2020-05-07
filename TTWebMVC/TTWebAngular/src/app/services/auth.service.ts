@@ -54,7 +54,7 @@ export class AuthService {
 
   public passwordChangeRequired() {
     const loginUser: LoginUser = this.getLoginUser();
-    return loginUser.changePasswordRequired;
+    return loginUser && loginUser.changePasswordRequired;
   }
 
   public getInjectedRequest(req: HttpRequest<any>) {

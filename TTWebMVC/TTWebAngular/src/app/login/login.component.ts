@@ -1,11 +1,13 @@
 import { LoginUser } from './../../models/login.user';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { ChangePasswordComponent } from '../change-password/change-password.component';
 import { ChangePasswordDialogComponent } from '../change-password/change-password-dialog/change-password-dialog.component';
+import { FormService } from '../services/form.service';
+import { LoginViewModel } from 'src/models/loginViewModel';
 
 @Component({
   selector: 'app-login',
@@ -15,15 +17,17 @@ import { ChangePasswordDialogComponent } from '../change-password/change-passwor
 export class LoginComponent implements OnInit {
   form: FormGroup;
   @ViewChild(ChangePasswordComponent) changePasswordComponent: ChangePasswordComponent;
+  @ViewChild('loginForm', { static: true }) loginForm: NgForm;
 
   constructor(
     private formBuilder: FormBuilder,
     private api: ApiService,
     private auth: AuthService,
+    private formService: FormService,
     private router: Router
   ) {
     this.form = this.formBuilder.group({
-      email: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
   }
@@ -33,21 +37,20 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    const val = this.form.value;
-
-    if (val.email && val.password) {
-      this.api.login(val.email, val.password).subscribe((loginUser: LoginUser) => {
+    if (this.form.valid) {
+      const loginModel = new LoginViewModel(this.form.value);
+      this.api.login(loginModel.email, loginModel.password).subscribe((loginUser: LoginUser) => {
         this.auth.saveLoginToken(loginUser);
-        if (this.auth.passwordChangeRequired()) {
-          this.showChangePassword();
-        } else {
-          this.router.navigateByUrl('/');
-        }
+        this.router.navigateByUrl('/');
       });
     }
   }
 
   showChangePassword() {
     this.changePasswordComponent.openDialog();
+  }
+
+  displayError(field: string, includes: string[] = [], excludes: string[] = []) {
+    return this.formService.displayError(this.form, this.loginForm, field, includes, excludes);
   }
 }

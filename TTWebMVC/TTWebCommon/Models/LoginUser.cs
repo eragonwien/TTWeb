@@ -26,16 +26,10 @@ namespace TTWebCommon.Models
       public string AccessToken { get; set; }
       [Column("refresh_token")]
       public string RefreshToken { get; set; }
-      [Column("change_password")]
-      public int ChangePassword { get; set; }
+      [Column("disabled")]
+      public int DisabledFlag { get; set; }
       [NotMapped]
-      public bool ChangePasswordRequired
-      {
-         get
-         {
-            return ChangePassword == 1;
-         }
-      }
+      public bool Disabled { get; set; }
 
       public virtual ICollection<AppUser> AppUsers { get; set; }
       public virtual ICollection<LoginUserRoleMapping> LoginUserRolesMapping { get; set; }

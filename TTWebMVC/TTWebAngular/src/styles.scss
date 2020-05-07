@@ -11,3 +11,12 @@ body {
 fieldset {
   border: none !important;
 }
+
+.form-buttons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  button {
+    margin-left: 8px;
+  }
+}

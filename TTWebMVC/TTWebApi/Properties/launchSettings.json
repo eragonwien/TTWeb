@@ -1,30 +1,30 @@
-﻿{
-   "$schema": "http://json.schemastore.org/launchsettings.json",
-   "iisSettings": {
-      "windowsAuthentication": false,
-      "anonymousAuthentication": true,
-      "iisExpress": {
-         "applicationUrl": "http://localhost:58707",
-         "sslPort": 44337
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:58707",
+      "sslPort": 44337
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "api/schedulejob",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
-   },
-   "profiles": {
-      "IIS Express": {
-         "commandName": "IISExpress",
-         "launchBrowser": true,
-         "launchUrl": "api/schedulejob",
-         "environmentVariables": {
-            "ASPNETCORE_ENVIRONMENT": "Development"
-         }
+    },
+    "TTWebApi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "api/schedulejob",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "TTWebApi": {
-         "commandName": "Project",
-         "launchBrowser": true,
-         "launchUrl": "api/schedulejob",
-         "applicationUrl": "https://localhost:5001;http://localhost:5000",
-         "environmentVariables": {
-            "ASPNETCORE_ENVIRONMENT": "Development"
-         }
-      }
-   }
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+    }
+  }
 }

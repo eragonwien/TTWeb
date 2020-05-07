@@ -18,7 +18,7 @@ CREATE TABLE LoginUser (
     firstname VARCHAR(64),
     lastname VARCHAR(64),
     refresh_token VARCHAR(64),
-    change_password tinyint(1) default 0,
+    disabled tinyint(1) DEFAULT 0 NOT NULL,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 );
