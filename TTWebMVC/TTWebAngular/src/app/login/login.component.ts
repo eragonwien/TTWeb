@@ -1,4 +1,4 @@
-import { LoginUser } from './../../models/login.user';
+import { LoginUser } from '../../models/LoginUser.model';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
@@ -7,7 +7,7 @@ import { ApiService } from '../services/api.service';
 import { ChangePasswordComponent } from '../change-password/change-password.component';
 import { ChangePasswordDialogComponent } from '../change-password/change-password-dialog/change-password-dialog.component';
 import { FormService } from '../services/form.service';
-import { LoginViewModel } from 'src/models/loginViewModel';
+import { LoginViewModel } from 'src/models/login.model';
 
 @Component({
   selector: 'app-login',

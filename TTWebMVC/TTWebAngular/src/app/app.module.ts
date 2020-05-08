@@ -19,10 +19,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SettingService } from './services/setting.service';
 import { LoginActivateGuard } from './guards/logginActivate.guard';
-import { GlobalErrorHandlerService } from './guards/globalErrorHandler';
 import { TokenInterceptorService } from './services/token-interceptor.service';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ChangePasswordDialogComponent } from './change-password/change-password-dialog/change-password-dialog.component';
+import { GlobalErrorHandlerService } from './services/globalErrorHandler.service';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, HomeComponent, ChangePasswordComponent, ChangePasswordDialogComponent],

@@ -2,7 +2,7 @@ import { SettingService } from './setting.service';
 import { HttpClient, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { shareReplay, tap } from 'rxjs/operators';
-import { LoginUser } from 'src/models/login.user';
+import { LoginUser } from 'src/models/LoginUser.model';
 import { throwError } from 'rxjs';
 import { ApiService } from './api.service';
 

@@ -1,5 +1,5 @@
-import { ChangePasswordModel } from './../../../models/changePasswordModel';
-import { LoginUser } from 'src/models/login.user';
+import { ChangePasswordModel } from '../../../models/changePassword.model';
+import { LoginUser } from 'src/models/LoginUser.model';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';

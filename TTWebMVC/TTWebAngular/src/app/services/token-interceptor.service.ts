@@ -5,7 +5,7 @@ import { catchError, filter, take, retryWhen, concatMap, tap, switchMap } from '
 import { AuthService } from './auth.service';
 import { HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HttpInterceptor } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject, OperatorFunction, concat } from 'rxjs';
-import { LoginUser } from 'src/models/login.user';
+import { LoginUser } from 'src/models/LoginUser.model';
 
 @Injectable({
   providedIn: 'root',
