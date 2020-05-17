@@ -1,11 +1,11 @@
 import { ApiService } from './api.service';
 import { inject } from '@angular/core/testing';
 import { Injectable, Inject, Injector } from '@angular/core';
-import { catchError, filter, take, retryWhen, concatMap, tap, switchMap } from 'rxjs/operators';
+import { catchError, filter, take, retryWhen, concatMap, tap, switchMap, shareReplay } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HttpInterceptor } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject, OperatorFunction, concat } from 'rxjs';
-import { LoginUser } from 'src/models/LoginUser.model';
+import { AppUser } from 'src/models/appUser.model';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class TokenInterceptorService implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(this.auth.getInjectedRequest(req)).pipe(
       catchError((err) => {
-        const refreshToken = this.auth.getRefreshToken();
+        const refreshToken = this.auth.RefreshToken;
         if (err instanceof HttpErrorResponse && err.status === 401 && refreshToken) {
           return this.hanleExpiredToken(req, next);
         }
@@ -32,11 +32,12 @@ export class TokenInterceptorService implements HttpInterceptor {
       this.refreshTokenSubject.next(null);
 
       const api = this.injector.get(ApiService);
-      return api.reauthenticate(this.auth.getAccessToken(), this.auth.getRefreshToken()).pipe(
-        switchMap((user: LoginUser) => {
+      return api.reauthenticate(this.auth.AccessToken, this.auth.RefreshToken).pipe(
+        shareReplay(1),
+        switchMap((user: AppUser) => {
           this.refreshingToken = false;
           this.refreshTokenSubject.next(user.accessToken);
-          this.auth.saveLoginToken(user);
+          this.auth.saveAppUser(user);
           return next.handle(this.auth.getInjectedRequest(req));
         })
       );

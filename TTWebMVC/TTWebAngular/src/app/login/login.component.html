@@ -3,20 +3,14 @@
     <mat-form-field appearance="outline" color="accent">
       <mat-label>Email</mat-label>
       <input matInput type="email" name="email" formControlName="email" autocomplete="current-email" />
-      <mat-error *ngIf="displayError('email', ['email'], ['required'])">
-        Please enter a valid email address
-      </mat-error>
-      <mat-error *ngIf="displayError('email', ['required'])">
-        Email ist required
-      </mat-error>
+      <mat-error *ngIf="displayError('email', ['email'], ['required'])">Please enter a valid email address</mat-error>
+      <mat-error *ngIf="displayError('email', ['required'])">Email ist required</mat-error>
     </mat-form-field>
     <br />
     <mat-form-field appearance="outline" color="accent">
       <mat-label>Password</mat-label>
       <input matInput type="password" name="password" formControlName="password" autocomplete="current-password" />
-      <mat-error *ngIf="displayError('password', ['required'])">
-        Password ist required
-      </mat-error>
+      <mat-error *ngIf="displayError('password', ['required'])">Password ist required</mat-error>
     </mat-form-field>
     <br />
     <div class="form-buttons">
@@ -24,4 +18,3 @@
     </div>
   </fieldset>
 </form>
-<app-change-password></app-change-password>

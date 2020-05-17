@@ -1,8 +1,8 @@
 use ttweb;
 
-drop table if exists ScheduleJobParameter, ScheduleJobParameterType, ScheduleJob, ScheduleJobStatus, ScheduleJobType, AppUser, LoginUserRoleMapping, LoginUser, LoginUserRole;
+drop table if exists ScheduleJobParameter, ScheduleJobParameterType, ScheduleJob, ScheduleJobStatus, ScheduleJobType, AppUserRole, AppUser, Role;
 
-create table LoginUserRole (
+create table Role (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(16) UNIQUE NOT NULL,
     description VARCHAR(256),
@@ -10,7 +10,7 @@ create table LoginUserRole (
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE LoginUser (
+CREATE TABLE AppUser (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(64) UNIQUE NOT NULL,
     password VARCHAR(256) NOT NULL,
@@ -19,29 +19,18 @@ CREATE TABLE LoginUser (
     lastname VARCHAR(64),
     refresh_token VARCHAR(64),
     disabled tinyint(1) DEFAULT 0 NOT NULL,
+    facebook_user VARCHAR(128),
+    facebook_password VARCHAR(256),
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 
-create table LoginUserRoleMapping (
-	loginuserrole_id INT NOT NULL,
-    loginuser_id INT NOT NULL,
-    FOREIGN KEY (loginuserrole_id) REFERENCES loginuserrole(id),
-    FOREIGN KEY (loginuser_id) REFERENCES loginuser(id),
-    CONSTRAINT loginuserrolemapping_pk PRIMARY KEY (loginuserrole_id, loginuser_id)
-);
-
-CREATE TABLE AppUser (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-    loginuser_id INT NOT NULL,
-    email VARCHAR(64) UNIQUE NOT NULL,
-    password VARCHAR(256) NOT NULL,
-    title VARCHAR(64),
-    firstname VARCHAR(64),
-    lastname VARCHAR(64),
-    FOREIGN KEY (loginuser_id) REFERENCES loginuser(id),
-    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+create table AppUserRole (
+	role_id INT NOT NULL,
+    appuser_id INT NOT NULL,
+    FOREIGN KEY (role_id) REFERENCES role(id),
+    FOREIGN KEY (appuser_id) REFERENCES appuser(id),
+    CONSTRAINT appuserrole_pk PRIMARY KEY (role_id, appuser_id)
 );
 
 create table ScheduleJobType (

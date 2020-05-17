@@ -13,7 +13,9 @@
     </mat-toolbar>
     <mat-nav-list>
       <a mat-list-item routerLink="home">Home</a>
-      <a mat-list-item routerLink="login">Login</a>
+      <a mat-list-item routerLink="userProfile">Profile</a>
+      <a mat-list-item routerLink="login" *ngIf="!authenticated">Login</a>
+      <a mat-list-item (click)="logout()" *ngIf="authenticated">Logout</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -21,9 +23,9 @@
       <button mat-icon-button *ngIf="isMobile" style="margin-right: 20px;" (click)="sidenav.open()">
         <mat-icon>menu</mat-icon>
       </button>
-      <span>Application Title</span>
+      <span>TTWeb Test</span>
       <span style="flex: 1 1 auto;"></span>
-      <span *ngIf="!isMobile">Right Aligned Text</span>
+      <!-- <span *ngIf="!isMobile">Right Aligned Text</span> -->
     </mat-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>

@@ -1,0 +1,10 @@
+{
+  "base": "https://localhost:44337/api",
+  "authenticateRoute": "https://localhost:44337/api/appuser/authenticate",
+  "reauthenticateRoute": "https://localhost:44337/api/appuser/reauthenticate",
+  "scheduleJob": "schedulejob",
+  "scheduleJobType": "schedulejobtype",
+  "scheduleJobParamter": "schedulejobparameter",
+  "scheduleJobParameterType": "schedulejobparametertype",
+  "appUser": "appuser"
+}

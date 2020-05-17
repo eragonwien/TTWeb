@@ -1,14 +1,14 @@
-export class LoginUser {
+export class AppUser {
   id: number;
   email: string;
+  password: string;
   title: string;
   firstname: string;
   lastname: string;
   accessToken: string;
   refreshToken: string;
-  changePasswordRequired: boolean;
 
-  public constructor(init?: Partial<LoginUser>) {
+  public constructor(init?: Partial<AppUser>) {
     Object.assign(this, init);
   }
 }

@@ -13,7 +13,6 @@ namespace TTWebCommon.Models
       }
 
       public DbSet<AppUser> AppUserSet { get; set; }
-      public DbSet<LoginUser> LoginUserSet { get; set; }
       public DbSet<ScheduleJob> ScheduleJobSet { get; set; }
       public DbSet<ScheduleJobType> ScheduleJobTypeSet { get; set; }
       public DbSet<ScheduleJobParameter> ScheduleJobParameterSet { get; set; }
@@ -21,20 +20,20 @@ namespace TTWebCommon.Models
 
       protected override void OnModelCreating(ModelBuilder modelBuilder)
       {
-         modelBuilder.Entity<LoginUserRoleMapping>()
-            .HasKey(rm => new { rm.LoginUserId, rm.LoginUserRoleId });
+         modelBuilder.Entity<AppUserRole>()
+            .HasKey(rm => new { rm.AppUserId, rm.RoleId });
 
-         modelBuilder.Entity<LoginUserRoleMapping>()
-            .HasOne(rm => rm.LoginUser)
-            .WithMany(u => u.LoginUserRolesMapping)
-            .HasForeignKey(rm => rm.LoginUserId);
+         modelBuilder.Entity<AppUserRole>()
+            .HasOne(rm => rm.AppUser)
+            .WithMany(u => u.AppUserRoles)
+            .HasForeignKey(rm => rm.AppUserId);
 
-         modelBuilder.Entity<LoginUserRoleMapping>()
-            .HasOne(rm => rm.LoginUserRole)
-            .WithMany(u => u.LoginUsersRoleMapping)
-            .HasForeignKey(rm => rm.LoginUserId);
+         modelBuilder.Entity<AppUserRole>()
+            .HasOne(rm => rm.Role)
+            .WithMany(u => u.AppUserRoles)
+            .HasForeignKey(rm => rm.AppUserId);
 
-         modelBuilder.Entity<LoginUserRole>()
+         modelBuilder.Entity<Role>()
             .Property(r => r.Name)
             .HasConversion(r => r.ToString(), r => (LoginUserRoleEnum)Enum.Parse(typeof(LoginUserRoleEnum), r));
 

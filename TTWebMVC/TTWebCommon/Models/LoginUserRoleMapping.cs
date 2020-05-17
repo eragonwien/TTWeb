@@ -5,13 +5,13 @@ using System.Text;
 
 namespace TTWebCommon.Models
 {
-   public class LoginUserRoleMapping
+   public class AppUserRole
    {
-      [Column("loginuser_id")]
-      public int LoginUserId { get; set; }
-      public LoginUser LoginUser { get; set; }
-      [Column("loginuserrole_id")]
-      public int LoginUserRoleId { get; set; }
-      public LoginUserRole LoginUserRole { get; set; }
+      [Column("appuser_id")]
+      public int AppUserId { get; set; }
+      public AppUser AppUser { get; set; }
+      [Column("role_id")]
+      public int RoleId { get; set; }
+      public Role Role { get; set; }
    }
 }

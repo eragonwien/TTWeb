@@ -2,7 +2,7 @@ import { SettingService } from './setting.service';
 import { HttpClient, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { shareReplay, tap } from 'rxjs/operators';
-import { LoginUser } from 'src/models/LoginUser.model';
+import { AppUser } from 'src/models/appUser.model';
 import { throwError } from 'rxjs';
 import { ApiService } from './api.service';
 
@@ -12,53 +12,28 @@ import { ApiService } from './api.service';
 export class AuthService {
   private accessTokenStore = 'access_token';
   private refreshTokenStore = 'refresh_token';
-  private loginUserIdStore = 'login_id';
-  private loginUserStore = 'login_user';
+  private appUserIdStore = 'login_id';
+  private appUserStore = 'login_user';
   constructor() {}
 
-  public saveLoginToken(loginUser: LoginUser) {
-    if (loginUser) {
-      localStorage.setItem(this.loginUserStore, JSON.stringify(loginUser));
-      localStorage.setItem(this.loginUserIdStore, loginUser.id.toString());
-      localStorage.setItem(this.accessTokenStore, loginUser.accessToken);
-      localStorage.setItem(this.refreshTokenStore, loginUser.refreshToken);
+  public saveAppUser(appUser: AppUser) {
+    if (appUser) {
+      localStorage.setItem(this.appUserStore, JSON.stringify(appUser));
+      localStorage.setItem(this.appUserIdStore, appUser.id.toString());
+      localStorage.setItem(this.accessTokenStore, appUser.accessToken);
+      localStorage.setItem(this.refreshTokenStore, appUser.refreshToken);
     }
   }
 
   public logout() {
     localStorage.removeItem(this.accessTokenStore);
     localStorage.removeItem(this.refreshTokenStore);
-    localStorage.removeItem(this.loginUserIdStore);
-    localStorage.removeItem(this.loginUserStore);
-  }
-
-  public isLoggedIn() {
-    return localStorage.getItem(this.accessTokenStore) !== null && localStorage.getItem(this.loginUserStore) !== null;
-  }
-
-  public isLoggedOut() {
-    return !this.isLoggedIn;
-  }
-
-  public getAccessToken() {
-    return localStorage.getItem(this.accessTokenStore);
-  }
-
-  public getRefreshToken() {
-    return localStorage.getItem(this.refreshTokenStore);
-  }
-
-  public getLoginUser() {
-    return JSON.parse(localStorage.getItem(this.loginUserStore));
-  }
-
-  public passwordChangeRequired() {
-    const loginUser: LoginUser = this.getLoginUser();
-    return loginUser && loginUser.changePasswordRequired;
+    localStorage.removeItem(this.appUserIdStore);
+    localStorage.removeItem(this.appUserStore);
   }
 
   public getInjectedRequest(req: HttpRequest<any>) {
-    const token = this.getAccessToken();
+    const token = this.AccessToken;
     if (!token) {
       return req;
     }
@@ -67,5 +42,21 @@ export class AuthService {
         Authorization: 'Bearer ' + token,
       },
     });
+  }
+
+  public get AppUser(): AppUser {
+    return JSON.parse(localStorage.getItem(this.appUserStore));
+  }
+
+  public get Authenticated(): boolean {
+    return localStorage.getItem(this.accessTokenStore) !== null && localStorage.getItem(this.appUserStore) !== null;
+  }
+
+  public get AccessToken(): string {
+    return localStorage.getItem(this.accessTokenStore);
+  }
+
+  public get RefreshToken(): string {
+    return localStorage.getItem(this.refreshTokenStore);
   }
 }

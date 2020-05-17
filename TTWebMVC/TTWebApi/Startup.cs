@@ -26,19 +26,21 @@ namespace TTWebApi
 {
    public class Startup
    {
-      public Startup(IConfiguration configuration)
+      public Startup(IConfiguration configuration, IHostingEnvironment env)
       {
          Configuration = configuration;
+         Environment = env;
       }
 
       public IConfiguration Configuration { get; }
+      public IHostingEnvironment Environment { get; set; }
 
       // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
       {
          services.AddCors();
          services.AddDbContext<TTWebDbContext>(o => o.UseMySQL(Configuration.GetConnectionString("TTWeb")));
-         services.AddScoped<ILoginUserService, LoginUserService>();
+         services.AddScoped<IAppUserService, AppUserService>();
          services.AddScoped<IAuthenticationService, AuthenticationService>();
 
          var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -65,10 +67,10 @@ namespace TTWebApi
          services
             .AddMvc(o =>
             {
-               var policy = new AuthorizationPolicyBuilder()
-                  .RequireAuthenticatedUser()
-                  .Build();
-               o.Filters.Add(new AuthorizeFilter());
+               if (!Environment.IsDevelopment())
+               {
+                  o.Filters.Add(new AuthorizeFilter());
+               }
             })
             .AddJsonOptions(o =>
             {

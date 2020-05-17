@@ -3,6 +3,7 @@ import { LoginComponent } from './login/login.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginActivateGuard } from './guards/logginActivate.guard';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 const routes: Routes = [
   {
@@ -13,6 +14,11 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
+    canActivate: [LoginActivateGuard],
+  },
+  {
+    path: 'userProfile',
+    component: UserProfileComponent,
     canActivate: [LoginActivateGuard],
   },
   {

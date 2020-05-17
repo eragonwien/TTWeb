@@ -19,7 +19,14 @@ namespace TTWebApi
       public static void Main(string[] args)
       {
          var host = CreateWebHostBuilder(args).Build();
-         InitializeDatabase(host);
+         try
+         {
+            InitializeDatabase(host);
+         }
+         catch (Exception ex)
+         {
+            throw ex;
+         }
          host.Run();
       }
 

@@ -8,8 +8,16 @@ body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
+
 fieldset {
-  border: none !important;
+  width: 100%;
+  max-width: 500px;
+  border: none;
+}
+
+mat-form-field {
+  width: 100%;
+  max-width: 500px;
 }
 
 .form-buttons {

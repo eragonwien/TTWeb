@@ -23,9 +23,10 @@ import { TokenInterceptorService } from './services/token-interceptor.service';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ChangePasswordDialogComponent } from './change-password/change-password-dialog/change-password-dialog.component';
 import { GlobalErrorHandlerService } from './services/globalErrorHandler.service';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HomeComponent, ChangePasswordComponent, ChangePasswordDialogComponent],
+  declarations: [AppComponent, LoginComponent, HomeComponent, ChangePasswordComponent, ChangePasswordDialogComponent, UserProfileComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.V3.Pages.Account.Internal;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TTWebApi.Models;
+using TTWebApi.Services;
 using TTWebCommon.Models;
 
 namespace TTWebApi.Controllers
@@ -13,25 +19,25 @@ namespace TTWebApi.Controllers
    [ApiController]
    public class AppUserController : ControllerBase
    {
-      private readonly TTWebDbContext _context;
+      private readonly IAppUserService appUserService;
 
-      public AppUserController(TTWebDbContext context)
+      public AppUserController(IAppUserService appUserService)
       {
-         _context = context;
+         this.appUserService = appUserService;
       }
 
-      // GET: api/AppUser
+      // GET: api/appUser
       [HttpGet]
       public async Task<ActionResult<IEnumerable<AppUser>>> GetAppUserSet()
       {
-         return await _context.AppUserSet.ToListAsync();
+         return await appUserService.GetAll();
       }
 
       // GET: api/AppUser/5
       [HttpGet("{id}")]
       public async Task<ActionResult<AppUser>> GetAppUser(int id)
       {
-         var appUser = await _context.AppUserSet.FindAsync(id);
+         var appUser = await appUserService.GetOne(id);
 
          if (appUser == null)
          {
@@ -39,67 +45,70 @@ namespace TTWebApi.Controllers
          }
 
          return appUser;
-      }
-
-      // PUT: api/AppUser/5
-      [HttpPut("{id}")]
-      public async Task<IActionResult> PutAppUser(int id, AppUser appUser)
-      {
-         if (id != appUser.Id)
-         {
-            return BadRequest();
-         }
-
-         _context.Entry(appUser).State = EntityState.Modified;
-
-         try
-         {
-            await _context.SaveChangesAsync();
-         }
-         catch (DbUpdateConcurrencyException)
-         {
-            if (!AppUserExists(id))
-            {
-               return NotFound();
-            }
-            else
-            {
-               throw;
-            }
-         }
-
-         return NoContent();
       }
 
       // POST: api/AppUser
       [HttpPost]
       public async Task<ActionResult<AppUser>> PostAppUser(AppUser appUser)
       {
-         _context.AppUserSet.Add(appUser);
-         await _context.SaveChangesAsync();
+         await appUserService.Create(appUser);
 
-         return CreatedAtAction("GetAppUser", new { id = appUser.Id }, appUser);
+         return CreatedAtAction(nameof(GetAppUser), new { id = appUser.Id }, appUser);
+      }
+
+      [HttpPut("{id}")]
+      public async Task<ActionResult<AppUser>> EditAppUser(int id, [FromBody]EditAppUserModel editModel)
+      {
+         if (editModel == null || id != editModel.Id || !await appUserService.Exist(id))
+         {
+            return BadRequest(id);
+         }
+         await appUserService.UpdateProfile(editModel.ToAppUser());
+         return Ok(editModel);
       }
 
       // DELETE: api/AppUser/5
       [HttpDelete("{id}")]
       public async Task<ActionResult<AppUser>> DeleteAppUser(int id)
       {
-         var appUser = await _context.AppUserSet.FindAsync(id);
+         var appUser = await appUserService.GetOne(id);
          if (appUser == null)
          {
             return NotFound();
          }
-
-         _context.AppUserSet.Remove(appUser);
-         await _context.SaveChangesAsync();
+         await appUserService.Remove(appUser);
 
          return appUser;
       }
 
-      private bool AppUserExists(int id)
+      [AllowAnonymous]
+      [HttpPost("authenticate")]
+      public async Task<IActionResult> Authenticate([FromBody] LoginViewModel loginModel)
       {
-         return _context.AppUserSet.Any(e => e.Id == id);
+         var user = await appUserService.Authenticate(loginModel.Email, loginModel.Password);
+         if (user == null)
+         {
+            return BadRequest();
+         }
+         return Ok(user);
+      }
+
+      [AllowAnonymous]
+      [HttpPost("reauthenticate")]
+      public async Task<IActionResult> Reauthenticate([FromBody] ReauthenticationViewModel model)
+      {
+         var user = await appUserService.Reauthenticate(model.AccessToken, model.RefreshToken);
+         if (user == null)
+         {
+            return BadRequest();
+         }
+         return Ok(user);
+      }
+
+      [HttpPost("ping")]
+      public IActionResult Ping()
+      {
+         return Ok();
       }
    }
 }

@@ -1,0 +1,32 @@
+<form id="user-profile-form" [formGroup]="form" #userProfileForm="ngForm">
+  <fieldset>
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Title</mat-label>
+      <input matInput type="text" name="title" formControlName="title" autocomplete="title" />
+      <mat-error *ngIf="displayError('title', ['required'])">Title ist required</mat-error>
+    </mat-form-field>
+    <br />
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Firstname</mat-label>
+      <input matInput type="text" name="firstname" formControlName="firstname" autocomplete="firstname" />
+      <mat-error *ngIf="displayError('firstname', ['required'])">Firstname ist required</mat-error>
+    </mat-form-field>
+    <br />
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Lastname</mat-label>
+      <input matInput type="text" name="lastname" formControlName="lastname" autocomplete="lastname" />
+      <mat-error *ngIf="displayError('lastname', ['required'])">Firstname ist required</mat-error>
+    </mat-form-field>
+    <br />
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" name="email" formControlName="email" autocomplete="email" />
+      <mat-error *ngIf="displayError('email', ['email'], ['required'])">Please enter a valid email address</mat-error>
+      <mat-error *ngIf="displayError('email', ['required'])">Email ist required</mat-error> 
+    </mat-form-field>
+    <br />
+    <div class="form-buttons">
+      <button mat-raised-button color="primary" (click)="save()">Save</button>
+    </div>
+  </fieldset>
+</form>

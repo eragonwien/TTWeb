@@ -1,4 +1,5 @@
-import { LoginUser } from '../../models/LoginUser.model';
+import { shareReplay } from 'rxjs/operators';
+import { AppUser } from '../../models/appUser.model';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
@@ -39,10 +40,13 @@ export class LoginComponent implements OnInit {
   login() {
     if (this.form.valid) {
       const loginModel = new LoginViewModel(this.form.value);
-      this.api.login(loginModel.email, loginModel.password).subscribe((loginUser: LoginUser) => {
-        this.auth.saveLoginToken(loginUser);
-        this.router.navigateByUrl('/');
-      });
+      this.api
+        .login(loginModel.email, loginModel.password)
+        .pipe(shareReplay(1))
+        .subscribe((appUser: AppUser) => {
+          this.auth.saveAppUser(appUser);
+          this.router.navigateByUrl('/');
+        });
     }
   }
 

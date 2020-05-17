@@ -1,3 +1,4 @@
+import { AppUser } from 'src/models/appUser.model';
 import { shareReplay } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -10,34 +11,22 @@ export class ApiService {
   constructor(private http: HttpClient, private settings: SettingService) {}
 
   public login(email: string, password: string) {
-    return this.http.post(this.settings.runtimeSettings.apiAuthenticateRoute, { email, password }).pipe(shareReplay(1));
+    return this.http.post(this.settings.api.authenticateRoute, { email, password });
   }
 
   public reauthenticate(accessToken: string, refreshToken: string) {
-    return this.http
-      .post(this.settings.runtimeSettings.apiReauthenticateRoute, { accessToken, refreshToken })
-      .pipe(shareReplay(1));
+    return this.http.post(this.settings.api.reauthenticateRoute, { accessToken, refreshToken });
   }
 
   public ping() {
-    return this.http
-      .post(
-        `${this.settings.runtimeSettings.apiBaseUrl}/${this.settings.runtimeSettings.apiLoginUserController}/ping`,
-        {}
-      )
-      .pipe(shareReplay(1));
+    return this.http.post(this.apiPathJoin([this.settings.api.base, this.settings.api.appUser, 'ping']), {});
   }
 
-  public changePassword(loginUserId: number, password: string) {
-    return this.http
-      .patch(
-        `${this.settings.runtimeSettings.apiBaseUrl}/${this.settings.runtimeSettings.apiLoginUserController}/${loginUserId}`,
-        this.patchPayLoad('replace', 'password', password)
-      )
-      .pipe(shareReplay(1));
+  public saveAppUser(appUser: AppUser) {
+    return this.http.put(this.apiPathJoin([this.settings.api.base, this.settings.api.appUser, appUser.id]), appUser);
   }
 
-  private patchPayLoad(operation: string, key: string, value: string) {
-    return { op: operation, path: key, value };
+  private apiPathJoin(parts: any[]) {
+    return parts.join('/');
   }
 }

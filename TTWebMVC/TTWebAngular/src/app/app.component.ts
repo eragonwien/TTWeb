@@ -38,4 +38,13 @@ export class AppComponent {
       this.forceHidden = event.url === '/login';
     }
   }
+
+  logout() {
+    this.auth.logout();
+    this.router.navigate(['login']);
+  }
+
+  public get authenticated(): boolean {
+    return this.auth.Authenticated;
+  }
 }

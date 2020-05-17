@@ -1,5 +1,5 @@
 import { ChangePasswordModel } from '../../../models/changePassword.model';
-import { LoginUser } from 'src/models/LoginUser.model';
+import { AppUser } from 'src/models/appUser.model';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
@@ -15,7 +15,7 @@ import { ApiService } from 'src/app/services/api.service';
 })
 export class ChangePasswordDialogComponent implements OnInit {
   form: FormGroup;
-  loginUser: LoginUser;
+  appUser: AppUser;
   @ViewChild('changePasswordForm', { static: true }) changePasswordForm: NgForm;
   constructor(
     public dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
@@ -24,7 +24,7 @@ export class ChangePasswordDialogComponent implements OnInit {
     private formService: FormService,
     private api: ApiService
   ) {
-    this.loginUser = this.auth.getLoginUser();
+    this.appUser = this.auth.AppUser;
     this.initiateForm();
   }
 
@@ -43,7 +43,7 @@ export class ChangePasswordDialogComponent implements OnInit {
   private initiateForm() {
     this.form = this.formBuilder.group(
       {
-        id: [this.loginUser.id, Validators.required],
+        id: [this.appUser.id, Validators.required],
         'old-password': ['', Validators.required],
         'new-password': ['', Validators.required],
         'new-password-confirm': ['', Validators.required],

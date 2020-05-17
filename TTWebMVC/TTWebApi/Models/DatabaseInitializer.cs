@@ -9,16 +9,16 @@ namespace TTWebApi.Models
    {
       public static void Initialize(TTWebDbContext dbContext, IAuthenticationService authenticationService)
       {
-         InitializeLoginUser(dbContext, authenticationService);
+         InitializeAppUser(dbContext, authenticationService);
       }
 
-      private static void InitializeLoginUser(TTWebDbContext dbContext, IAuthenticationService authenticationService)
+      private static void InitializeAppUser(TTWebDbContext dbContext, IAuthenticationService authenticationService)
       {
-         if (dbContext.LoginUserSet.Any())
+         if (dbContext.AppUserSet.Any())
          {
             return;
          }
-         var loginUser = new LoginUser
+         var appUser = new AppUser
          {
             Email = "tester@test.com",
             Password = authenticationService.GetEncodedPassword("1234"),
@@ -26,7 +26,7 @@ namespace TTWebApi.Models
             Lastname = "Tester",
             Title = "Dr."
          };
-         dbContext.LoginUserSet.Add(loginUser);
+         dbContext.AppUserSet.Add(appUser);
          dbContext.SaveChanges();
       }
    }

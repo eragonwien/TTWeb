@@ -1,31 +1,47 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
 namespace TTWebCommon.Models
 {
    [Table("AppUser")]
    public class AppUser
    {
+      [Required]
       public int Id { get; set; }
       [Required]
+      [DataType(DataType.EmailAddress)]
       public string Email { get; set; }
       [Required]
+      [JsonIgnore]
       [DataType(DataType.Password)]
       public string Password { get; set; }
-      [Required]
+      public string Title { get; set; }
       public string Firstname { get; set; }
-      [Required]
       public string Lastname { get; set; }
-
-      [Column("loginuser_id")]
-      public int LoginUserId { get; set; }
-
-      public LoginUser LoginUser { get; set; }
-
+      [NotMapped]
+      public string AccessToken { get; set; }
+      [Column("refresh_token")]
+      public string RefreshToken { get; set; }
+      [Column("disabled")]
+      public int DisabledFlag { get; set; }
+      [NotMapped]
+      public bool Disabled { get; set; }
+      [Column("facebook_user")]
+      public string FacebookUser { get; set; }
+      [Column("facebook_password")]
+      [JsonIgnore]
+      public string FacebookPassword { get; set; }
+      public virtual ICollection<AppUserRole> AppUserRoles { get; set; }
       public virtual ICollection<ScheduleJob> ScheduleJobs { get; set; }
+
+      public AppUser ClearPassword()
+      {
+         Password = null;
+         return this;
+      }
    }
 }
