@@ -1,4 +1,4 @@
-<form id="user-profile-form" [formGroup]="form" #userProfileForm="ngForm">
+<!-- <form id="user-profile-form" [formGroup]="form" #userProfileForm="ngForm">
   <fieldset>
     <mat-form-field appearance="outline" color="accent">
       <mat-label>Title</mat-label>
@@ -29,4 +29,99 @@
       <button mat-raised-button color="primary" (click)="save()">Save</button>
     </div>
   </fieldset>
-</form>
+</form> -->
+<div class="section">
+  <div class="container">
+    <form id="user-profile-form" [formGroup]="form" #userProfileForm="ngForm">
+      <fieldset>
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Name</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <p class="control is-expanded has-icons-left">
+                <input class="input" type="text" placeholder="Firstname" formControlName="firstname" />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faUser"></fa-icon>
+                </span>
+              </p>
+              <p class="help is-danger" *ngIf="displayError('firstname', ['required'])">Firstname ist required</p>
+            </div>
+            <div class="field">
+              <p class="control is-expanded has-icons-left">
+                <input class="input" type="text" placeholder="Lastname" formControlName="lastname" />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faUser"></fa-icon>
+                </span>
+              </p>
+              <p class="help is-danger" *ngIf="displayError('lastname', ['required'])">Lastname ist required</p>
+            </div>
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Email</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <p class="control is-expanded has-icons-left">
+                <input class="input" type="email" placeholder="Email" formControlName="email" />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faEnvelope"></fa-icon>
+                </span>
+              </p>
+              <p class="help is-danger" *ngIf="displayError('email', ['email'], ['required'])">
+                Please enter a valid email address
+              </p>
+              <p class="help is-danger" *ngIf="displayError('email', ['required'])">Email ist required</p>
+            </div>
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Facebook</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <p class="control is-expanded has-icons-left">
+                <input class="input" type="text" placeholder="Facebook user" formControlName="facebookUser" />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faUser"></fa-icon>
+                </span>
+              </p>
+              <p class="help is-danger" *ngIf="displayError('facebookUser', ['email'], ['required'])">
+                Please enter a valid email address
+              </p>
+            </div>
+            <div class="field">
+              <p class="control is-expanded has-icons-left">
+                <input
+                  class="input"
+                  type="password"
+                  placeholder="Facebook password"
+                  formControlName="facebookPassword"
+                />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faKey"></fa-icon>
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-label">
+            <!-- Left empty for spacing -->
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <button class="button is-primary" (click)="save()">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>

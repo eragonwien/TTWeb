@@ -1,0 +1,36 @@
+<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item">
+      <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
+    </a>
+
+    <div
+      role="button"
+      class="navbar-burger burger"
+      [class.is-active]="menuActive"
+      aria-label="menu"
+      aria-expanded="false"
+      (click)="toggleNavbarMenu()"
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <div class="navbar-menu" [class.is-active]="menuActive">
+    <div class="navbar-start">
+      <a class="navbar-item" *ngIf="authenticated" routerLink="home" (click)="closeNavbarMenu()">Home</a>
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item has-dropdown is-hoverable" *ngIf="authenticated">
+        <div class="navbar-link">{{ userGreeting }}</div>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" routerLink="userProfile" (click)="closeNavbarMenu()">Profile</a>
+          <a class="navbar-item" (click)="logout(); closeNavbarMenu()">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

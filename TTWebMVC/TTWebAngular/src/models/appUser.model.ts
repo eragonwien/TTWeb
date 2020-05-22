@@ -7,6 +7,9 @@ export class AppUser {
   lastname: string;
   accessToken: string;
   refreshToken: string;
+  disabled: boolean;
+  facebookUser: string;
+  facebookPassword: string;
 
   public constructor(init?: Partial<AppUser>) {
     Object.assign(this, init);

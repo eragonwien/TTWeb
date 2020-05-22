@@ -5,8 +5,6 @@ import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
-import { ChangePasswordComponent } from '../change-password/change-password.component';
-import { ChangePasswordDialogComponent } from '../change-password/change-password-dialog/change-password-dialog.component';
 import { FormService } from '../services/form.service';
 import { LoginViewModel } from 'src/models/login.model';
 
@@ -17,7 +15,6 @@ import { LoginViewModel } from 'src/models/login.model';
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
-  @ViewChild(ChangePasswordComponent) changePasswordComponent: ChangePasswordComponent;
   @ViewChild('loginForm', { static: true }) loginForm: NgForm;
 
   constructor(
@@ -48,10 +45,6 @@ export class LoginComponent implements OnInit {
           this.router.navigateByUrl('/');
         });
     }
-  }
-
-  showChangePassword() {
-    this.changePasswordComponent.openDialog();
   }
 
   displayError(field: string, includes: string[] = [], excludes: string[] = []) {

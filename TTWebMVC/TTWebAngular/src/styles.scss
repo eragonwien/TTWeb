@@ -1,30 +1,20 @@
-/* You can add global styles to this file, and also import other style files */
+@charset "utf-8";
 
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-}
+// Import a Google Font
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+
+// Update Bulma's global variables
+$family-sans-serif: 'Nunito', sans-serif;
+
+// Import only what you need from Bulma
+@import '../node_modules/bulma/sass/utilities/_all';
+@import '../node_modules/bulma/sass/base/_all';
+@import '../node_modules/bulma/sass/elements/_all';
+@import '../node_modules/bulma/sass/form/_all';
+@import '../node_modules/bulma/sass/components/_all';
+@import '../node_modules/bulma/sass/grid/_all';
+@import '../node_modules/bulma/sass/layout/_all';
 
 fieldset {
-  width: 100%;
-  max-width: 500px;
-  border: none;
-}
-
-mat-form-field {
-  width: 100%;
-  max-width: 500px;
-}
-
-.form-buttons {
-  margin-top: 10px;
-  display: flex;
-  justify-content: flex-end;
-  button {
-    margin-left: 8px;
-  }
+  max-width: 90%;
 }

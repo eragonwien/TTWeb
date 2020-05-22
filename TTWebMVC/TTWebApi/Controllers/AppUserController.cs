@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.V3.Pages.Account.Internal;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.EntityFrameworkCore;
 using TTWebApi.Models;
 using TTWebApi.Services;
@@ -59,9 +60,24 @@ namespace TTWebApi.Controllers
       [HttpPut("{id}")]
       public async Task<ActionResult<AppUser>> EditAppUser(int id, [FromBody]EditAppUserModel editModel)
       {
-         if (editModel == null || id != editModel.Id || !await appUserService.Exist(id))
+         if (editModel == null)
+            return BadRequest();
+
+         if (id != editModel.Id)
+            ModelState.AddModelError("", "ID does not match");
+
+         var appUser = await appUserService.GetOne(id);
+         if (appUser == null)
+            ModelState.AddModelError("", string.Format("User {0} not found", id));
+               
+         if (appUser != null && appUser.Email != editModel.Email && !appUserService.IsEmailAvailable(editModel.Email))
          {
-            return BadRequest(id);
+            ModelState.AddModelError(nameof(EditAppUserModel.Email), string.Format("Email {0} is not available", editModel.Email));
+         }
+
+         if (!ModelState.IsValid)
+         {
+            return BadRequest(ModelState);
          }
          await appUserService.UpdateProfile(editModel.ToAppUser());
          return Ok(editModel);

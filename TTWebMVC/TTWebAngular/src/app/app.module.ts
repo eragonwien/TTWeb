@@ -7,26 +7,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatListModule } from '@angular/material/list';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatInputModule } from '@angular/material/input';
-import { MatDialogModule } from '@angular/material/dialog';
 import { SettingService } from './services/setting.service';
 import { LoginActivateGuard } from './guards/logginActivate.guard';
 import { TokenInterceptorService } from './services/token-interceptor.service';
-import { ChangePasswordComponent } from './change-password/change-password.component';
-import { ChangePasswordDialogComponent } from './change-password/change-password-dialog/change-password-dialog.component';
 import { GlobalErrorHandlerService } from './services/globalErrorHandler.service';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { ApiService } from './services/api.service';
+import { AuthService } from './services/auth.service';
+import { FormService } from './services/form.service';
+import { NavbarComponent } from './navbar/navbar.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HomeComponent, ChangePasswordComponent, ChangePasswordDialogComponent, UserProfileComponent],
+  declarations: [AppComponent, LoginComponent, HomeComponent, UserProfileComponent, NavbarComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -34,16 +27,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatSidenavModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatListModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatInputModule,
-    MatDialogModule,
+    FontAwesomeModule,
   ],
   providers: [
     {
@@ -66,6 +50,10 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
       useClass: TokenInterceptorService,
       multi: true,
     },
+    ApiService,
+    AuthService,
+    FormService,
+    SettingService,
   ],
   bootstrap: [AppComponent],
 })

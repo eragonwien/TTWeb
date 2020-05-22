@@ -32,6 +32,7 @@ namespace TTWebApi.Services
       Task<bool> Exist(int id);
       Task<bool> Exist(string username);
       Task UpdateProfile(AppUser appUser);
+      bool IsEmailAvailable(string email);
    }
    public class AppUserService : IAppUserService
    {
@@ -209,6 +210,11 @@ namespace TTWebApi.Services
          db.Entry(appUser).Property(u => u.Lastname).IsModified = true;
          db.Entry(appUser).Property(u => u.Email).IsModified = true;
          return db.SaveChangesAsync();
+      }
+
+      public bool IsEmailAvailable(string email)
+      {
+         return db.AppUserSet.Any(u => u.Email == email);
       }
    }
 }

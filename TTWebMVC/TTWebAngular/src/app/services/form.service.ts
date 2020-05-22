@@ -1,3 +1,4 @@
+import { ModelStateError } from './../../models/modelstate.error';
 import { FormGroup, NgForm } from '@angular/forms';
 import { Injectable } from '@angular/core';
 
@@ -35,5 +36,9 @@ export class FormService {
       return includeError && excludeError;
     }
     return false;
+  }
+
+  handleModelStateError(errors: ModelStateError[]) {
+    console.log(errors);
   }
 }
