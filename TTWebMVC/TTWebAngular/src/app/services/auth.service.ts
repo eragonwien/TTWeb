@@ -6,9 +6,7 @@ import { AppUser } from 'src/models/appUser.model';
 import { throwError } from 'rxjs';
 import { ApiService } from './api.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AuthService {
   private accessTokenStore = 'access_token';
   private refreshTokenStore = 'refresh_token';

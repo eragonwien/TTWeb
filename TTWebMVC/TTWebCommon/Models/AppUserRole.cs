@@ -5,6 +5,7 @@ using System.Text;
 
 namespace TTWebCommon.Models
 {
+   [Table("AppUserRole")]
    public class AppUserRole
    {
       [Column("appuser_id")]

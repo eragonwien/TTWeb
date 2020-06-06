@@ -8,4 +8,19 @@ namespace TTWebCommon.Models
 	{
 		JWT
 	}
+
+	public enum ScheduleJobType
+	{
+
+	}
+
+	public enum IntervalType
+   {
+
+   }
+
+   public enum ScheduleJobStatus
+   {
+		NEW
+   }
 }

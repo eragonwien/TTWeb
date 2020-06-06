@@ -1,6 +1,7 @@
 import { Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-navbar',
@@ -9,6 +10,8 @@ import { AuthService } from '../services/auth.service';
 })
 export class NavbarComponent implements OnInit {
   menuActive = false;
+  userDropdownActive = false;
+  faUser = faUser;
   constructor(private auth: AuthService, private router: Router) {}
 
   ngOnInit(): void {}

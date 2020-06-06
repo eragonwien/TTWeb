@@ -71,9 +71,9 @@ namespace TTWebWorker
          }
       }
 
-      private async Task<ScheduleJob> GetJob()
+      private async Task<ScheduleJobDef> GetJob()
       {
-         return await db.ScheduleJobSet
+         return await db.ScheduleJobDetailSet
             .Include(j => j.AppUser)
             .Include(j => j.Parameters).ThenInclude(p => p.Type)
             .Include(j => j.Type)

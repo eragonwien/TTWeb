@@ -4,9 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SettingService } from './setting.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ApiService {
   constructor(private http: HttpClient, private settings: SettingService) {}
 
@@ -24,6 +22,10 @@ export class ApiService {
 
   public saveAppUser(appUser: AppUser) {
     return this.http.put(this.apiPathJoin([this.settings.api.base, this.settings.api.appUser, appUser.id]), appUser);
+  }
+
+  getScheduleList() {
+    return this.http.get(this.apiPathJoin([this.settings.api.base, this.settings.api.scheduleJobDef]));
   }
 
   private apiPathJoin(parts: any[]) {

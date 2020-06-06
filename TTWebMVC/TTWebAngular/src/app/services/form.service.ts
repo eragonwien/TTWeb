@@ -1,10 +1,8 @@
-import { ModelStateError } from './../../models/modelstate.error';
+import { concat } from 'rxjs';
 import { FormGroup, NgForm } from '@angular/forms';
 import { Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class FormService {
   constructor() {}
   displayError(
@@ -38,7 +36,10 @@ export class FormService {
     return false;
   }
 
-  handleModelStateError(errors: ModelStateError[]) {
-    console.log(errors);
+  getModelStateErrors(modelStateError: object) {
+    if (!modelStateError) {
+      return [];
+    }
+    return [].concat.apply([], Object.values(modelStateError));
   }
 }

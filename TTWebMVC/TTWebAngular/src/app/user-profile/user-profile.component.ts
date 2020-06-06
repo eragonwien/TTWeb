@@ -6,7 +6,6 @@ import { AppUser } from 'src/models/appUser.model';
 import { ApiService } from '../services/api.service';
 import { HelperService } from '../services/helper.service';
 import { FormService } from '../services/form.service';
-import { ModelStateError } from 'src/models/modelstate.error';
 import { faUser, faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -18,6 +17,7 @@ import { faUser, faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons';
 export class UserProfileComponent implements OnInit {
   form: FormGroup;
   appUser: AppUser;
+  errors: string[] = [];
   @ViewChild('userProfileForm', { static: true }) userProfileForm: NgForm;
 
   faUser = faUser;
@@ -38,7 +38,8 @@ export class UserProfileComponent implements OnInit {
 
   save() {
     if (this.form.valid) {
-      this.api.saveAppUser(this.appUser).subscribe(
+      const editAppUser = new AppUser(this.form.value);
+      this.api.saveAppUser(editAppUser).subscribe(
         (appUser: AppUser) => this.onSaveSuccess(appUser),
         (err) => this.onSaveError(err)
       );
@@ -51,7 +52,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   private onSaveError(err: HttpErrorResponse) {
-    this.formService.handleModelStateError(err.error as ModelStateError[]);
+    this.errors = this.formService.getModelStateErrors(err.error);
   }
 
   private loadAppUser() {
@@ -60,6 +61,7 @@ export class UserProfileComponent implements OnInit {
 
   private initializeForm() {
     this.form = this.formBuilder.group({
+      id: [this.appUser.id, [Validators.required]],
       firstname: [this.appUser.firstname, [Validators.required]],
       lastname: [this.appUser.lastname, [Validators.required]],
       email: [this.appUser.email, [Validators.required, Validators.email]],
@@ -70,5 +72,9 @@ export class UserProfileComponent implements OnInit {
 
   displayError(field: string, includes: string[] = [], excludes: string[] = []) {
     return this.formService.displayError(this.form, this.userProfileForm, field, includes, excludes);
+  }
+
+  clearNotifications() {
+    this.errors = [];
   }
 }

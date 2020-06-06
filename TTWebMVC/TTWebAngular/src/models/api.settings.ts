@@ -2,7 +2,8 @@ export class ApiSettings {
   base: string;
   authenticateRoute: string;
   reauthenticateRoute: string;
-  scheduleJob: string;
+  scheduleJobDef: string;
+  scheduleJobDetail: string;
   scheduleJobType: string;
   scheduleJobParamter: string;
   scheduleJobParamterType: string;

@@ -1,2 +1,40 @@
-<p>home works!</p>
-<button (click)="ping()">Ping</button>
+<div class="section">
+  <div class="container">
+    <div class="field is-grouped is-grouped-right">
+      <p class="control">
+        <a class="button is-link is-rounded" routerLink="/userProfile">
+          <span class="icon"><fa-icon [icon]="faPlus"></fa-icon></span>
+        </a>
+      </p>
+    </div>
+
+    <article class="box">
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <div>
+              <p class="is-uppercase">Like</p>
+              <p>Daily - MO, DI, MI, DO, FR, SA</p>
+              <p>from 12:00 to 14:00</p>
+              <p>Jack@Kirby.com, Cristal@Maiden.com, ...</p>
+            </div>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <div class="buttons">
+              <button class="button is-link is-rounded">
+                <span class="icon"><fa-icon [icon]="faEdit"></fa-icon></span>
+                <span>edit</span>
+              </button>
+              <button class="button is-danger is-rounded">
+                <span class="icon"><fa-icon [icon]="faTrash"></fa-icon></span>
+                <span>delete</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>

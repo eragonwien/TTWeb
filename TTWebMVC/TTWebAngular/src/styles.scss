@@ -5,6 +5,7 @@
 
 // Update Bulma's global variables
 $family-sans-serif: 'Nunito', sans-serif;
+$message-body-border-width: 0px;
 
 // Import only what you need from Bulma
 @import '../node_modules/bulma/sass/utilities/_all';
@@ -17,4 +18,12 @@ $family-sans-serif: 'Nunito', sans-serif;
 
 fieldset {
   max-width: 90%;
+}
+
+input.ng-invalid.ng-touched {
+  border-color: $danger;
+}
+
+input.ng-valid.ng-touched {
+  border-color: $success;
 }

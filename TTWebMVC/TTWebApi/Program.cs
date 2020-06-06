@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using NLog.Web;
 using SNGCommon.Authentication;
+using System;
 using TTWebApi.Models;
 using TTWebCommon.Models;
 
@@ -18,14 +13,16 @@ namespace TTWebApi
    {
       public static void Main(string[] args)
       {
+         var log = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
          var host = CreateWebHostBuilder(args).Build();
          try
          {
+            log.Info("Initialize Program");
             InitializeDatabase(host);
          }
          catch (Exception ex)
          {
-            throw ex;
+            log.Error("Error initializing program: {0} - {1}", ex.Message, ex.StackTrace);
          }
          host.Run();
       }

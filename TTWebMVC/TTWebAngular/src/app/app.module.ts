@@ -17,9 +17,10 @@ import { AuthService } from './services/auth.service';
 import { FormService } from './services/form.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ScheduleJobDefFormComponent } from './schedule-job-def-form/schedule-job-def-form.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HomeComponent, UserProfileComponent, NavbarComponent],
+  declarations: [AppComponent, LoginComponent, HomeComponent, UserProfileComponent, NavbarComponent, ScheduleJobDefFormComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -30,16 +31,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     FontAwesomeModule,
   ],
   providers: [
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      deps: [SettingService],
-      useFactory: (settingService: SettingService) => {
-        return () => {
-          return settingService.loadRuntimeSettings();
-        };
-      },
-    },
+    SettingService,
+    { provide: APP_INITIALIZER, useFactory: loadSettings, deps: [SettingService], multi: true },
     LoginActivateGuard,
     {
       provide: ErrorHandler,
@@ -53,8 +46,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     ApiService,
     AuthService,
     FormService,
-    SettingService,
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+export function loadSettings(settingService: SettingService) {
+  return () => settingService.loadRuntimeSettings();
+}

@@ -1,37 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TTWebApi.Services;
 using TTWebCommon.Models;
 
 namespace TTWebApi.Controllers
 {
    [Route("api/[controller]")]
    [ApiController]
-   public class ScheduleJobController : ControllerBase
+   public class ScheduleJobController : BaseController
    {
-      private readonly TTWebDbContext _context;
+      private readonly IScheduleJobService jobService;
 
-      public ScheduleJobController(TTWebDbContext context)
+      public ScheduleJobController(IScheduleJobService jobService)
       {
-         _context = context;
+         this.jobService = jobService;
       }
 
       // GET: api/ScheduleJob
-      [HttpGet]
-      public async Task<ActionResult<IEnumerable<ScheduleJob>>> GetScheduleJobSet()
+      [HttpGet("def")]
+      public async Task<ActionResult<List<ScheduleJobDef>>> GetScheduleJobDefs()
       {
-         return await _context.ScheduleJobSet.ToListAsync();
+         return await jobService.GetScheduleJobDefs(ContextUser.Id).ToListAsync();
       }
 
       // GET: api/ScheduleJob/5
-      [HttpGet("{id}")]
-      public async Task<ActionResult<ScheduleJob>> GetScheduleJob(int id)
+      [HttpGet("def/{id}")]
+      public async Task<ActionResult<ScheduleJobDef>> GetScheduleJobDef(int id)
       {
-         var scheduleJob = await _context.ScheduleJobSet.FindAsync(id);
+         var scheduleJob = await jobService.GetScheduleJobDef(id, ContextUser.Id);
 
          if (scheduleJob == null)
          {
@@ -42,64 +41,26 @@ namespace TTWebApi.Controllers
       }
 
       // PUT: api/ScheduleJob/5
-      [HttpPut("{id}")]
-      public async Task<IActionResult> PutScheduleJob(int id, ScheduleJob scheduleJob)
+      [HttpPut("def/{id}")]
+      public Task<IActionResult> UpdateScheduleJobDef(ScheduleJobDef scheduleJobDef)
       {
-         if (id != scheduleJob.Id)
-         {
-            return BadRequest();
-         }
-
-         _context.Entry(scheduleJob).State = EntityState.Modified;
-
-         try
-         {
-            await _context.SaveChangesAsync();
-         }
-         catch (DbUpdateConcurrencyException)
-         {
-            if (!ScheduleJobExists(id))
-            {
-               return NotFound();
-            }
-            else
-            {
-               throw;
-            }
-         }
-
-         return NoContent();
+         throw new NotImplementedException();
       }
 
       // POST: api/ScheduleJob
-      [HttpPost]
-      public async Task<ActionResult<ScheduleJob>> PostScheduleJob(ScheduleJob scheduleJob)
+      [HttpPost("def")]
+      public Task<ActionResult<ScheduleJobDef>> CreateScheduleJobDef(ScheduleJobDef scheduleJobDef)
       {
-         _context.ScheduleJobSet.Add(scheduleJob);
-         await _context.SaveChangesAsync();
-
-         return CreatedAtAction("GetScheduleJob", new { id = scheduleJob.Id }, scheduleJob);
+         throw new NotImplementedException();
       }
 
       // DELETE: api/ScheduleJob/5
-      [HttpDelete("{id}")]
-      public async Task<ActionResult<ScheduleJob>> DeleteScheduleJob(int id)
+      [HttpDelete("def/{id}")]
+      public async Task<ActionResult<ScheduleJobDef>> DeleteScheduleJobDef(int id)
       {
-         var scheduleJob = await _context.ScheduleJobSet.FindAsync(id);
-         if (scheduleJob == null)
-         {
-            return NotFound();
-         }
-
-         _context.ScheduleJobSet.Remove(scheduleJob);
-         await _context.SaveChangesAsync();
-
-         return scheduleJob;
-      }
-
-      private bool ScheduleJobExists(int id)
-      {
-         return _context.ScheduleJobSet.Any(e => e.Id == id);
+         await jobService.RemoveScheduleJobDef(id, ContextUser.Id);
+         await jobService.SaveChangesAsync();
+         return NoContent();
       }
    }
 }

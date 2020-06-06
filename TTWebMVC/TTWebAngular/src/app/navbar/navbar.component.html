@@ -25,8 +25,10 @@
 
     <div class="navbar-end">
       <div class="navbar-item has-dropdown is-hoverable" *ngIf="authenticated">
-        <div class="navbar-link">{{ userGreeting }}</div>
-        <div class="navbar-dropdown">
+        <div class="navbar-link">
+          <fa-icon [icon]="faUser"></fa-icon>
+        </div>
+        <div class="navbar-dropdown is-right">
           <a class="navbar-item" routerLink="userProfile" (click)="closeNavbarMenu()">Profile</a>
           <a class="navbar-item" (click)="logout(); closeNavbarMenu()">Logout</a>
         </div>

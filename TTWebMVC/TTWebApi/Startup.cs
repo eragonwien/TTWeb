@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SNGCommon.Authentication;
+using System;
+using System.Text;
 using TTWebApi.Middlewares;
 using TTWebApi.Models;
 using TTWebApi.Services;
@@ -40,11 +33,14 @@ namespace TTWebApi
       {
          services.AddCors();
          services.AddDbContext<TTWebDbContext>(o => o.UseMySQL(Configuration.GetConnectionString("TTWeb")));
-         services.AddScoped<IAppUserService, AppUserService>();
-         services.AddScoped<IAuthenticationService, AuthenticationService>();
 
          var appSettingsSection = Configuration.GetSection("AppSettings");
          services.Configure<AppSettings>(appSettingsSection);
+
+         services.AddScoped<IAppUserService, AppUserService>();
+         services.AddScoped<IAccountService, AccountService>();
+         services.AddScoped<IAuthenticationService, AuthenticationService>();
+         services.AddScoped<IScheduleJobService, ScheduleJobService>();
 
          var appsettings = appSettingsSection.Get<AppSettings>();
 

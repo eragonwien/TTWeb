@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Internal;
 using SNGCommon.Authentication;
-using System;
 using TTWebCommon.Models;
 
 namespace TTWebApi.Models
@@ -9,7 +8,10 @@ namespace TTWebApi.Models
    {
       public static void Initialize(TTWebDbContext dbContext, IAuthenticationService authenticationService)
       {
-         InitializeAppUser(dbContext, authenticationService);
+         if (dbContext.Database.CanConnect())
+         {
+            InitializeAppUser(dbContext, authenticationService);
+         }
       }
 
       private static void InitializeAppUser(TTWebDbContext dbContext, IAuthenticationService authenticationService)
@@ -24,7 +26,9 @@ namespace TTWebApi.Models
             Password = authenticationService.GetEncodedPassword("1234"),
             Firstname = "Steak",
             Lastname = "Tester",
-            Title = "Dr."
+            Title = "Dr.",
+            ActiveFlag = 1,
+            DisabledFlag = 0
          };
          dbContext.AppUserSet.Add(appUser);
          dbContext.SaveChanges();

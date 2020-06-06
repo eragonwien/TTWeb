@@ -29,14 +29,27 @@ namespace TTWebCommon.Models
       [Column("disabled")]
       public int DisabledFlag { get; set; }
       [NotMapped]
-      public bool Disabled { get; set; }
+      public bool Disabled
+      {
+         get
+         {
+            return DisabledFlag == 1;
+         }
+      }
+      [Column("active")]
+      public int ActiveFlag { get; set; }
+      [NotMapped]
+      public bool Active
+      {
+         get { return ActiveFlag == 1; }
+      }
       [Column("facebook_user")]
       public string FacebookUser { get; set; }
       [Column("facebook_password")]
       [JsonIgnore]
       public string FacebookPassword { get; set; }
       public virtual ICollection<AppUserRole> AppUserRoles { get; set; }
-      public virtual ICollection<ScheduleJob> ScheduleJobs { get; set; }
+      public virtual ICollection<ScheduleJobDef> ScheduleJobDefs { get; set; }
 
       public AppUser ClearPassword()
       {

@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginActivateGuard } from './guards/logginActivate.guard';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { ScheduleJobDefFormComponent } from './schedule-job-def-form/schedule-job-def-form.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,11 @@ const routes: Routes = [
   {
     path: 'userProfile',
     component: UserProfileComponent,
+    canActivate: [LoginActivateGuard],
+  },
+  {
+    path: 'scheduleJobDefForm',
+    component: ScheduleJobDefFormComponent,
     canActivate: [LoginActivateGuard],
   },
   {
