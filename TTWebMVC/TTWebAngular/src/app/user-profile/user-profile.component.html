@@ -1,9 +1,5 @@
 <div class="section">
   <div class="container">
-    <app-model-state-error-notification
-      [error]="saveError"
-      [successNotification]="saveSuccessMessage"
-    ></app-model-state-error-notification>
     <form id="user-profile-form" [formGroup]="form" #userProfileForm="ngForm">
       <fieldset>
         <input type="hidden" formControlName="id" />

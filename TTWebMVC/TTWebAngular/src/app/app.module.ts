@@ -1,3 +1,4 @@
+import { SharedService } from './services/shared.service';
 import { NgModule, APP_INITIALIZER, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -21,7 +22,15 @@ import { ScheduleJobDefFormComponent } from './schedule-job-def-form/schedule-jo
 import { ModelStateErrorNotificationComponent } from './shared/model-state-error-notification/model-state-error-notification.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HomeComponent, UserProfileComponent, NavbarComponent, ScheduleJobDefFormComponent, ModelStateErrorNotificationComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    HomeComponent,
+    UserProfileComponent,
+    NavbarComponent,
+    ScheduleJobDefFormComponent,
+    ModelStateErrorNotificationComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -44,6 +53,7 @@ import { ModelStateErrorNotificationComponent } from './shared/model-state-error
       useClass: TokenInterceptorService,
       multi: true,
     },
+    SharedService,
     ApiService,
     AuthService,
     FormService,

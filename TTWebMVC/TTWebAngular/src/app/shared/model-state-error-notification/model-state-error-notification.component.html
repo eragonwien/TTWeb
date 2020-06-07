@@ -1,11 +1,9 @@
-<div class="notification is-success is-light" *ngIf="showSuccessNotification">
-  <button class="delete" (click)="clearSuccessNotifications()"></button>
-  <span>{{ successNotification }}</span>
-</div>
-<div class="notification is-danger is-light" *ngIf="showErrors">
-  <button class="delete" (click)="clearErrorNotifications()"></button>
+<div class="notification is-light" *ngIf="notification" [ngClass]="notificationClass">
+  <button class="delete" (click)="clearNotification()"></button>
   <ul>
-    <li *ngFor="let error of errors">{{ error }}</li>
+    <li *ngFor="let text of notification.texts">
+      <span>{{ text }}</span>
+    </li>
   </ul>
 </div>
 <br />

@@ -1,44 +1,46 @@
+import { SharedService } from './../../services/shared.service';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { FormService } from 'src/app/services/form.service';
+import { NotificationAlert, NotificationAlertType } from 'src/models/notification.model';
 
 @Component({
   selector: 'app-model-state-error-notification',
   templateUrl: './model-state-error-notification.component.html',
   styleUrls: ['./model-state-error-notification.component.scss'],
 })
-export class ModelStateErrorNotificationComponent implements OnInit, OnChanges {
-  @Input() error: HttpErrorResponse;
-  @Input() successNotification: string;
-  errors: string[] = [];
-  constructor(private formService: FormService) {}
+export class ModelStateErrorNotificationComponent implements OnInit {
+  notification: NotificationAlert;
 
-  ngOnInit(): void {}
+  constructor(private formService: FormService, private sharedService: SharedService) {}
 
-  clearSuccessNotifications() {
-    this.successNotification = null;
+  ngOnInit(): void {
+    this.listenForNotifications();
   }
 
-  clearErrorNotifications() {
-    this.errors = [];
+  clearNotification() {
+    this.notification = null;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.error) {
-      this.handleErrorChanged(changes.error.currentValue);
+  listenForNotifications() {
+    this.sharedService.sharedNotification.subscribe((n: NotificationAlert) => {
+      this.clearNotification();
+      this.addNotification(n);
+    });
+  }
+
+  addNotification(n: NotificationAlert) {
+    if (!n) {
+      return;
     }
+    this.notification = n;
   }
 
-  private handleErrorChanged(err: HttpErrorResponse) {
-    this.errors = this.formService.getModelStateErrors(err);
-  }
-
-  get showErrors() {
-    return this.error && this.errors && this.errors.length > 0;
-  }
-
-  get showSuccessNotification() {
-    return this.successNotification && this.successNotification.length > 0;
+  get notificationClass() {
+    return {
+      'is-success': this.notification.type === NotificationAlertType.success,
+      'is-danger': this.notification.type === NotificationAlertType.error,
+    };
   }
 }

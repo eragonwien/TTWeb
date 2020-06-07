@@ -1,25 +1,24 @@
+import { SharedService } from './../services/shared.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, NgForm } from '@angular/forms';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AppUser } from 'src/models/appUser.model';
 import { ApiService } from '../services/api.service';
-import { HelperService } from '../services/helper.service';
 import { FormService } from '../services/form.service';
 import { faUser, faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons';
+import { NotificationAlertType, NotificationAlert } from 'src/models/notification.model';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
-  providers: [HelperService],
 })
 export class UserProfileComponent implements OnInit {
   form: FormGroup;
   appUser: AppUser;
   errors: string[] = [];
   saveError: HttpErrorResponse;
-  saveSuccessMessage: string;
   @ViewChild('userProfileForm', { static: true }) userProfileForm: NgForm;
 
   faUser = faUser;
@@ -30,7 +29,8 @@ export class UserProfileComponent implements OnInit {
     private formBuilder: FormBuilder,
     private auth: AuthService,
     private api: ApiService,
-    private formService: FormService
+    private formService: FormService,
+    private sharedService: SharedService
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +39,6 @@ export class UserProfileComponent implements OnInit {
   }
 
   save() {
-    this.saveSuccessMessage = null;
     if (this.form.valid) {
       const editAppUser = new AppUser(this.form.value);
       this.api.saveAppUser(editAppUser).subscribe(
@@ -52,7 +51,7 @@ export class UserProfileComponent implements OnInit {
   private onSaveSuccess(appUser: AppUser) {
     this.appUser = appUser;
     this.auth.saveAppUser(appUser);
-    this.saveSuccessMessage = 'Changes saved';
+    this.sharedService.addNotification(new NotificationAlert(NotificationAlertType.success, ['Changes saved']));
   }
 
   private onSaveError(err: HttpErrorResponse) {
