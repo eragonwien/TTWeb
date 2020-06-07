@@ -41,7 +41,7 @@ namespace TTWebApi.Services
       public IQueryable<ScheduleJobDef> GetScheduleJobDefs(int appUserId)
       {
          return db.ScheduleJobDefSet
-            .Where(d => d.AppUserId == appUserId && d.Active)
+            .Where(d => d.AppUserId == appUserId && d.ActiveFlag == 1)
             .Include(d => d.AppUser)
             .Include(d => d.ScheduleJobPartners)
                .ThenInclude(p => p.Partner)

@@ -20,7 +20,7 @@
 
   <div class="navbar-menu" [class.is-active]="menuActive">
     <div class="navbar-start">
-      <a class="navbar-item" *ngIf="authenticated" routerLink="home" (click)="closeNavbarMenu()">Home</a>
+      <a class="navbar-item" *ngIf="authenticated" routerLink="/home" (click)="closeNavbarMenu()">Home</a>
     </div>
 
     <div class="navbar-end">
@@ -29,7 +29,7 @@
           <fa-icon [icon]="faUser"></fa-icon>
         </div>
         <div class="navbar-dropdown is-right">
-          <a class="navbar-item" routerLink="userProfile" (click)="closeNavbarMenu()">Profile</a>
+          <a class="navbar-item" routerLink="/userProfile" (click)="closeNavbarMenu()">Profile</a>
           <a class="navbar-item" (click)="logout(); closeNavbarMenu()">Logout</a>
         </div>
       </div>

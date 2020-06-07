@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { concat } from 'rxjs';
 import { FormGroup, NgForm } from '@angular/forms';
 import { Injectable } from '@angular/core';
@@ -36,10 +37,21 @@ export class FormService {
     return false;
   }
 
-  getModelStateErrors(modelStateError: object) {
-    if (!modelStateError) {
-      return [];
+  getModelStateErrors(error: HttpErrorResponse): string[] {
+    let errors: string[] = [];
+
+    if (!error) {
+      return errors;
     }
-    return [].concat.apply([], Object.values(modelStateError));
+
+    switch (error.status) {
+      case 400:
+        errors = [].concat.apply([], Object.values(error.error));
+        break;
+      default:
+        errors.push(error.message);
+        break;
+    }
+    return errors;
   }
 }

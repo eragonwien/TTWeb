@@ -1,11 +1,9 @@
 <div class="section">
   <div class="container">
-    <div class="notification is-danger is-light" *ngIf="errors && errors.length > 0">
-      <button class="delete" (click)="clearNotifications()"></button>
-      <ul>
-        <li *ngFor="let error of errors">{{ error }}</li>
-      </ul>
-    </div>
+    <app-model-state-error-notification
+      [error]="saveError"
+      [successNotification]="saveSuccessMessage"
+    ></app-model-state-error-notification>
     <form id="user-profile-form" [formGroup]="form" #userProfileForm="ngForm">
       <fieldset>
         <input type="hidden" formControlName="id" />

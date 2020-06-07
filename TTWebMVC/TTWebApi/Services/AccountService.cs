@@ -39,7 +39,7 @@ namespace TTWebApi.Services
       {
          var user = await db.AppUserSet
             .Include(u => u.AppUserRoles).ThenInclude(rm => rm.Role)
-            .FirstOrDefaultAsync(u => u.Email == username && !u.Disabled && authService.IsPasswordValid(password, u.Password));
+            .FirstOrDefaultAsync(u => u.Email == username && u.Disabled == 0 && authService.IsPasswordValid(password, u.Password));
 
          if (user == null)
          {

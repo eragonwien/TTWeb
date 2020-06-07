@@ -39,7 +39,7 @@ namespace TTWebApi.Services
       public Task<AppUser> GetOne(int id)
       {
          return GetAll()
-            .Where(u => u.Id == id && u.Active && !u.Disabled)
+            .Where(u => u.Id == id && u.Active == 1 && u.Disabled == 0)
             .FirstOrDefaultAsync();
       }
 
@@ -60,7 +60,8 @@ namespace TTWebApi.Services
 
       public bool IsEmailAvailable(string email, int id)
       {
-         return !db.AppUserSet.Any(u => u.Email == email && u.Id != id);
+         var occupiedUser = GetAll().Where(u => u.Email == email && u.Id != id).FirstOrDefault();
+         return occupiedUser == null;
       }
 
       public IQueryable<AppUser> GetAll()

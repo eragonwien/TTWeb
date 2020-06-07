@@ -18,9 +18,10 @@ import { FormService } from './services/form.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ScheduleJobDefFormComponent } from './schedule-job-def-form/schedule-job-def-form.component';
+import { ModelStateErrorNotificationComponent } from './shared/model-state-error-notification/model-state-error-notification.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HomeComponent, UserProfileComponent, NavbarComponent, ScheduleJobDefFormComponent],
+  declarations: [AppComponent, LoginComponent, HomeComponent, UserProfileComponent, NavbarComponent, ScheduleJobDefFormComponent, ModelStateErrorNotificationComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

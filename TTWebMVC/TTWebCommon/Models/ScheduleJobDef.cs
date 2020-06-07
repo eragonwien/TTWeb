@@ -34,13 +34,6 @@ namespace TTWebCommon.Models
       public string TimeOffset { get; set; }
       [Column("active")]
       public int ActiveFlag { get; set; } = 0;
-      [NotMapped]
-      public bool Active {
-         get
-         {
-            return ActiveFlag == 1;
-         }
-      }
 
       public virtual ICollection<JobWeekDay> JobWeekDays { get; set; }
       public virtual ICollection<ScheduleJobPartner> ScheduleJobPartners { get; set; }

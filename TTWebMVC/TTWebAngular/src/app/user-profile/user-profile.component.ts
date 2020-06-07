@@ -18,6 +18,8 @@ export class UserProfileComponent implements OnInit {
   form: FormGroup;
   appUser: AppUser;
   errors: string[] = [];
+  saveError: HttpErrorResponse;
+  saveSuccessMessage: string;
   @ViewChild('userProfileForm', { static: true }) userProfileForm: NgForm;
 
   faUser = faUser;
@@ -37,6 +39,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   save() {
+    this.saveSuccessMessage = null;
     if (this.form.valid) {
       const editAppUser = new AppUser(this.form.value);
       this.api.saveAppUser(editAppUser).subscribe(
@@ -49,10 +52,11 @@ export class UserProfileComponent implements OnInit {
   private onSaveSuccess(appUser: AppUser) {
     this.appUser = appUser;
     this.auth.saveAppUser(appUser);
+    this.saveSuccessMessage = 'Changes saved';
   }
 
   private onSaveError(err: HttpErrorResponse) {
-    this.errors = this.formService.getModelStateErrors(err.error);
+    this.saveError = err;
   }
 
   private loadAppUser() {
@@ -72,9 +76,5 @@ export class UserProfileComponent implements OnInit {
 
   displayError(field: string, includes: string[] = [], excludes: string[] = []) {
     return this.formService.displayError(this.form, this.userProfileForm, field, includes, excludes);
-  }
-
-  clearNotifications() {
-    this.errors = [];
   }
 }

@@ -15,7 +15,6 @@ namespace TTWebCommon.Models
       [Required]
       [DataType(DataType.EmailAddress)]
       public string Email { get; set; }
-      [Required]
       [JsonIgnore]
       [DataType(DataType.Password)]
       public string Password { get; set; }
@@ -27,28 +26,17 @@ namespace TTWebCommon.Models
       [Column("refresh_token")]
       public string RefreshToken { get; set; }
       [Column("disabled")]
-      public int DisabledFlag { get; set; }
-      [NotMapped]
-      public bool Disabled
-      {
-         get
-         {
-            return DisabledFlag == 1;
-         }
-      }
+      public int Disabled { get; set; }
       [Column("active")]
-      public int ActiveFlag { get; set; }
-      [NotMapped]
-      public bool Active
-      {
-         get { return ActiveFlag == 1; }
-      }
+      public int Active { get; set; }
       [Column("facebook_user")]
       public string FacebookUser { get; set; }
       [Column("facebook_password")]
       [JsonIgnore]
       public string FacebookPassword { get; set; }
+      [JsonIgnore]
       public virtual ICollection<AppUserRole> AppUserRoles { get; set; }
+      [JsonIgnore]
       public virtual ICollection<ScheduleJobDef> ScheduleJobDefs { get; set; }
 
       public AppUser ClearPassword()
