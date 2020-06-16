@@ -20,10 +20,12 @@ fieldset {
   max-width: 90%;
 }
 
-input.ng-invalid.ng-touched {
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
   border-color: $danger;
 }
 
-input.ng-valid.ng-touched {
+input.ng-valid.ng-touched,
+select.ng-valid.ng-touched {
   border-color: $success;
 }

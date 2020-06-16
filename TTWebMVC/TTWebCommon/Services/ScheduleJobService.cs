@@ -10,8 +10,8 @@ namespace TTWebApi.Services
    public interface IScheduleJobService
    {
       void AddScheduleJobDef(ScheduleJobDef scheduleJobDef);
-      IQueryable<ScheduleJobDef> GetScheduleJobDefs(int appUserId);
-      Task<ScheduleJobDef> GetScheduleJobDef(int id, int appUserId);
+      IQueryable<ScheduleJobDef> GetScheduleJobDefs();
+      IQueryable<ScheduleJobDef> GetScheduleJobDef(int id);
       Task RemoveScheduleJobDef(int id, int appUserId);
       Task<bool> HasAccessToScheduleJobDef(int id, int appUserId);
       Task SaveChangesAsync();
@@ -31,17 +31,16 @@ namespace TTWebApi.Services
          db.ScheduleJobDefSet.Add(scheduleJobDef);
       }
 
-      public Task<ScheduleJobDef> GetScheduleJobDef(int id, int appUserId)
+      public IQueryable<ScheduleJobDef> GetScheduleJobDef(int id)
       {
-         return GetScheduleJobDefs(appUserId)
-            .Where(d => d.Id == id)
-            .FirstOrDefaultAsync();
+         return GetScheduleJobDefs()
+            .Where(d => d.Id == id);
       }
 
-      public IQueryable<ScheduleJobDef> GetScheduleJobDefs(int appUserId)
+      public IQueryable<ScheduleJobDef> GetScheduleJobDefs()
       {
          return db.ScheduleJobDefSet
-            .Where(d => d.AppUserId == appUserId && d.ActiveFlag == 1)
+            .Where(d => d.Active)
             .Include(d => d.AppUser)
             .Include(d => d.ScheduleJobPartners)
                .ThenInclude(p => p.Partner)

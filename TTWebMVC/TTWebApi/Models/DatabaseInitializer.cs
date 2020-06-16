@@ -27,8 +27,8 @@ namespace TTWebApi.Models
             Firstname = "Steak",
             Lastname = "Tester",
             Title = "Dr.",
-            Active = 1,
-            Disabled = 0
+            Active = true,
+            Disabled = false
          };
          dbContext.AppUserSet.Add(appUser);
          dbContext.SaveChanges();

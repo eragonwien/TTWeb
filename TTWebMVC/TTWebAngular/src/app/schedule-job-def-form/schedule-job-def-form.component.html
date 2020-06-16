@@ -1,3 +1,87 @@
 <div class="section">
-  <div class="container"></div>
+  <div class="container">
+    <form id="schedule-job-def-form" [formGroup]="form" #scheduleJobDefForm="ngForm">
+      <fieldset>
+        <input type="hidden" formControlName="appUserId" />
+        <input type="hidden" formControlName="active" />
+        <div class="field is-horizontal">
+          <div class="field-label is-normal"></div>
+          <div class="field-body">
+            <div class="field">
+              <p class="control is-expanded has-icons-left">
+                <input class="input" type="text" placeholder="Name" formControlName="name" />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faUser"></fa-icon>
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-label is-normal"></div>
+          <div class="field-body">
+            <div class="field is-narrow">
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select formControlName="type">
+                    <option value="" disabled selected>Select a type</option>
+                    <option *ngFor="let o of typeOptions" [value]="o">{{ o }}</option>
+                  </select>
+                </div>
+              </div>
+              <p class="help is-danger" *ngIf="displayError('type', ['required'])">Type ist required</p>
+            </div>
+            <div class="field is-narrow">
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select formControlName="intervalType">
+                    <option value="" disabled selected>Select an interval type</option>
+                    <option *ngFor="let o of intervalTypeOptions" [value]="o">{{ o }}</option>
+                  </select>
+                </div>
+              </div>
+              <p class="help is-danger" *ngIf="displayError('intervalType', ['required'])">
+                Interval Type ist required
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-label is-normal"></div>
+          <div class="field-body">
+            <div class="field">
+              <p class="control is-expanded has-icons-left">
+                <input class="input" type="time" placeholder="From" formControlName="timeFrom" />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faUser"></fa-icon>
+                </span>
+              </p>
+              <p class="help is-danger" *ngIf="displayError('timeFrom', ['required'])">From ist required</p>
+            </div>
+            <div class="field">
+              <p class="control is-expanded has-icons-left">
+                <input class="input" type="time" placeholder="To" formControlName="timeTo" />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faUser"></fa-icon>
+                </span>
+              </p>
+              <p class="help is-danger" *ngIf="displayError('timeTo', ['required'])">
+                To ist required
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-label"></div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <button class="button is-primary" (click)="save()">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
 </div>

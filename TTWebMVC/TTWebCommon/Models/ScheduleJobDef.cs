@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -32,8 +33,9 @@ namespace TTWebCommon.Models
       public string TimeTo { get; set; }
       [Column("time_offset")]
       public string TimeOffset { get; set; }
-      [Column("active")]
-      public int ActiveFlag { get; set; } = 0;
+      [Column("active", TypeName = "bit")]
+      [DefaultValue(false)]
+      public bool Active { get; set; }
 
       public virtual ICollection<JobWeekDay> JobWeekDays { get; set; }
       public virtual ICollection<ScheduleJobPartner> ScheduleJobPartners { get; set; }

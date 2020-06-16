@@ -1,5 +1,5 @@
 import { SharedService } from './services/shared.service';
-import { NgModule, APP_INITIALIZER, ErrorHandler } from '@angular/core';
+import { NgModule, APP_INITIALIZER, ErrorHandler, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,6 +20,10 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ScheduleJobDefFormComponent } from './schedule-job-def-form/schedule-job-def-form.component';
 import { ModelStateErrorNotificationComponent } from './shared/model-state-error-notification/model-state-error-notification.component';
+import localeDE from '@angular/common/locales/de';
+import { registerLocaleData } from '@angular/common';
+
+registerLocaleData(localeDE);
 
 @NgModule({
   declarations: [
@@ -43,6 +47,7 @@ import { ModelStateErrorNotificationComponent } from './shared/model-state-error
   providers: [
     SettingService,
     { provide: APP_INITIALIZER, useFactory: loadSettings, deps: [SettingService], multi: true },
+    { provide: LOCALE_ID, useValue: 'de' },
     LoginActivateGuard,
     {
       provide: ErrorHandler,

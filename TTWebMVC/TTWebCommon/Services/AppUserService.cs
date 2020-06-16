@@ -39,7 +39,7 @@ namespace TTWebApi.Services
       public Task<AppUser> GetOne(int id)
       {
          return GetAll()
-            .Where(u => u.Id == id && u.Active == 1 && u.Disabled == 0)
+            .Where(u => u.Id == id && u.Active && !u.Disabled)
             .FirstOrDefaultAsync();
       }
 

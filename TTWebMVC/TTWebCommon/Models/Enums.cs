@@ -11,12 +11,16 @@ namespace TTWebCommon.Models
 
 	public enum ScheduleJobType
 	{
-
+		LOGIN,
+		LIKE
 	}
 
 	public enum IntervalType
    {
-
+		DAILY,
+		WEEKLY,
+		MONTHLY,
+		YEARLY
    }
 
    public enum ScheduleJobStatus

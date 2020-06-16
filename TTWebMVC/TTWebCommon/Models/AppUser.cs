@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
@@ -25,10 +26,12 @@ namespace TTWebCommon.Models
       public string AccessToken { get; set; }
       [Column("refresh_token")]
       public string RefreshToken { get; set; }
-      [Column("disabled")]
-      public int Disabled { get; set; }
-      [Column("active")]
-      public int Active { get; set; }
+      [Column("disabled", TypeName = "bit")]
+      [DefaultValue(false)]
+      public bool Disabled { get; set; }
+      [Column("active", TypeName = "bit")]
+      [DefaultValue(false)]
+      public bool Active { get; set; }
       [Column("facebook_user")]
       public string FacebookUser { get; set; }
       [Column("facebook_password")]
