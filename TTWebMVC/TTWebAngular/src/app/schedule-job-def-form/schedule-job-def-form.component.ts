@@ -14,8 +14,6 @@ import { formatDate } from '@angular/common';
 })
 export class ScheduleJobDefFormComponent implements OnInit {
   form: FormGroup;
-  typeOptions: string[] = [];
-  intervalTypeOptions: string[] = [];
   @ViewChild('scheduleJobDefForm', { static: true }) scheduleJobDefForm: NgForm;
   faUser = faUser;
 
