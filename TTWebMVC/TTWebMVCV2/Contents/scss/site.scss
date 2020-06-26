@@ -1,0 +1,11 @@
+﻿@import "bulma";
+
+#body {
+   display: flex;
+   min-height: 100vh;
+   flex-direction: column;
+}
+
+#body-wrapper {
+   flex: 1;
+}
