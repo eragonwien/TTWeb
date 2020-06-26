@@ -9,12 +9,11 @@ namespace TTWebApi.Services
 {
    public interface IScheduleJobService
    {
-      void AddScheduleJobDef(ScheduleJobDef scheduleJobDef);
-      IQueryable<ScheduleJobDef> GetScheduleJobDefs();
-      IQueryable<ScheduleJobDef> GetScheduleJobDef(int id);
+      Task AddScheduleJobDef(ScheduleJobDef scheduleJobDef);
+      Task<IEnumerable<ScheduleJobDef>> GetScheduleJobDefs();
+      Task<ScheduleJobDef> GetScheduleJobDef(int id);
       Task RemoveScheduleJobDef(int id, int appUserId);
       Task<bool> HasAccessToScheduleJobDef(int id, int appUserId);
-      Task SaveChangesAsync();
    }
 
    public class ScheduleJobService : IScheduleJobService
@@ -26,46 +25,29 @@ namespace TTWebApi.Services
          this.db = db;
       }
 
-      public void AddScheduleJobDef(ScheduleJobDef scheduleJobDef)
+      public Task AddScheduleJobDef(ScheduleJobDef scheduleJobDef)
       {
-         db.ScheduleJobDefSet.Add(scheduleJobDef);
+         throw new NotImplementedException();
       }
 
-      public IQueryable<ScheduleJobDef> GetScheduleJobDef(int id)
+      public Task<ScheduleJobDef> GetScheduleJobDef(int id)
       {
-         return GetScheduleJobDefs()
-            .Where(d => d.Id == id);
+         throw new NotImplementedException();
       }
 
-      public IQueryable<ScheduleJobDef> GetScheduleJobDefs()
+      public Task<IEnumerable<ScheduleJobDef>> GetScheduleJobDefs()
       {
-         return db.ScheduleJobDefSet
-            .Where(d => d.Active)
-            .Include(d => d.AppUser)
-            .Include(d => d.ScheduleJobPartners)
-               .ThenInclude(p => p.Partner)
-              .Include(d => d.JobWeekDays)
-                  .ThenInclude(w => w.WeekDay);
+         throw new NotImplementedException();
       }
 
       public Task<bool> HasAccessToScheduleJobDef(int id, int appUserId)
       {
-         return db.ScheduleJobDefSet.AnyAsync(d => d.Id == id && d.AppUserId == appUserId);
+         throw new NotImplementedException();
       }
 
-      public async Task RemoveScheduleJobDef(int id, int appUserId)
+      public Task RemoveScheduleJobDef(int id, int appUserId)
       {
-         if (await HasAccessToScheduleJobDef(id, appUserId))
-         {
-            ScheduleJobDef def = new ScheduleJobDef { Id = id };
-            db.ScheduleJobDefSet.Attach(def);
-            db.Remove(def);
-         }
-      }
-
-      public Task SaveChangesAsync()
-      {
-         return db.SaveChangesAsync();
+         throw new NotImplementedException();
       }
    }
 }

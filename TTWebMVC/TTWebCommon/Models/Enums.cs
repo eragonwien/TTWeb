@@ -11,7 +11,6 @@ namespace TTWebCommon.Models
 
 	public enum ScheduleJobType
 	{
-		LOGIN,
 		LIKE
 	}
 

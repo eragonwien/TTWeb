@@ -32,7 +32,7 @@ namespace TTWebApi
       public void ConfigureServices(IServiceCollection services)
       {
          services.AddCors();
-         services.AddDbContext<TTWebDbContext>(o => o.UseMySQL(Configuration.GetConnectionString("TTWeb")));
+         services.AddTransient(_ => new TTWebDbContext(Configuration.GetConnectionString("TTWeb")));
 
          var appSettingsSection = Configuration.GetSection("AppSettings");
          services.Configure<AppSettings>(appSettingsSection);

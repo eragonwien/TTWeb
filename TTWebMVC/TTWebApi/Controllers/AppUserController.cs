@@ -42,8 +42,7 @@ namespace TTWebApi.Controllers
       [HttpPost]
       public async Task<ActionResult<AppUser>> PostAppUser(AppUser appUser)
       {
-         appUserService.Create(appUser);
-         await appUserService.SaveChangeAsync();
+         await appUserService.Create(appUser);
 
          return CreatedAtAction(nameof(GetAppUser), new { id = appUser.Id }, appUser);
       }
@@ -60,7 +59,7 @@ namespace TTWebApi.Controllers
          if (!await appUserService.Exist(id))
             ModelState.AddModelError("", string.Format("User {0} not found", id));
 
-         if (!appUserService.IsEmailAvailable(appUser.Email, appUser.Id))
+         if (!await appUserService.IsEmailAvailable(appUser.Email, appUser.Id))
          {
             ModelState.AddModelError(nameof(AppUser.Email), string.Format("Email {0} is not available", appUser.Email));
          }
@@ -77,14 +76,7 @@ namespace TTWebApi.Controllers
       [HttpDelete("{id}")]
       public async Task<ActionResult<AppUser>> DeleteAppUser(int id)
       {
-         var appUser = await appUserService.GetOne(id);
-         if (appUser == null)
-         {
-            return NotFound();
-         }
-         appUserService.Remove(appUser);
-         await appUserService.SaveChangeAsync();
-
+         await appUserService.Remove(id);
          return NoContent();
       }
 

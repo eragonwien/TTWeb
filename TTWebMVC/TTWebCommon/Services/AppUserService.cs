@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TTWebCommon.Models;
@@ -8,14 +10,13 @@ namespace TTWebApi.Services
 {
    public interface IAppUserService
    {
-      IQueryable<AppUser> GetAll();
+      Task<IEnumerable<AppUser>> GetAll();
       Task<AppUser> GetOne(int id);
-      void Create(AppUser user);
-      void Remove(AppUser user);
+      Task Create(AppUser user);
+      Task Remove(int id);
       Task<bool> Exist(int id);
       Task UpdateProfile(AppUser appUser);
-      bool IsEmailAvailable(string email, int id);
-      Task SaveChangeAsync();
+      Task<bool> IsEmailAvailable(string email, int id);
    }
    public class AppUserService : IAppUserService
    {
@@ -26,55 +27,75 @@ namespace TTWebApi.Services
          this.db = db;
       }
 
-      public void Create(AppUser appUser)
+      public async Task Create(AppUser user)
       {
-         db.AppUserSet.Add(appUser);
+         string cmdStr = "INSERT INTO appuser(email, title, firstname, lastname, active) VALUES(:email, :title, :firstname, :lastname, :active)";
+         using (MySqlCommand cmd = db.CreateCommand(cmdStr))
+         {
+            cmd.Parameters.Add(new MySqlParameter("email", user.Email));
+            cmd.Parameters.Add(new MySqlParameter("title", user.Title));
+            cmd.Parameters.Add(new MySqlParameter("firstname", user.Firstname));
+            cmd.Parameters.Add(new MySqlParameter("lastname", user.Lastname));
+            cmd.Parameters.Add(new MySqlParameter("active", 0));
+            await cmd.ExecuteNonQueryAsync();
+         }
       }
 
       public async Task<bool> Exist(int id)
       {
-         return await GetOne(id) != null;
+         string cmdStr = "SELECT CASE WHEN EXISTS(SELECT id FROM appuser WHERE id=:id) THEN 1 ELSE 0 FROM DUAL";
+         using (MySqlCommand cmd = db.CreateCommand(cmdStr))
+         {
+            cmd.Parameters.Add(new MySqlParameter("id", id));
+            return await db.ReadScalarBooleanAsync();
+         }
+      }
+
+      public Task<IEnumerable<AppUser>> GetAll()
+      {
+         throw new System.NotImplementedException();
       }
 
       public Task<AppUser> GetOne(int id)
       {
-         return GetAll()
-            .Where(u => u.Id == id && u.Active && !u.Disabled)
-            .FirstOrDefaultAsync();
+         throw new System.NotImplementedException();
       }
 
-      public void Remove(AppUser user)
+      public async Task<bool> IsEmailAvailable(string email, int id)
       {
-         db.AppUserSet.Attach(user);
-         db.AppUserSet.Remove(user);
+         string cmdStr = "SELECT CASE WHEN EXISTS(SELECT id FROM appuser WHERE email=:email AND id!=:id) THEN 1 ELSE 0 FROM DUAL";
+         using (MySqlCommand cmd = db.CreateCommand(cmdStr))
+         {
+            cmd.Parameters.Add(new MySqlParameter("email", email));
+            cmd.Parameters.Add(new MySqlParameter("id", id));
+            return await db.ReadScalarBooleanAsync();
+         }
       }
 
-      public Task UpdateProfile(AppUser appUser)
+      public async Task Remove(int id)
       {
-         db.Entry(appUser).Property(u => u.Title).IsModified = true;
-         db.Entry(appUser).Property(u => u.Firstname).IsModified = true;
-         db.Entry(appUser).Property(u => u.Lastname).IsModified = true;
-         db.Entry(appUser).Property(u => u.Email).IsModified = true;
-         return db.SaveChangesAsync();
+         string cmdStr = "DELETE FROM appuser WHERE id=:id";
+         using (MySqlCommand cmd = db.CreateCommand(cmdStr))
+         {
+            cmd.Parameters.Add(new MySqlParameter("id", id));
+            await cmd.ExecuteNonQueryAsync();
+         }
       }
 
-      public bool IsEmailAvailable(string email, int id)
+      public async Task UpdateProfile(AppUser appUser)
       {
-         var occupiedUser = GetAll().Where(u => u.Email == email && u.Id != id).FirstOrDefault();
-         return occupiedUser == null;
-      }
-
-      public IQueryable<AppUser> GetAll()
-      {
-         return db.AppUserSet
-            .Include(u => u.AppUserRoles)
-               .ThenInclude(r => r.Role)
-            .AsNoTracking();
-      }
-
-      public Task SaveChangeAsync()
-      {
-         return db.SaveChangesAsync();
+         string cmdStr = "UPDATE appuser SET email=:email, title=:title, firstname=:firstname, lastname: lastname, facebook_user, facebook_password WHERE id=:id";
+         using (MySqlCommand cmd = db.CreateCommand(cmdStr))
+         {
+            cmd.Parameters.Add(new MySqlParameter("email", appUser.Email));
+            cmd.Parameters.Add(new MySqlParameter("title", appUser.Title));
+            cmd.Parameters.Add(new MySqlParameter("firstname", appUser.Firstname));
+            cmd.Parameters.Add(new MySqlParameter("lastname", appUser.Lastname));
+            cmd.Parameters.Add(new MySqlParameter("facebook_user", appUser.FacebookUser));
+            cmd.Parameters.Add(new MySqlParameter("facebook_password", appUser.FacebookPassword));
+            cmd.Parameters.Add(new MySqlParameter("id", appUser.Id));
+            await cmd.ExecuteNonQueryAsync();
+         }
       }
    }
 }
