@@ -24,14 +24,26 @@ namespace TTWebMVCV2
          catch (Exception ex)
          {
             log.Error("Error initializing program: {0} - {1}", ex.Message, ex.StackTrace);
+            throw;
+         }
+         finally
+         {
+            // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+            NLog.LogManager.Shutdown();
          }
       }
 
       public static IHostBuilder CreateHostBuilder(string[] args) =>
-          Host.CreateDefaultBuilder(args)
-              .ConfigureWebHostDefaults(webBuilder =>
-              {
-                 webBuilder.UseStartup<Startup>();
-              });
+         Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+               webBuilder.UseStartup<Startup>();
+            })
+            .ConfigureLogging(logging =>
+            {
+               logging.ClearProviders();
+               logging.SetMinimumLevel(LogLevel.Trace);
+            })
+            .UseNLog();
    }
 }

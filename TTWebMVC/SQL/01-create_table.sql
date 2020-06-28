@@ -26,7 +26,6 @@ CREATE TABLE AppUser (
     title VARCHAR(64),
     firstname VARCHAR(64),
     lastname VARCHAR(64),
-    refresh_token VARCHAR(64),
     disabled bit(1) DEFAULT 0 NOT NULL,
     active bit(1)  DEFAULT 0 NOT NULL,
     facebook_user VARCHAR(128),

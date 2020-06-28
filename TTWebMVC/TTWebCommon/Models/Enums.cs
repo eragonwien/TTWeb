@@ -26,4 +26,11 @@ namespace TTWebCommon.Models
    {
 		NEW
    }
+
+	public enum UserRoleEnum
+	{
+		ERROR,
+		ACTIVATE_USER,
+		VIEW_USERS
+	}
 }
