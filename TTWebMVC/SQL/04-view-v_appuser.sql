@@ -1,8 +1,8 @@
+DROP VIEW `v_appuser`;
 CREATE VIEW `v_appuser` AS
     SELECT 
         `appuser`.`id` AS `appuser_id`,
         `appuser`.`email` AS `email`,
-        `appuser`.`password` AS `password`,
         `appuser`.`title` AS `title`,
         `appuser`.`firstname` AS `firstname`,
         `appuser`.`lastname` AS `lastname`,

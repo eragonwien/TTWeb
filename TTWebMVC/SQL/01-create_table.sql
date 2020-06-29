@@ -22,7 +22,6 @@ create table Role (
 CREATE TABLE AppUser (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(64) UNIQUE NOT NULL,
-    password VARCHAR(256) NOT NULL,
     title VARCHAR(64),
     firstname VARCHAR(64),
     lastname VARCHAR(64),
