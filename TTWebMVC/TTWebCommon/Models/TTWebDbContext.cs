@@ -14,6 +14,7 @@ namespace TTWebCommon.Models
       public TTWebDbContext(string connectionString)
       {
          Connection = new MySqlConnection(connectionString);
+         Connection.OpenAsync();
       }
 
       public void Dispose()

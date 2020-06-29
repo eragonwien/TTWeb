@@ -29,13 +29,13 @@ namespace TTWebApi.Services
 
       public async Task Create(AppUser user)
       {
-         string cmdStr = "INSERT INTO appuser(email, title, firstname, lastname, active) VALUES(:email, :title, :firstname, :lastname, :active)";
+         string cmdStr = "INSERT INTO appuser(email, title, firstname, lastname, active) VALUES(@email, @title, @firstname, @lastname, @active)";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("email", user.Email));
          cmd.Parameters.Add(new MySqlParameter("title", user.Title));
          cmd.Parameters.Add(new MySqlParameter("firstname", user.Firstname));
          cmd.Parameters.Add(new MySqlParameter("lastname", user.Lastname));
-         cmd.Parameters.Add(new MySqlParameter("active", 0));
+         cmd.Parameters.Add(new MySqlParameter("active", false));
          await cmd.ExecuteNonQueryAsync();
       }
 
@@ -50,14 +50,14 @@ namespace TTWebApi.Services
       public async Task<AppUser> GetOne(string email)
       {
          AppUser appUser = null;
-         string cmdStr = "SELECT appuser_id, email, title, firstname, lastname, disabled, active, facebook_user, role_name FROM v_appuser WHERE email=:email";
+         string cmdStr = "SELECT appuser_id, email, title, firstname, lastname, disabled, active, facebook_user, role_name FROM v_appuser WHERE email=@email";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("email", email));
          using MySqlDataReader odr = await cmd.ExecuteMySqlReaderAsync();
          while (await odr.ReadAsync())
          {
-            appUser ??= ReadAppUserDataReader(odr);
-            var role = odr.GetEnum("role_name", UserRoleEnum.ERROR);
+            appUser ??= await ReadAppUserDataReaderAsync(odr);
+            UserRoleEnum role = await odr.ReadMySqlEnumAsync("role_name", UserRoleEnum.ERROR);
             if (role != UserRoleEnum.ERROR && !appUser.Roles.Contains(role))
             {
                appUser.Roles.Add(role);
@@ -66,18 +66,18 @@ namespace TTWebApi.Services
          return appUser;
       }
 
-      private AppUser ReadAppUserDataReader(MySqlDataReader odr)
+      private async Task<AppUser> ReadAppUserDataReaderAsync(MySqlDataReader odr)
       {
          var appUser = new AppUser
          {
-            Id = odr.GetInt32("appuser_id"),
-            Email = odr.GetString("email"),
-            Title = odr.GetString("title"),
-            Firstname = odr.GetString("firstname"),
-            Lastname = odr.GetString("lastname"),
-            Disabled = odr.GetBoolean("disabled"),
-            Active = odr.GetBoolean("active"),
-            FacebookUser = odr.GetString("facebook_user"),
+            Id = await odr.ReadMySqlIntegerAsync("appuser_id"),
+            Email = await odr.ReadMySqlStringAsync("email"),
+            Title = await odr.ReadMySqlStringAsync("title"),
+            Firstname = await odr.ReadMySqlStringAsync("firstname"),
+            Lastname = await odr.ReadMySqlStringAsync("lastname"),
+            Disabled = await odr.ReadMySqlBooleanAsync("disabled"),
+            Active = await odr.ReadMySqlBooleanAsync("active"),
+            FacebookUser = await odr.ReadMySqlStringAsync("facebook_user")
          };
          return appUser;
       }
@@ -93,7 +93,7 @@ namespace TTWebApi.Services
 
       public async Task Remove(int id)
       {
-         string cmdStr = "DELETE FROM appuser WHERE id=:id";
+         string cmdStr = "DELETE FROM appuser WHERE id=@id";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("id", id));
          await cmd.ExecuteNonQueryAsync();
@@ -101,7 +101,7 @@ namespace TTWebApi.Services
 
       public async Task UpdateProfile(AppUser appUser)
       {
-         string cmdStr = "UPDATE appuser SET email=:email, title=:title, firstname=:firstname, lastname: lastname, facebook_user, facebook_password WHERE id=:id";
+         string cmdStr = "UPDATE appuser SET email=@email, title=@title, firstname=@firstname, lastname=@lastname, facebook_user=@facebook_user, facebook_password=@facebook_password WHERE id=@id";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("email", appUser.Email));
          cmd.Parameters.Add(new MySqlParameter("title", appUser.Title));

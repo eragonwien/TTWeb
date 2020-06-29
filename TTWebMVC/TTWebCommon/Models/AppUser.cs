@@ -11,7 +11,6 @@ namespace TTWebCommon.Models
    {
       public int Id { get; set; }
       public string Email { get; set; }
-      public string Password { get; set; }
       public string Title { get; set; }
       public string Firstname { get; set; }
       public string Lastname { get; set; }
@@ -20,11 +19,5 @@ namespace TTWebCommon.Models
       public string FacebookUser { get; set; }
       public string FacebookPassword { get; set; }
       public List<UserRoleEnum> Roles { get; set; } = new List<UserRoleEnum>();
-
-      public AppUser ClearPassword()
-      {
-         Password = null;
-         return this;
-      }
    }
 }

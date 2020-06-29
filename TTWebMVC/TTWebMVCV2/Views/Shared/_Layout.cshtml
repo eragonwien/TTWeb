@@ -8,14 +8,29 @@
 </head>
 <body id="body">
    <div id="body-wrapper">
-      <div class="section">
-         <div class="container">
-            <main role="main">
-               @RenderBody()
-            </main>
-         </div>
+      <header>
+         <partial name="_NavbarPartial" />
+         <partial name="_NavTabPartial" />
+      </header>
+      <div class="section" style="height: 100%;">
+         <main role="main" style="height: 100%;">
+            <div class="columns" style="height: 100%;">
+               @if (Authenticated)
+               {
+                  <div class="column is-3 is-hidden-mobile" style="height: 100%;">
+                     <partial name="_SideMenuPartial" />
+                  </div>
+               }
+               <div class="column" style="height: 100%;">
+                  <div class="container" style="height: 100%;">
+                     @RenderBody()
+                  </div>
+               </div>
+            </div>
+         </main>
       </div>
    </div>
+   <form id="_AjaxFormAntiForgerySrc" asp-antiforgery="true"></form>
    <partial name="_FooterPartial" />
    <partial name="_ScriptsPartial" />
    @RenderSection("Scripts", required: false)
