@@ -1,23 +1,14 @@
 ﻿<aside class="menu">
-   <p class="menu-label">
-      General
-   </p>
-   <ul class="menu-list">
-      <li><a>Dashboard</a></li>
-      <li><a>Customers</a></li>
-   </ul>
-   <p class="menu-label">
-      Administration
-   </p>
-   <ul class="menu-list">
-      <li><a>Dashboard</a></li>
-      <li><a>Customers</a></li>
-   </ul>
-   <p class="menu-label">
-      Settings
-   </p>
-   <ul class="menu-list">
-      <li><a>Dashboard</a></li>
-      <li><a>Customers</a></li>
-   </ul>
+   @if (Authenticated)
+   {
+      <p class="menu-label">
+         <span>Account</span>
+      </p>
+      <ul class="menu-list">
+         <li><a>Profile</a></li>
+         <li>
+            <a id="logout-button" asp-controller="account" asp-action="logout">Logout</a>
+         </li>
+      </ul>
+   }
 </aside>

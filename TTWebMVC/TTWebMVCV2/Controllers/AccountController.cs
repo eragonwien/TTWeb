@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OpenQA.Selenium.Interactions;
 using SNGCommon;
 using TTWebApi.Services;
 using TTWebCommon.Models;
@@ -80,15 +81,53 @@ namespace TTWebMVCV2.Controllers
          // logouts from external login
          await HttpContext.SignOutAsync(AuthenticationSettings.SchemeExternal);
 
-         if (appUser != null || !appUser.Active)
+         if (appUser == null)
          {
             return RedirectToAction(nameof(Login));
          }
-         // create claims
-         // auth properties
-         // sign in async
 
+         if (!appUser.Active)
+         {
+            return RedirectToAction("NotActivated", "Account", appUser);
+         }
+
+         if (appUser.Disabled)
+         {
+            return RedirectToAction("Disabled", "Account", appUser);
+         }
+
+         // create claims
+         var claims = appUserService.CreateUserClaims(appUser);
+         var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+         var authProperties = CreateSignInAuthenticationProperties();
+
+         // signIn
+         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimIdentity), authProperties);
          return RedirectToAction("Index", "Home");
+      }
+
+      [AllowAnonymous]
+      [HttpGet]
+      public IActionResult NotActivated(AppUser appUser)
+      {
+         return View(appUser);
+      }
+
+      [AllowAnonymous]
+      [HttpGet]
+      public IActionResult Disabled(AppUser appUser)
+      {
+         return View(appUser);
+      }
+
+      private AuthenticationProperties CreateSignInAuthenticationProperties()
+      {
+         return new AuthenticationProperties
+         {
+            AllowRefresh = true,
+            IsPersistent = true,
+            IssuedUtc = DateTimeOffset.UtcNow
+         };
       }
    }
 }

@@ -1,9 +1,4 @@
-﻿$('#logout-button').click(function (e) {
-   e.preventDefault();
-   $.post($(this).attr('href'), null, navigateToUrl);
-});
-
-function ajaxPost(method, data, onSuccess) {
+﻿function ajaxPost(method, data, onSuccess) {
    method = method ? method : 'POST';
    $.ajax({
       type: method,

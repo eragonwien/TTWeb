@@ -17,7 +17,6 @@ namespace TTWebCommon.Models
       public bool Disabled { get; set; }
       public bool Active { get; set; }
       public string FacebookUser { get; set; }
-      public string FacebookPassword { get; set; }
       public List<UserRoleEnum> Roles { get; set; } = new List<UserRoleEnum>();
    }
 }

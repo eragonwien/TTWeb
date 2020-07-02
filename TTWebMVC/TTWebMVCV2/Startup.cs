@@ -16,8 +16,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Org.BouncyCastle.Asn1.Cms;
 using SNGCommon;
 using TTWebApi.Services;
+using TTWebCommon.Middlewares;
 using TTWebCommon.Models;
 using TTWebMVCV2.Models;
 
@@ -49,6 +51,10 @@ namespace TTWebMVCV2
             .AddCookie(co =>
             {
                co.LoginPath = "/Account/Login";
+               co.AccessDeniedPath = "Error/AccessDenied";
+               co.ExpireTimeSpan = TimeSpan.FromDays(7);
+               co.SlidingExpiration = true;
+               co.AccessDeniedPath = "/Account/AccessDenied";
             })
             .AddCookie(AuthenticationSettings.SchemeExternal)
             .AddFacebook(o =>
@@ -93,6 +99,7 @@ namespace TTWebMVCV2
          app.UseRouting();
          app.UseAuthentication();
          app.UseAuthorization();
+         app.UseExceptionLogging();
 
          app.UseEndpoints(endpoints =>
          {

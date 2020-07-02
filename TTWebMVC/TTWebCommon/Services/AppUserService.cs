@@ -1,9 +1,11 @@
 ﻿using MySql.Data.MySqlClient;
+using SNGCommon;
 using SNGCommon.Sql.MySql.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TTWebCommon.Models;
 
@@ -17,6 +19,8 @@ namespace TTWebApi.Services
       Task<bool> Exist(int id);
       Task UpdateProfile(AppUser appUser);
       Task<bool> IsEmailAvailable(string email, int id);
+      AppUser LoadContextUser(ClaimsPrincipal user);
+      List<Claim> CreateUserClaims(AppUser appUser);
    }
    public class AppUserService : IAppUserService
    {
@@ -101,16 +105,58 @@ namespace TTWebApi.Services
 
       public async Task UpdateProfile(AppUser appUser)
       {
-         string cmdStr = "UPDATE appuser SET email=@email, title=@title, firstname=@firstname, lastname=@lastname, facebook_user=@facebook_user, facebook_password=@facebook_password WHERE id=@id";
+         string cmdStr = "UPDATE appuser SET email=@email, title=@title, firstname=@firstname, lastname=@lastname, facebook_user=@facebook_user WHERE id=@id";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("email", appUser.Email));
          cmd.Parameters.Add(new MySqlParameter("title", appUser.Title));
          cmd.Parameters.Add(new MySqlParameter("firstname", appUser.Firstname));
          cmd.Parameters.Add(new MySqlParameter("lastname", appUser.Lastname));
          cmd.Parameters.Add(new MySqlParameter("facebook_user", appUser.FacebookUser));
-         cmd.Parameters.Add(new MySqlParameter("facebook_password", appUser.FacebookPassword));
          cmd.Parameters.Add(new MySqlParameter("id", appUser.Id));
          await cmd.ExecuteNonQueryAsync();
+      }
+
+      public AppUser LoadContextUser(ClaimsPrincipal contextUser)
+      {
+         var user = new AppUser
+         {
+            Id = int.TryParse(contextUser.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId) ? userId : 0,
+            Email = contextUser.FindFirst(ClaimTypes.Email)?.Value,
+            Title = contextUser.FindFirst(AuthenticationSettings.ClaimTypeTitle)?.Value,
+            Firstname = contextUser.FindFirst(ClaimTypes.GivenName)?.Value,
+            Lastname = contextUser.FindFirst(ClaimTypes.Surname)?.Value,
+            Active = bool.TryParse(contextUser.FindFirst(AuthenticationSettings.ClaimTypeActive)?.Value, out bool userActive) && userActive,
+            Disabled = bool.TryParse(contextUser.FindFirst(AuthenticationSettings.ClaimTypeDisabled)?.Value, out bool userDisabled) && userDisabled,
+            FacebookUser = contextUser.FindFirst(AuthenticationSettings.ClaimTypeFacebookUser)?.Value,
+            Roles = contextUser
+                  .FindAll(ClaimTypes.Role)
+                  ?.Select(r => Enum.TryParse(r?.Value, out UserRoleEnum parsedRole) ? parsedRole : UserRoleEnum.ERROR)
+                  .Where(r => r != UserRoleEnum.ERROR)
+                  .ToList()
+         };
+         return user;
+      }
+
+      public List<Claim> CreateUserClaims(AppUser appUser)
+      {
+         var claims = new List<Claim>();
+
+         if (appUser == null)
+         {
+            return claims;
+         }
+
+         claims.Add(new Claim(ClaimTypes.NameIdentifier.ToString(), appUser.Id.ToString()));
+         claims.Add(new Claim(ClaimTypes.Email.ToString(), appUser.Email));
+         claims.Add(new Claim(AuthenticationSettings.ClaimTypeTitle, appUser.Title ?? string.Empty));
+         claims.Add(new Claim(ClaimTypes.GivenName.ToString(), appUser.Firstname ?? string.Empty));
+         claims.Add(new Claim(ClaimTypes.Surname.ToString(), appUser.Lastname ?? string.Empty));
+         claims.Add(new Claim(AuthenticationSettings.ClaimTypeDisabled, appUser.Disabled.ToString()));
+         claims.Add(new Claim(AuthenticationSettings.ClaimTypeActive, appUser.Active.ToString()));
+         claims.Add(new Claim(AuthenticationSettings.ClaimTypeFacebookUser, appUser.FacebookUser ?? string.Empty));
+         claims.AddRange(appUser.Roles.Distinct().Select(r => new Claim(ClaimTypes.Role.ToString(), r.ToString())));
+
+         return claims;
       }
    }
 }
