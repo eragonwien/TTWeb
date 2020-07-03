@@ -88,12 +88,12 @@ namespace TTWebMVCV2.Controllers
 
          if (!appUser.Active)
          {
-            return RedirectToAction("NotActivated", "Account", appUser);
+            return RedirectToActionNoQueryString("NotActivated", "Account");
          }
 
          if (appUser.Disabled)
          {
-            return RedirectToAction("Disabled", "Account", appUser);
+            return RedirectToActionNoQueryString("Disabled", "Account");
          }
 
          // create claims

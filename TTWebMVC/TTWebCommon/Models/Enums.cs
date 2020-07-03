@@ -27,10 +27,9 @@ namespace TTWebCommon.Models
 		NEW
    }
 
-	public enum UserRoleEnum
+	public enum UserRole
 	{
-		ERROR,
-		ACTIVATE_USER,
-		VIEW_USERS
+		NONE,
+		ADMIN,
 	}
 }

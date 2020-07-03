@@ -60,12 +60,7 @@ namespace TTWebApi.Services
          using MySqlDataReader odr = await cmd.ExecuteMySqlReaderAsync();
          while (await odr.ReadAsync())
          {
-            appUser ??= await ReadAppUserDataReaderAsync(odr);
-            UserRoleEnum role = await odr.ReadMySqlEnumAsync("role_name", UserRoleEnum.ERROR);
-            if (role != UserRoleEnum.ERROR && !appUser.Roles.Contains(role))
-            {
-               appUser.Roles.Add(role);
-            }
+            appUser = await ReadAppUserDataReaderAsync(odr);
          }
          return appUser;
       }
@@ -81,7 +76,8 @@ namespace TTWebApi.Services
             Lastname = await odr.ReadMySqlStringAsync("lastname"),
             Disabled = await odr.ReadMySqlBooleanAsync("disabled"),
             Active = await odr.ReadMySqlBooleanAsync("active"),
-            FacebookUser = await odr.ReadMySqlStringAsync("facebook_user")
+            FacebookUser = await odr.ReadMySqlStringAsync("facebook_user"),
+            Role = await odr.ReadMySqlEnumAsync<UserRole>("role_name")
          };
          return appUser;
       }
@@ -128,11 +124,7 @@ namespace TTWebApi.Services
             Active = bool.TryParse(contextUser.FindFirst(AuthenticationSettings.ClaimTypeActive)?.Value, out bool userActive) && userActive,
             Disabled = bool.TryParse(contextUser.FindFirst(AuthenticationSettings.ClaimTypeDisabled)?.Value, out bool userDisabled) && userDisabled,
             FacebookUser = contextUser.FindFirst(AuthenticationSettings.ClaimTypeFacebookUser)?.Value,
-            Roles = contextUser
-                  .FindAll(ClaimTypes.Role)
-                  ?.Select(r => Enum.TryParse(r?.Value, out UserRoleEnum parsedRole) ? parsedRole : UserRoleEnum.ERROR)
-                  .Where(r => r != UserRoleEnum.ERROR)
-                  .ToList()
+            Role = Enum.TryParse(contextUser.FindFirst(ClaimTypes.Role)?.Value, out UserRole parsedRole) ? parsedRole : UserRole.NONE
          };
          return user;
       }
@@ -154,7 +146,7 @@ namespace TTWebApi.Services
          claims.Add(new Claim(AuthenticationSettings.ClaimTypeDisabled, appUser.Disabled.ToString()));
          claims.Add(new Claim(AuthenticationSettings.ClaimTypeActive, appUser.Active.ToString()));
          claims.Add(new Claim(AuthenticationSettings.ClaimTypeFacebookUser, appUser.FacebookUser ?? string.Empty));
-         claims.AddRange(appUser.Roles.Distinct().Select(r => new Claim(ClaimTypes.Role.ToString(), r.ToString())));
+         claims.Add(new Claim(ClaimTypes.Role, appUser.Role.ToString()));
 
          return claims;
       }

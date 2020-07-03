@@ -1,4 +1,3 @@
-INSERT INTO Role(name) values('ACTIVATE_USER');
-INSERT INTO Role(name) values('VIEW_USERS');
+INSERT INTO Role(name) values('ADMIN');
 
 

@@ -1,9 +1,7 @@
-﻿@model AppUser
-<div class="empty-state">
-   <a class="button is-medium facebook-button" asp-controller="account" asp-action="loginexternal" asp-route-provider="Facebook">
-      <span class="icon">
-         <i class="fab fa-facebook-square"></i>
-      </span>
-      <span>Login with Facebook</span>
-   </a>
+﻿<div class="empty-state">
+   <div class="has-text-centered">
+      <p class="title">Account is not yet activated</p>
+      <p class="subtitle">New account has to be manually activated by an admin</p>
+      <a class="button is-primary" asp-controller="account" asp-action="login">To Login page</a>
+   </div>
 </div>

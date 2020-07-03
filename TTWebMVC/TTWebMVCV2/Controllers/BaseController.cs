@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using OpenQA.Selenium.Interactions;
 using SNGCommon;
 using TTWebApi.Services;
 using TTWebCommon.Models;
@@ -12,6 +13,10 @@ namespace TTWebMVCV2.Controllers
 {
    public class BaseController : Controller
    {
-
+      protected IActionResult RedirectToActionNoQueryString(string actionName, string controllerName)
+      {
+         RouteData.Values.Clear();
+         return base.RedirectToAction(actionName, controllerName);
+      }
    }
 }

@@ -21,6 +21,7 @@ create table Role (
 
 CREATE TABLE AppUser (
 	id INT AUTO_INCREMENT PRIMARY KEY,
+    role_id INT,
     email VARCHAR(64) UNIQUE NOT NULL,
     title VARCHAR(64),
     firstname VARCHAR(64),
@@ -30,15 +31,8 @@ CREATE TABLE AppUser (
     facebook_user VARCHAR(128),
     facebook_password VARCHAR(256),
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
-);
-
-create table AppUserRole (
-	role_id INT NOT NULL,
-    appuser_id INT NOT NULL,
-    FOREIGN KEY (role_id) REFERENCES role(id),
-    FOREIGN KEY (appuser_id) REFERENCES appuser(id),
-    CONSTRAINT appuserrole_pk PRIMARY KEY (role_id, appuser_id)
+    update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (role_id) REFERENCES role(id)
 );
 
 create table ScheduleJobDef (

@@ -51,7 +51,7 @@ namespace TTWebMVCV2
             .AddCookie(co =>
             {
                co.LoginPath = "/Account/Login";
-               co.AccessDeniedPath = "Error/AccessDenied";
+               co.AccessDeniedPath = "/Error/AccessDenied";
                co.ExpireTimeSpan = TimeSpan.FromDays(7);
                co.SlidingExpiration = true;
                co.AccessDeniedPath = "/Account/AccessDenied";
