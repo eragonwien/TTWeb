@@ -11,3 +11,10 @@ function navigateToUrl(url) {
    location.href = url;
 }
 
+function parseNumber(value, base) {
+   const parsedValue = parseInt(value, base);
+   if (isNaN(parsedValue)) {
+      return -1;
+   }
+   return parsedValue;
+}

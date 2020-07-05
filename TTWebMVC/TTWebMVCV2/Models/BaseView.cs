@@ -21,13 +21,5 @@ namespace TTWebMVCV2.Models
             return User.Identity.IsAuthenticated;
          }
       }
-
-      public AppUser ContextUser
-      {
-         get
-         {
-            return AppUserService.LoadContextUser(Context.User);
-         }
-      }
    }
 }

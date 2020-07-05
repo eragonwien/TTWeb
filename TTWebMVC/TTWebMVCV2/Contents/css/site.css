@@ -7505,3 +7505,10 @@ html, body {
 .facebook-button {
   background-color: #3273dc;
   color: white; }
+
+form {
+  display: flex;
+  justify-content: flex-start; }
+  form fieldset {
+    width: 100%;
+    max-width: 640px; }

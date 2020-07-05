@@ -1,7 +1,4 @@
-﻿<div class="empty-state">
-   <div class="has-text-centered">
-      <p class="title">Account is disabled</p>
-      <p class="subtitle">Disabled account can only be unlocked manually by an admin</p>
-      <a class="button is-primary" asp-controller="account" asp-action="login">To Login page</a>
-   </div>
-</div>
+﻿@{
+   var model = new EmptyStateViewModel("Account is disabled", "Disabled account has to be manually unlocked by an admin", "To Login Page", Url.Action("login", "account"));
+}
+<partial name="_EmptyStatePartial" model="model" />

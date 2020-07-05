@@ -18,6 +18,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Org.BouncyCastle.Asn1.Cms;
 using SNGCommon;
+using SNGCommon.Services;
 using TTWebApi.Services;
 using TTWebCommon.Middlewares;
 using TTWebCommon.Models;
@@ -43,8 +44,9 @@ namespace TTWebMVCV2
 
          // registers services und dbcontext
          services.AddTransient(_ => new TTWebDbContext(Configuration.GetConnectionString("TTWeb")));
+         services.AddScoped<IPasswordHelperService, PasswordHelperService>(s => new PasswordHelperService(encryptionKey: Configuration["AppSettings:EncryptionKey"]));
          services.AddScoped<IAppUserService, AppUserService>();
-         
+
          // authentication
          services
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

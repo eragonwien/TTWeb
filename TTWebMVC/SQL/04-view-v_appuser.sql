@@ -8,8 +8,6 @@ CREATE VIEW v_appuser AS
         appuser.lastname AS lastname,
         appuser.disabled AS disabled,
         appuser.active AS active,
-        appuser.facebook_user AS facebook_user,
-        appuser.facebook_password AS facebook_password,
         role.id AS role_id,
         role.name AS role_name,
         role.description AS role_description

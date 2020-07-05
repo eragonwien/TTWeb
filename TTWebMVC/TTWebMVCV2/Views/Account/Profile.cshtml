@@ -1,0 +1,58 @@
+﻿@model ProfileUserViewModel
+
+@{
+
+}
+<form class="autoSubmit" asp-controller="account" asp-action="profile" method="post" data-auto-submit-delay-second="0.5">
+   <fieldset>
+      @Html.HiddenFor(m => m.Id)
+
+      <div class="field is-horizontal">
+         <div class="field-label is-normal">
+            @Html.LabelFor(m => m.Email, new { @class = "label" })
+         </div>
+         <div class="field-body">
+            <div class="field">
+               <p class="control is-expanded">
+                  @Html.TextBoxFor(m => m.Email, new { @class = "input", @readonly = true })
+               </p>
+               <p class="help is-danger">
+                  @Html.ValidationMessageFor(m => m.Email)
+               </p>
+            </div>
+         </div>
+      </div>
+
+      <div class="field is-horizontal">
+         <div class="field-label is-normal">
+            @Html.LabelFor(m => m.Firstname, new { @class = "label" })
+         </div>
+         <div class="field-body">
+            <div class="field">
+               <p class="control is-expanded">
+                  @Html.TextBoxFor(m => m.Firstname, new { @class = "input" })
+               </p>
+               <p class="help is-danger">
+                  @Html.ValidationMessageFor(m => m.Firstname)
+               </p>
+            </div>
+         </div>
+      </div>
+
+      <div class="field is-horizontal">
+         <div class="field-label is-normal">
+            @Html.LabelFor(m => m.Lastname, new { @class = "label" })
+         </div>
+         <div class="field-body">
+            <div class="field">
+               <p class="control is-expanded">
+                  @Html.TextBoxFor(m => m.Lastname, new { @class = "input" })
+               </p>
+               <p class="help is-danger">
+                  @Html.ValidationMessageFor(m => m.Lastname)
+               </p>
+            </div>
+         </div>
+      </div>
+   </fieldset>
+</form>

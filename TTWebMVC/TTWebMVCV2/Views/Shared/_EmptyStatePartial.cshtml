@@ -1,0 +1,20 @@
+﻿@model EmptyStateViewModel
+@{
+
+}
+<div class="empty-state">
+   <div class="has-text-centered">
+      @if (!string.IsNullOrWhiteSpace(Model.Title))
+      {
+         <p class="title">@Model.Title</p>
+      }
+      @if (!string.IsNullOrWhiteSpace(Model.Subtitle))
+      {
+         <p class="subtitle">@Model.Subtitle</p>
+      }
+      @if (!string.IsNullOrWhiteSpace(Model.CallToActionButtonName) && !string.IsNullOrWhiteSpace(Model.CallToActionHref) && Url.IsLocalUrl(Model.CallToActionHref))
+      {
+         <a class="button is-primary" href="@Model.CallToActionHref">@Model.CallToActionButtonName</a>
+      }
+   </div>
+</div>

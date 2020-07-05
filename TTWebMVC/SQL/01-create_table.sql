@@ -7,6 +7,7 @@ drop table if exists
     weekday,
     schedulejobdef,
     appuserrole,
+    facebookcredentials,
 	appuser,
 	role
 ;
@@ -28,11 +29,20 @@ CREATE TABLE AppUser (
     lastname VARCHAR(64),
     disabled bit(1) DEFAULT 0 NOT NULL,
     active bit(1)  DEFAULT 0 NOT NULL,
-    facebook_user VARCHAR(128),
-    facebook_password VARCHAR(256),
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (role_id) REFERENCES role(id)
+);
+
+create table FacebookCredentials (
+	id INT auto_increment primary key,
+    appuser_id INT not null,
+    fb_username VARCHAR(128),
+    fb_password VARCHAR(256),
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (appuser_id) REFERENCES appuser(id),
+    CONSTRAINT fb_unique UNIQUE (appuser_id, fb_username)
 );
 
 create table ScheduleJobDef (

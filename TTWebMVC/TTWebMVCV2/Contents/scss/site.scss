@@ -26,3 +26,12 @@ html, body {
    background-color: $blue;
    color: white;
 }
+
+form {
+   display: flex;
+   justify-content: flex-start;
+   fieldset {
+      width: 100%;
+      max-width: 640px;
+   }
+}

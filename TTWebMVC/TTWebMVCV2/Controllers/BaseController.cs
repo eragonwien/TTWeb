@@ -18,5 +18,17 @@ namespace TTWebMVCV2.Controllers
          RouteData.Values.Clear();
          return base.RedirectToAction(actionName, controllerName);
       }
+
+      protected int UserId
+      {
+         get
+         {
+            if (User.Identity.IsAuthenticated)
+            {
+               return int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int parsedId) ? parsedId : 0;
+            }
+            return 0;
+         }
+      }
    }
 }

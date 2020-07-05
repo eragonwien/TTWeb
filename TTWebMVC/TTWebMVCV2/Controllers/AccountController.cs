@@ -13,6 +13,7 @@ using OpenQA.Selenium.Interactions;
 using SNGCommon;
 using TTWebApi.Services;
 using TTWebCommon.Models;
+using TTWebMVCV2.Models;
 
 namespace TTWebMVCV2.Controllers
 {
@@ -118,6 +119,45 @@ namespace TTWebMVCV2.Controllers
       public IActionResult Disabled(AppUser appUser)
       {
          return View(appUser);
+      }
+
+      [HttpGet]
+      public async Task<IActionResult> Profile()
+      {
+         return View(new ProfileUserViewModel(await appUserService.GetOne(UserId)));
+      }
+
+      [HttpPost]
+      public async Task Profile(ProfileUserViewModel model)
+      {
+         if (ModelState.IsValid)
+         {
+            await appUserService.UpdateProfile(model.ToAppUser());
+         }
+      }
+
+      [HttpGet]
+      public async Task<IActionResult> FacebookCredentials()
+      {
+         return View(await appUserService.FacebookCredentials(UserId));
+      }
+
+      [HttpPost]
+      public async Task AddFacebookCredential(FacebookCredentialCreateViewModel model)
+      {
+         await appUserService.AddFacebookCredential(UserId, model.Username, model.Password);
+      }
+
+      [HttpPost]
+      public async Task UpdateFacebookCredential(FacebookCredentialUpdateViewModel model)
+      {
+         await appUserService.UpdateFacebookPassword(UserId, model.Id, model.Username, model.Password);
+      }
+
+      [HttpPost]
+      public async Task DeleteFacebookCredential(int id)
+      {
+         await appUserService.DeleteFacebookCredential(UserId, id);
       }
 
       private AuthenticationProperties CreateSignInAuthenticationProperties()
