@@ -38,6 +38,7 @@ namespace TTWebMVCV2.Controllers
 
       [AllowAnonymous]
       [HttpPost]
+      [ValidateAntiForgeryToken]
       public async Task<IActionResult> Logout()
       {
          await HttpContext.SignOutAsync(AuthenticationSettings.SchemeExternal);
@@ -124,10 +125,13 @@ namespace TTWebMVCV2.Controllers
       [HttpGet]
       public async Task<IActionResult> Profile()
       {
-         return View(new ProfileUserViewModel(await appUserService.GetOne(UserId)));
+         var model = new ProfileUserViewModel(await appUserService.GetOne(UserId));
+         model.FacebookCredentials = await appUserService.FacebookCredentials(UserId);
+         return View(model);
       }
 
       [HttpPost]
+      [ValidateAntiForgeryToken]
       public async Task Profile(ProfileUserViewModel model)
       {
          if (ModelState.IsValid)
@@ -143,18 +147,14 @@ namespace TTWebMVCV2.Controllers
       }
 
       [HttpPost]
-      public async Task AddFacebookCredential(FacebookCredentialCreateViewModel model)
-      {
-         await appUserService.AddFacebookCredential(UserId, model.Username, model.Password);
-      }
-
-      [HttpPost]
+      [ValidateAntiForgeryToken]
       public async Task UpdateFacebookCredential(FacebookCredentialUpdateViewModel model)
       {
-         await appUserService.UpdateFacebookPassword(UserId, model.Id, model.Username, model.Password);
+         await appUserService.TryAddFacebookPassword(UserId, model.Id, model.Username, model.Password);
       }
 
       [HttpPost]
+      [ValidateAntiForgeryToken]
       public async Task DeleteFacebookCredential(int id)
       {
          await appUserService.DeleteFacebookCredential(UserId, id);

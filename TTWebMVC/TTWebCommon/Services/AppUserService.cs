@@ -23,8 +23,7 @@ namespace TTWebApi.Services
       Task<bool> IsEmailAvailable(string email, int id);
       AppUser LoadContextUser(ClaimsPrincipal user);
       List<Claim> CreateUserClaims(AppUser appUser);
-      Task AddFacebookCredential(int userId, string username, string password);
-      Task UpdateFacebookPassword(int userId, int id, string username, string password);
+      Task TryAddFacebookPassword(int userId, int id, string username, string password);
       Task DeleteFacebookCredential(int id, int userId);
       Task<List<FacebookCredential>> FacebookCredentials(int userId);
    }
@@ -159,7 +158,7 @@ namespace TTWebApi.Services
          return claims;
       }
 
-      public async Task AddFacebookCredential(int userId, string username, string password)
+      private async Task AddFacebookCredential(int userId, string username, string password)
       {
          if (!await FacebookCredentialsExists(userId, username))
          {
@@ -174,14 +173,14 @@ namespace TTWebApi.Services
 
       private async Task<bool> FacebookCredentialsExists(int userId, string username)
       {
-         string cmdStr = "SELECT CASE WHEN EXISTS(SELECT id FROM facebookcredentials WHERE appuser_id=:appuser_id AND fb_username=:fb_username) THEN 1 ELSE 0 FROM DUAL";
+         string cmdStr = "SELECT CASE WHEN EXISTS(SELECT id FROM facebookcredentials WHERE appuser_id=@appuser_id AND fb_username=@fb_username) THEN 1 ELSE 0 END FROM DUAL";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
          cmd.Parameters.Add(new MySqlParameter("fb_username", username));
          return await cmd.ReadMySqlScalarBoolean();
       }
 
-      public async Task UpdateFacebookPassword(int userId, int id, string username, string password)
+      private async Task UpdateFacebookPassword(int userId, int id, string username, string password)
       {
          string cmdStr = "UPDATE facebookcredentials SET fb_password=@fb_password where id=@id AND appuser_id=@appuser_id AND fb_username=@fb_username";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
@@ -204,7 +203,7 @@ namespace TTWebApi.Services
       public async Task<List<FacebookCredential>> FacebookCredentials(int userId)
       {
          List<FacebookCredential> credentials = new List<FacebookCredential>();
-         string cmdStr = @"SELECT appuser_id, fb_username FROM v_appuser_facebook WHERE appuser_id=@appuser_id";
+         string cmdStr = @"SELECT appuser_id, fb_username FROM v_appuser_facebook WHERE appuser_id=@appuser_id order by fb_credential_id desc";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
          using MySqlDataReader odr = await cmd.ExecuteMySqlReaderAsync();
@@ -221,6 +220,18 @@ namespace TTWebApi.Services
             }
          }
          return credentials;
+      }
+
+      public async Task TryAddFacebookPassword(int userId, int id, string username, string password)
+      {
+         if (!await FacebookCredentialsExists(userId, username))
+         {
+            await AddFacebookCredential(userId, username, password);
+         }
+         else
+         {
+            await UpdateFacebookPassword(userId, id, username, password);
+         }
       }
    }
 }

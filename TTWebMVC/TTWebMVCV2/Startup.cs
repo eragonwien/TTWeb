@@ -47,6 +47,11 @@ namespace TTWebMVCV2
          services.AddScoped<IPasswordHelperService, PasswordHelperService>(s => new PasswordHelperService(encryptionKey: Configuration["AppSettings:EncryptionKey"]));
          services.AddScoped<IAppUserService, AppUserService>();
 
+         services.ConfigureApplicationCookie(o =>
+         {
+            o.Cookie.SameSite = SameSiteMode.Strict;
+         });
+
          // authentication
          services
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -57,6 +62,7 @@ namespace TTWebMVCV2
                co.ExpireTimeSpan = TimeSpan.FromDays(7);
                co.SlidingExpiration = true;
                co.AccessDeniedPath = "/Account/AccessDenied";
+               co.Cookie.SameSite = SameSiteMode.Strict;
             })
             .AddCookie(AuthenticationSettings.SchemeExternal)
             .AddFacebook(o =>
@@ -74,7 +80,8 @@ namespace TTWebMVCV2
          services.AddControllersWithViews(o =>
          {
             o.Filters.Add(new AuthorizeFilter(authenticatedPolicy));
-         });
+         })
+         .AddRazorRuntimeCompilation();
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

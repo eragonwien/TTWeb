@@ -6,5 +6,5 @@
 
 $('#logout-button').click(function (e) {
    e.preventDefault();
-   $.post($(this).attr('href'), null, navigateToUrl);
+   ajaxPost($(this).attr('href'), null, navigateToUrl);
 });

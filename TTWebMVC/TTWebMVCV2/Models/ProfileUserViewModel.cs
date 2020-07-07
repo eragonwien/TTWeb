@@ -18,6 +18,8 @@ namespace TTWebMVCV2.Models
       public string Firstname { get; set; }
       public string Lastname { get; set; }
 
+      public List<FacebookCredential> FacebookCredentials { get; set; } = new List<FacebookCredential>();
+
       public ProfileUserViewModel()
       {
 

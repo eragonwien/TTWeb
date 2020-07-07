@@ -41,8 +41,7 @@ create table FacebookCredentials (
     fb_password VARCHAR(256),
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (appuser_id) REFERENCES appuser(id),
-    CONSTRAINT fb_unique UNIQUE (appuser_id, fb_username)
+    FOREIGN KEY (appuser_id) REFERENCES appuser(id)
 );
 
 create table ScheduleJobDef (

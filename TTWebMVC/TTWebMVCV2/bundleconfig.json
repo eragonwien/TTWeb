@@ -2,13 +2,18 @@
    {
       "outputFileName": "wwwroot/css/site.min.css",
       "inputFiles": [
-         "Contents/css/!(*.min).css"
+         "Contents/css/bulma.css",
+         "Contents/css/site.css"
       ]
    },
    {
       "outputFileName": "wwwroot/js/site.min.js",
       "inputFiles": [
-         "Contents/js/!(*.min).js"
+         "Contents/js/helper.js",
+         "Contents/js/autoFormSubmit.js",
+         "Contents/js/navbar.component.js",
+         "Contents/js/profile.page.js",
+         "Contents/js/site.js"
       ],
       "minify": {
          "enabled": true,
