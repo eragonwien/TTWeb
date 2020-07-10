@@ -155,9 +155,9 @@ namespace TTWebMVCV2.Controllers
 
       [HttpPost]
       [ValidateAntiForgeryToken]
-      public async Task DeleteFacebookCredential(int id)
+      public async Task DeleteFacebookCredential(string username)
       {
-         await appUserService.DeleteFacebookCredential(UserId, id);
+         await appUserService.DeleteFacebookCredential(username, UserId);
       }
 
       private AuthenticationProperties CreateSignInAuthenticationProperties()

@@ -24,7 +24,7 @@ namespace TTWebApi.Services
       AppUser LoadContextUser(ClaimsPrincipal user);
       List<Claim> CreateUserClaims(AppUser appUser);
       Task TryAddFacebookPassword(int userId, int id, string username, string password);
-      Task DeleteFacebookCredential(int id, int userId);
+      Task DeleteFacebookCredential(string username, int userId);
       Task<List<FacebookCredential>> FacebookCredentials(int userId);
    }
    public class AppUserService : IAppUserService
@@ -191,11 +191,11 @@ namespace TTWebApi.Services
          await cmd.ExecuteNonQueryAsync();
       }
 
-      public async Task DeleteFacebookCredential(int id, int userId)
+      public async Task DeleteFacebookCredential(string username, int userId)
       {
-         string cmdStr = "DELETE FROM facebookcredentials WHERE id=@id AND appuser_id=@appuser_id";
+         string cmdStr = "DELETE FROM facebookcredentials WHERE fb_username=@fb_username AND appuser_id=@appuser_id";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
-         cmd.Parameters.Add(new MySqlParameter("id", id));
+         cmd.Parameters.Add(new MySqlParameter("fb_username", username));
          cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
          await cmd.ExecuteNonQueryAsync();
       }
@@ -203,7 +203,7 @@ namespace TTWebApi.Services
       public async Task<List<FacebookCredential>> FacebookCredentials(int userId)
       {
          List<FacebookCredential> credentials = new List<FacebookCredential>();
-         string cmdStr = @"SELECT appuser_id, fb_username FROM v_appuser_facebook WHERE appuser_id=@appuser_id order by fb_credential_id desc";
+         string cmdStr = @"SELECT fb_credential_id, fb_username, fb_password FROM v_appuser_facebook WHERE appuser_id=@appuser_id order by fb_credential_id desc";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
          using MySqlDataReader odr = await cmd.ExecuteMySqlReaderAsync();
@@ -211,8 +211,9 @@ namespace TTWebApi.Services
          {
             var credential = new FacebookCredential
             {
-               Id = await odr.ReadMySqlIntegerAsync("appuser_id"),
-               Username = await odr.ReadMySqlStringAsync("fb_username")
+               Id = await odr.ReadMySqlIntegerAsync("fb_credential_id"),
+               Username = await odr.ReadMySqlStringAsync("fb_username"),
+               Password = pwd.SimpleDecrypt(await odr.ReadMySqlStringAsync("fb_password"))
             };
             if (credential.Id > 0 && !credentials.Any(c => c.Id == credential.Id && c.Username == credential.Username))
             {
