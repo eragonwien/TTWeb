@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using TTWebApi.Services;
 using TTWebMVCV2.Models;
 
 namespace TTWebMVCV2.Controllers

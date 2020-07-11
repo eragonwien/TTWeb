@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using OpenQA.Selenium.Interactions;
 using SNGCommon;
-using TTWebApi.Services;
 using TTWebCommon.Models;
 
 namespace TTWebMVCV2.Controllers
 {
    public class BaseController : Controller
    {
+      public const string TempDataErrorNotificationsKey = "Error.TempMessage";
       protected IActionResult RedirectToActionNoQueryString(string actionName, string controllerName)
       {
          RouteData.Values.Clear();
@@ -29,6 +29,16 @@ namespace TTWebMVCV2.Controllers
             }
             return 0;
          }
+      }
+
+      protected void AddErrorNotification(string text)
+      {
+         var notifications = (List<string>)TempData[TempDataErrorNotificationsKey] ?? new List<string>();
+         if (!notifications.Contains(text))
+         {
+            notifications.Add(text);
+         }
+         TempData[TempDataErrorNotificationsKey] = notifications;
       }
    }
 }

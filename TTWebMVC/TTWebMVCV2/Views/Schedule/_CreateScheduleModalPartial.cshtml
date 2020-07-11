@@ -1,0 +1,125 @@
+﻿@model CreateScheduleViewModel
+@{
+   var scheduleTypes = (IEnumerable<string>)ViewBag.ScheduleTypeList ?? Enumerable.Empty<string>();
+   var intervalTypes = (IEnumerable<string>)ViewBag.IntervalTypeList ?? Enumerable.Empty<string>();
+   var timezones = (IEnumerable<SelectListItem>)ViewBag.TimeZoneSelectList ?? Enumerable.Empty<SelectListItem>();
+}
+<div id="createScheduleModal" class="modal">
+   <div class="modal-background"></div>
+   <div class="modal-card">
+      <header class="modal-card-head">
+         <p class="modal-card-title">New schedule</p>
+         <button class="delete" data-modal-close="true" aria-label="close"></button>
+      </header>
+      <section class="modal-card-body">
+         <form id="createScheduleModalForm" method="post" asp-controller="schedule" asp-action="create">
+            <fieldset>
+
+               <div class="field is-horizontal">
+                  <div class="field-label">
+                     @Html.LabelFor(m => m.Name, new { @class = "label" })
+                  </div>
+                  <div class="field-body">
+                     <div class="field">
+                        <p class="control is-expanded">
+                           @Html.TextBoxFor(m => m.Name, new { @class = "input" })
+                        </p>
+                        <p class="help is-danger">
+                           @Html.ValidationMessageFor(m => m.Name)
+                        </p>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="field is-horizontal">
+                  <div class="field-label">
+                     @Html.LabelFor(m => m.Type, new { @class = "label" })
+                  </div>
+                  <div class="field-body">
+                     <div class="field is-narrow">
+                        @foreach (string scheduleType in scheduleTypes)
+                        {
+                           <div class="control">
+
+                              <label class="radio">
+                                 @Html.RadioButtonFor(m => m.Type, scheduleType)
+                                 @scheduleType
+                              </label>
+                           </div>
+                        }
+                        <p class="help is-danger">
+                           @Html.ValidationMessageFor(m => m.Type)
+                        </p>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="field is-horizontal">
+                  <div class="field-label">
+                     @Html.LabelFor(m => m.InternvalType, new { @class = "label" })
+                  </div>
+                  <div class="field-body">
+                     <div class="field is-narrow">
+                        @foreach (string intervalType in intervalTypes)
+                        {
+                           <div class="control">
+                              <label class="radio">
+                                 @Html.RadioButtonFor(m => m.InternvalType, intervalType)
+                                 @intervalType
+                              </label>
+                           </div>
+                        }
+                        <p class="help is-danger">
+                           @Html.ValidationMessageFor(m => m.InternvalType)
+                        </p>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="field is-horizontal">
+                  <div class="field-label">
+                     <label class="label">Time</label>
+                  </div>
+                  <div class="field-body">
+                     <div class="field">
+                        <p class="control is-expanded">
+                           @Html.TextBoxFor(m => m.TimeFrom, new { @class = "input", @type = "time" })
+                        </p>
+                        <p class="help is-danger">
+                           @Html.ValidationMessageFor(m => m.TimeFrom)
+                        </p>
+                     </div>
+                     <div class="field">
+                        <p class="control is-expanded">
+                           @Html.TextBoxFor(m => m.TimeTo, new { @class = "input", @type = "time" })
+                        </p>
+                        <p class="help is-danger">
+                           @Html.ValidationMessageFor(m => m.TimeTo)
+                        </p>
+                     </div>
+
+                  </div>
+               </div>
+
+               <div class="field is-horizontal">
+                  <div class="field-label"></div>
+                  <div class="field-body">
+                     <div class="field is-narrow">
+                        <div class="control">
+                           <div class="select is-fullwidth">
+                              @Html.DropDownListFor(m => m.TimeZone, timezones)
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+            </fieldset>
+         </form>
+      </section>
+      <footer class="modal-card-foot" style="justify-content: flex-end;">
+         <button type="submit" class="button is-success" form="createScheduleModalForm">Save changes</button>
+         <button class="button" data-modal-close="true">Cancel</button>
+      </footer>
+   </div>
+</div>

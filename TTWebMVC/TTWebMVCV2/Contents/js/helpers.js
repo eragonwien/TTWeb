@@ -25,7 +25,7 @@ function parseNumber(value, base) {
    return parsedValue;
 }
 
-$('.modal button.modal-close').click(function () {
+$('.modal button.modal-close, .modal [data-modal-close="true"]').click(function () {
    $(this).closest('.modal').trigger('inactive');
 });
 
@@ -66,4 +66,11 @@ function resetPasswordToggle(toggleButton) {
    $(toggleButton).find('.icon :first-child').prop('name', 'eye-off');
 }
 
+$('.modal-trigger[data-modal-target][data-modal-target!=""]').click(function () {
+   const modalTarget = $($(this).attr('data-modal-target'));
+   modalTarget.trigger('active');
+});
 
+$('.notification .delete').click(function () {
+   $(this).closest('.notification').remove();
+});

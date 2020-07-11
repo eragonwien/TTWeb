@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using TTWebCommon.Models;
 
-namespace TTWebApi.Services
+namespace TTWebCommon.Services
 {
    public interface IAppUserService
    {

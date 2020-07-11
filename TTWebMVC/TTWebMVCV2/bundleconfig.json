@@ -13,6 +13,7 @@
          "Contents/js/autoFormSubmit.js",
          "Contents/js/navbar.component.js",
          "Contents/js/profile.page.js",
+         "Contents/js/schedule.page.js",
          "Contents/js/site.js"
       ],
       "minify": {

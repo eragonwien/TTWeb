@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OpenQA.Selenium.Interactions;
 using SNGCommon;
-using TTWebApi.Services;
 using TTWebCommon.Models;
+using TTWebCommon.Services;
 using TTWebMVCV2.Models;
 
 namespace TTWebMVCV2.Controllers
@@ -105,7 +105,7 @@ namespace TTWebMVCV2.Controllers
 
          // signIn
          await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimIdentity), authProperties);
-         return RedirectToAction("Index", "Home");
+         return RedirectPermanent("/");
       }
 
       [AllowAnonymous]

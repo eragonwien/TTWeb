@@ -19,9 +19,9 @@ using Microsoft.Extensions.Hosting;
 using Org.BouncyCastle.Asn1.Cms;
 using SNGCommon;
 using SNGCommon.Services;
-using TTWebApi.Services;
 using TTWebCommon.Middlewares;
 using TTWebCommon.Models;
+using TTWebCommon.Services;
 using TTWebMVCV2.Models;
 
 namespace TTWebMVCV2
@@ -46,6 +46,7 @@ namespace TTWebMVCV2
          services.AddTransient(_ => new TTWebDbContext(Configuration.GetConnectionString("TTWeb")));
          services.AddScoped<IPasswordHelperService, PasswordHelperService>(s => new PasswordHelperService(encryptionKey: Configuration["AppSettings:EncryptionKey"]));
          services.AddScoped<IAppUserService, AppUserService>();
+         services.AddScoped<IScheduleJobService, ScheduleJobService>();
 
          services.ConfigureApplicationCookie(o =>
          {
@@ -114,7 +115,7 @@ namespace TTWebMVCV2
          {
             endpoints.MapControllerRoute(
                    name: "default",
-                   pattern: "{controller=Home}/{action=Index}/{id?}");
+                   pattern: "{controller=Schedule}/{action=Index}/{id?}");
          });
       }
    }
