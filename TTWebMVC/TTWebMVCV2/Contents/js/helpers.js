@@ -53,6 +53,10 @@ $('.password-toggle').click(function () {
    }
 });
 
+function clearAllInputs(ele) {
+   $(ele).find(':input').val('');
+}
+
 function resetPasswordToggle(toggleButton) {
    const input = $(toggleButton).closest('.field').find('input:first');
    const copyInput = input.clone();
