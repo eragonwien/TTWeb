@@ -52,7 +52,7 @@ create table ScheduleJobDef (
     interval_type VARCHAR(16),
     time_from VARCHAR(16),
     time_to VARCHAR(16),
-    time_offset VARCHAR(8),
+    timezone_id VARCHAR(8),
     active bit(1) DEFAULT 0 NOT NULL,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
