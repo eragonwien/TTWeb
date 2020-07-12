@@ -6,6 +6,12 @@
    </div>
 
    <div class="navbar-menu is-active">
+
+      <div class="navbar-start">
+
+
+      </div>
+
       <div class="navbar-end">
          <div class="navbar-item">
             @if (ScheduleButtonEnabled)
@@ -15,11 +21,38 @@
                      <span class="icon">
                         <i class="fas fa-plus" aria-hidden="true"></i>
                      </span>
-                     <span class="ml-2">New schedule</span>
+                     <span class="has-icon-left">New schedule</span>
                   </a>
                </div>
             }
          </div>
+
+         @if (Authenticated)
+         {
+            <div class="navbar-item has-dropdown is-hoverable">
+               <a class="navbar-link">
+                  <span class="icon">
+                     <i class="fas fa-user" aria-hidden="true"></i>
+                  </span>
+                  <span class="has-icon-left">@ContextUser.Firstname @ContextUser.Lastname</span>
+               </a>
+
+               <div class="navbar-dropdown is-right">
+                  <a class="navbar-item" href="@Url.Action("profile", "account")">
+                     <span class="icon">
+                        <i class="fas fa-info"></i>
+                     </span>
+                     <span class="has-icon-left">Profile</span>
+                  </a>
+                  <a id="logout-button" class="navbar-item" href="@Url.Action("logout", "account")">
+                     <span class="icon">
+                        <i class="fas fa-sign-out-alt"></i>
+                     </span>
+                     <span class="has-icon-left">Logout</span>
+                  </a>
+               </div>
+            </div>
+         }
       </div>
    </div>
 </nav>

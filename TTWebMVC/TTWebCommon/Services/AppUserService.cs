@@ -137,7 +137,9 @@ namespace TTWebCommon.Services
          {
             Id = int.TryParse(contextUser.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId) ? userId : 0,
             Email = contextUser.FindFirst(ClaimTypes.Email)?.Value,
-            Role = Enum.TryParse(contextUser.FindFirst(ClaimTypes.Role)?.Value, out UserRole parsedRole) ? parsedRole : UserRole.NONE
+            Role = Enum.TryParse(contextUser.FindFirst(ClaimTypes.Role)?.Value, out UserRole parsedRole) ? parsedRole : UserRole.NONE,
+            Firstname = contextUser.FindFirst(ClaimTypes.GivenName)?.Value,
+            Lastname = contextUser.FindFirst(ClaimTypes.Surname)?.Value,
          };
          return user;
       }
@@ -153,6 +155,8 @@ namespace TTWebCommon.Services
 
          claims.Add(new Claim(ClaimTypes.NameIdentifier.ToString(), appUser.Id.ToString()));
          claims.Add(new Claim(ClaimTypes.Email.ToString(), appUser.Email));
+         claims.Add(new Claim(ClaimTypes.GivenName.ToString(), appUser.Firstname));
+         claims.Add(new Claim(ClaimTypes.Surname.ToString(), appUser.Lastname));
          claims.Add(new Claim(ClaimTypes.Role, appUser.Role.ToString()));
 
          return claims;

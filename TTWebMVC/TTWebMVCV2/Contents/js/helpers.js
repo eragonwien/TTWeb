@@ -46,12 +46,17 @@ $('.password-toggle').click(function () {
    input.remove();
 
    if (copyInput.prop('type') === 'password') {
-      $(this).find('.icon :first-child').prop('name', 'eye-off');
+      $(this).find('.icon :first-child').removeClass('fa-eye').addClass('fa-eye-slash')
    }
    else {
-      $(this).find('.icon :first-child').prop('name', 'eye');
+      $(this).find('.icon :first-child').removeClass('fa-eye-slash').addClass('fa-eye')
    }
 });
+
+function resetForm(form) {
+   clearAllInputs(form);
+   resetPasswordToggle($(form).find('.password-toggle'));
+}
 
 function clearAllInputs(ele) {
    $(ele).find(':input').val('');

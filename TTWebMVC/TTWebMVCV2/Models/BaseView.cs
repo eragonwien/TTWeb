@@ -25,6 +25,14 @@ namespace TTWebMVCV2.Models
          }
       }
 
+      public AppUser ContextUser
+      {
+         get
+         {
+            return AppUserService.LoadContextUser(User);
+         }
+      }
+
       public bool ScheduleButtonEnabled
       {
          get

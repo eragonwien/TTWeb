@@ -1,19 +1,15 @@
 ﻿$('#facebook-credentials-list .add-button').on('click', function () {
    // resets form
-   var modalForm = $('#facebook-credentials-list .modal form:first');
-   clearAllInputs(modalForm);
-   resetPasswordToggle($(modalForm).find('.password-toggle'));
+   resetForm($('#facebook-credentials-list .modal form:first'));
 
    // opens modal
    $('#facebook-credentials-list #updatefacebookcredential-modal').trigger('active');
 });
 
-$('#facebook-credentials-list .facebook-credential-button .is-link').on('click', function () {
-   
+$(document).on('click', '#facebook-credentials-list .facebook-credential-button .is-link', function () {
    var modalForm = $('#facebook-credentials-list .modal form:first');
    if (modalForm) {
-      clearAllInputs(modalForm);
-      resetPasswordToggle($(modalForm).find('.password-toggle'));
+      resetForm(modalForm);
       
       modalForm.find('input[name="Username"]').val($(this).attr('data-username'));
       modalForm.find('input[name="Password"]').val($(this).attr('data-password'));
@@ -42,7 +38,7 @@ $('#facebook-credentials-list .modal .save-button').click(function () {
             .attr('data-username', savedUsername)
             .attr('data-password', savedPassword)
             .text(savedUsername);
-         newButton.find('.is-delete').attr('data-password', savedPassword);
+         newButton.find('.is-delete').attr('data-username', savedUsername);
 
          newButton.insertAfter(templateButton);
       } else {
@@ -57,7 +53,7 @@ $('#facebook-credentials-list .modal .save-button').click(function () {
 });
 
 // opens modal asking user to confirm the deletion
-$('#facebook-credentials-list .facebook-credential-button .is-delete').click(function (e) {
+$(document).on('click', '#facebook-credentials-list .facebook-credential-button .is-delete', function (e) {
    e.preventDefault();
    const deleteModal = $('#facebook-credentials-list #deletefacebookcredential-modal');
    deleteModal.find('input[type="hidden"][name="username"]').val($(this).attr('data-username'));
@@ -65,7 +61,7 @@ $('#facebook-credentials-list .facebook-credential-button .is-delete').click(fun
 });
 
 // user confirms the deletion
-$('#facebook-credentials-list #deletefacebookcredential-modal .delete-button').click(function (e) {
+$(document).on('click', '#facebook-credentials-list #deletefacebookcredential-modal .delete-button', function (e) {
    // post to server
    const modalForm = $(this.closest('form'));
    ajaxPost(modalForm.attr('action'), modalForm.serialize());
@@ -73,7 +69,7 @@ $('#facebook-credentials-list #deletefacebookcredential-modal .delete-button').c
    // removes deleted element
    const deleteModal = $('#facebook-credentials-list #deletefacebookcredential-modal');
    const usernameInput = deleteModal.find('input[type="hidden"][name="username"]');
-   var deletedEle = $('#facebook-credentials-list .facebook-credential-button .is-link[data-username="' + usernameInput.val() + '"]').closest('.facebook-credential-button');
+   var deletedEle = $(document).find('#facebook-credentials-list .facebook-credential-button .is-link[data-username="' + usernameInput.val() + '"]').closest('.facebook-credential-button');
    deletedEle.remove();
 
    // clears modal input & shows modal
