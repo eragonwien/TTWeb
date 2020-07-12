@@ -1,6 +1,6 @@
 ﻿var typingTimer;
 
-$('form.autoSubmit').on('input', function () {
+$('form.autoSubmit').on('fieldset input', function () {
    clearTimeout(typingTimer);
    const form = $(this);
    const delaySecond = Math.round(parseFloat(form.attr('data-auto-submit-delay-second')));
