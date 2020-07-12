@@ -34,8 +34,8 @@ namespace TTWebMVCV2.Models
             Name = Name,
             Type = Type,
             IntervalType = InternvalType,
-            TimeFrom = TimeFrom != null && TimeFrom.HasValue ? TimeFrom.Value.ToString("HH24:mm") : null,
-            TimeTo = TimeTo != null && TimeTo.HasValue ? TimeTo.Value.ToString("HH24:mm") : null,
+            TimeFrom = TimeFrom != null && TimeFrom.HasValue ? TimeFrom.Value.ToString("HH:mm") : null,
+            TimeTo = TimeTo != null && TimeTo.HasValue ? TimeTo.Value.ToString("HH:mm") : null,
             TimeZone = TimeZone,
             Active = Active,
          };

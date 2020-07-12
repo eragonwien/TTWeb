@@ -17,27 +17,20 @@
    <div id="navbarMenu" class="navbar-menu">
 
       <div class="navbar-start">
-         <a class="navbar-item" href="@Url.Action("index", "schedule")">
-            <span class="icon">
-               <i class="far fa-clock" aria-hidden="true"></i>
-            </span>
-            <span class="has-icon-left">Schedules</span>
-         </a>
+         @if (Authenticated)
+         {
+            <a class="navbar-item" href="@Url.Action("index", "schedule")">
+               <span class="icon">
+                  <i class="far fa-clock" aria-hidden="true"></i>
+               </span>
+               <span class="has-icon-left">Schedules</span>
+            </a>
+         }
       </div>
 
       <div class="navbar-end">
          <div class="navbar-item">
-            @if (ScheduleButtonEnabled)
-            {
-               <div class="buttons is-right">
-                  <a class="button is-primary modal-trigger" data-modal-target="#createScheduleModal">
-                     <span class="icon">
-                        <i class="fas fa-plus" aria-hidden="true"></i>
-                     </span>
-                     <span class="has-icon-left">New schedule</span>
-                  </a>
-               </div>
-            }
+
          </div>
 
          @if (Authenticated)
@@ -69,3 +62,15 @@
       </div>
    </div>
 </nav>
+
+@if (ScheduleButtonEnabled)
+{
+   <div class="buttons is-right px-1 py-1">
+      <a class="button is-primary modal-trigger" data-modal-target="#createScheduleModal">
+         <span class="icon">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+         </span>
+         <span class="has-icon-left">New schedule</span>
+      </a>
+   </div>
+}
