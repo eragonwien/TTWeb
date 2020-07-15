@@ -1,4 +1,5 @@
-﻿$('#facebook-credentials-list .add-button').on('click', function () {
+﻿// opens modal to add new credential
+$(document).on('click', '#facebook-credentials-list .add-button', function () {
    // resets form
    resetForm($('#facebook-credentials-list .modal form:first'));
 
@@ -6,11 +7,12 @@
    $('#facebook-credentials-list #updatefacebookcredential-modal').trigger('active');
 });
 
+// open existing credential for editing
 $(document).on('click', '#facebook-credentials-list .facebook-credential-button .is-link', function () {
    var modalForm = $('#facebook-credentials-list .modal form:first');
    if (modalForm) {
       resetForm(modalForm);
-      
+
       modalForm.find('input[name="Username"]').val($(this).attr('data-username'));
       modalForm.find('input[name="Password"]').val($(this).attr('data-password'));
       modalForm.find('input[name="id"]').val($(this).attr('data-id'));
@@ -20,39 +22,18 @@ $(document).on('click', '#facebook-credentials-list .facebook-credential-button 
    $('#facebook-credentials-list #updatefacebookcredential-modal').trigger('active');
 });
 
-$('#facebook-credentials-list .modal .save-button').click(function () {
-   const modalTarget = $('#facebook-credentials-list .modal');
-   const savedUsername = modalTarget.find('input[name="Username"]').val();
-   const savedPassword = modalTarget.find('input[name="Password"]').val();
+// save credetial
+$(document).on('click', '#facebook-credentials-list .modal .save-button', function () {
+   var modalForm = $('#facebook-credentials-list .modal form:first');
+   ajaxPostForm(modalForm, onSaveCredentialSuccess)
 
-   if (savedUsername) {
-      let existingButton = $('#facebook-credentials-list .credential-list .facebook-credential-button a[data-username="' + savedUsername + '"]');
-
-      if (existingButton.length === 0) {
-         // clones new button from templatebutton then assigns data to it 
-         const templateButton = $('#facebook-credentials-list .credential-list .template-button.is-hidden')
-         const newButton = templateButton.clone()
-            .removeClass('template-button is-hidden')
-            .addClass('facebook-credential-button');
-         newButton.find('.is-link')
-            .attr('data-username', savedUsername)
-            .attr('data-password', savedPassword)
-            .text(savedUsername);
-         newButton.find('.is-delete').attr('data-username', savedUsername);
-
-         newButton.insertAfter(templateButton);
-      } else {
-         // only password can be changed here
-         existingButton.attr('data-password', savedPassword);
-      }
-
-      const modalForm = $(this.closest('form'));
-      ajaxPost(modalForm.attr('action'), modalForm.serialize());
+   function onSaveCredentialSuccess(result) {
+      $('#facebook-credentials-list .credentials-list').html(result);
+      modalForm.trigger('inactive');
    }
-   modalTarget.trigger('inactive');
 });
 
-// opens modal asking user to confirm the deletion
+// opens modal asking user to confirm the deletion of credential
 $(document).on('click', '#facebook-credentials-list .facebook-credential-button .is-delete', function (e) {
    e.preventDefault();
    const deleteModal = $('#facebook-credentials-list #deletefacebookcredential-modal');
@@ -60,11 +41,12 @@ $(document).on('click', '#facebook-credentials-list .facebook-credential-button 
    deleteModal.trigger('active');
 });
 
-// user confirms the deletion
+// user confirms the deletion of credential
 $(document).on('click', '#facebook-credentials-list #deletefacebookcredential-modal .delete-button', function (e) {
    // post to server
-   const modalForm = $(this.closest('form'));
+   const modalForm = $(this).closest('form');
    ajaxPost(modalForm.attr('action'), modalForm.serialize());
+
 
    // removes deleted element
    const deleteModal = $('#facebook-credentials-list #deletefacebookcredential-modal');
@@ -77,3 +59,63 @@ $(document).on('click', '#facebook-credentials-list #deletefacebookcredential-mo
    deleteModal.trigger('inactive');
 });
 
+// opens modal to add new friend
+$(document).on('click', '#facebook-friends-list .add-button', function () {
+   // resets form
+   resetForm($('#facebook-friends-list .modal form:first'));
+
+   // opens modal
+   $('#facebook-friends-list #updatefacebookfriend-modal').trigger('active');
+});
+
+// open existing friend for editing
+$(document).on('click', '#facebook-friends-list .facebook-friends-button .is-link', function () {
+   var modalForm = $('#facebook-friends-list .modal form:first');
+   if (modalForm) {
+      resetForm(modalForm);
+
+      modalForm.find('input[name="Name"]').val($(this).attr('data-name'));
+      modalForm.find('input[name="ProfileLink"]').val($(this).attr('data-profileLink'));
+      modalForm.find('input[name="id"]').val($(this).attr('data-id'));
+   }
+
+   // opens modal
+   $('#facebook-friends-list #updatefacebookfriend-modal').trigger('active');
+});
+
+// save friend
+$(document).on('click', '#facebook-friends-list .modal .save-button', function () {
+   var modalForm = $('#facebook-friends-list .modal form:first');
+   ajaxPostForm(modalForm, onSaveFriendSuccess)
+
+   function onSaveFriendSuccess(result) {
+      $('#facebook-friends-list .friends-list').html(result);
+      modalForm.trigger('inactive');
+   }
+});
+
+// opens modal asking user to confirm the deletion of friend
+$(document).on('click', '#facebook-friends-list .facebook-friends-button .is-delete', function (e) {
+   e.preventDefault();
+   const deleteModal = $('#facebook-friends-list #deletefacebookfriend-modal');
+   deleteModal.find('input[type="hidden"][name="id"]').val($(this).attr('data-id'));
+   deleteModal.trigger('active');
+});
+
+// user confirms the deletion of friend
+$(document).on('click', '#facebook-friends-list #deletefacebookfriend-modal .delete-button', function (e) {
+   // post to server
+   const modalForm = $(this).closest('form');
+   ajaxPost(modalForm.attr('action'), modalForm.serialize());
+
+
+   // removes deleted element
+   const deleteModal = $('#facebook-friends-list #deletefacebookfriend-modal');
+   const idInput = deleteModal.find('input[type="hidden"][name="id"]');
+   var deletedEle = $(document).find('#facebook-friends-list .facebook-friends-button .is-link[data-id="' + idInput.val() + '"]').closest('.facebook-friends-button');
+   deletedEle.remove();
+
+   // clears modal input & shows modal
+   idInput.val('');
+   deleteModal.trigger('inactive');
+});

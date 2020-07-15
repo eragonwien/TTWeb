@@ -13,6 +13,10 @@
    }
 }
 
+function ajaxPostForm(form, onSuccess) {
+   ajaxPost($(form).attr('action'), $(form).serialize(), onSuccess);
+}
+
 function navigateToUrl(url) {
    location.href = url;
 }
@@ -68,7 +72,7 @@ function resetPasswordToggle(toggleButton) {
    copyInput.attr('type', 'password');
    copyInput.insertAfter(input);
    input.remove();
-   $(toggleButton).find('.icon :first-child').prop('name', 'eye-off');
+   $(toggleButton).find('.icon :first-child').removeClass('fa-eye').addClass('fa-eye-slash');
 }
 
 $('.modal-trigger[data-modal-target][data-modal-target!=""]').click(function () {

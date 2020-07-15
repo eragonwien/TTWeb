@@ -7,38 +7,24 @@ using TTWebCommon.Models;
 
 namespace TTWebMVCV2.Models
 {
-   public class FacebookCredentialCreateViewModel
+   public class FacebookCredentialViewModel
    {
+      public int? Id { get; set; }
       [Required]
       public string Username { get; set; }
       [Required]
       [DataType(DataType.Password)]
       public string Password { get; set; }
 
-      public FacebookCredentialCreateViewModel()
+      public FacebookCredentialViewModel()
       {
 
       }
 
-      public FacebookCredentialCreateViewModel(FacebookCredential credential)
+      public FacebookCredentialViewModel(FacebookCredential credential)
       {
          Username = credential.Username;
          Password = credential.Password;
-      }
-   }
-   public class FacebookCredentialUpdateViewModel : FacebookCredentialCreateViewModel
-   {
-      [Required]
-      public int Id { get; set; }
-
-      public FacebookCredentialUpdateViewModel()
-      {
-
-      }
-
-      public FacebookCredentialUpdateViewModel(FacebookCredential credential) : base(credential)
-      {
-         Id = credential.Id;
       }
    }
 }

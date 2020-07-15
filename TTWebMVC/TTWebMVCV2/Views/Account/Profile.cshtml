@@ -63,7 +63,10 @@
       </fieldset>
    </form>
 </div>
-<div class="is-flex w-100" style="justify-content: center">
-   <partial name="~/Views/Account/_FacebookCredentialsListPartial.cshtml" model="Model.FacebookCredentials" />
+<div id="facebook-credentials-list" class="is-flex w-100" style="justify-content: center">
+   <partial name="~/Views/Account/_FacebookCredentialsPartial.cshtml" model="Model.FacebookCredentials" />
+</div>
+<div id="facebook-friends-list" class="is-flex w-100" style="justify-content: center">
+   <partial name="~/Views/Account/_FacebookFriendsPartial.cshtml" model="Model.FacebookFriends" />
 </div>
 

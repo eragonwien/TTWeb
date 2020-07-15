@@ -127,6 +127,7 @@ namespace TTWebMVCV2.Controllers
       {
          var model = new ProfileUserViewModel(await appUserService.GetOne(UserId));
          model.FacebookCredentials = await appUserService.FacebookCredentials(UserId);
+         model.FacebookFriends = await appUserService.FacebookFriends(UserId);
          return View(model);
       }
 
@@ -148,9 +149,14 @@ namespace TTWebMVCV2.Controllers
 
       [HttpPost]
       [ValidateAntiForgeryToken]
-      public async Task UpdateFacebookCredential(FacebookCredentialUpdateViewModel model)
+      public async Task<IActionResult> UpdateFacebookCredential(FacebookCredentialViewModel model)
       {
-         await appUserService.TryAddFacebookPassword(UserId, model.Id, model.Username, model.Password);
+         if (ModelState.IsValid)
+         {
+            await appUserService.TryUpdateFacebookPassword(UserId, model.Id.GetValueOrDefault(0), model.Username, model.Password);
+            return PartialView("~/Views/Account/_FacebookCredentialsListPartial.cshtml", await appUserService.FacebookCredentials(UserId));
+         }
+         return NoContent();
       }
 
       [HttpPost]
@@ -158,6 +164,25 @@ namespace TTWebMVCV2.Controllers
       public async Task DeleteFacebookCredential(string username)
       {
          await appUserService.DeleteFacebookCredential(username, UserId);
+      }
+
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      public async Task<IActionResult> UpdateFacebookFriend(FacebookFriendViewModel model)
+      {
+         if (ModelState.IsValid)
+         {
+            await appUserService.TryUpdateFacebookFriend(UserId, model.Id.GetValueOrDefault(0), model.Name, model.ProfileLink);
+            return PartialView("~/Views/Account/_FacebookFriendsListPartial.cshtml", await appUserService.FacebookFriends(UserId));
+         }
+         return NoContent();
+      }
+
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      public async Task DeleteFacebookFriend(string id)
+      {
+         await appUserService.DeleteFacebookFriend(id, UserId);
       }
 
       private AuthenticationProperties CreateSignInAuthenticationProperties()

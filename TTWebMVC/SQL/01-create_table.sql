@@ -8,6 +8,7 @@ drop table if exists
     schedulejobdef,
     appuserrole,
     facebookcredentials,
+    friend,
 	appuser,
 	role
 ;
@@ -34,6 +35,18 @@ CREATE TABLE AppUser (
     FOREIGN KEY (role_id) REFERENCES role(id)
 );
 
+CREATE TABLE Friend (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    appuser_id INT NOT NULL,
+    name VARCHAR(64) NOT NULL,
+    profile_link VARCHAR(1024),
+    active BIT(1) DEFAULT 0,
+    disabled BIT(1) DEFAULT 0,
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (appuser_id) REFERENCES appuser(id)
+);
+
 create table FacebookCredentials (
 	id INT auto_increment primary key,
     appuser_id INT not null,
@@ -47,6 +60,7 @@ create table FacebookCredentials (
 create table ScheduleJobDef (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     appuser_id INT NOT NULL,
+    friend_id INT NOT NULL,
     name VARCHAR(256),
     type VARCHAR(16),
     interval_type VARCHAR(16),
@@ -56,7 +70,8 @@ create table ScheduleJobDef (
     active bit(1) DEFAULT 0 NOT NULL,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-	FOREIGN KEY (appuser_id) REFERENCES appuser(id)
+	FOREIGN KEY (appuser_id) REFERENCES appuser(id),
+    FOREIGN KEY (friend_id) REFERENCES friend(id)
 );
 
 create table WeekDay (

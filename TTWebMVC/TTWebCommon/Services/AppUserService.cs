@@ -23,9 +23,12 @@ namespace TTWebCommon.Services
       Task<bool> IsEmailAvailable(string email, int id);
       AppUser LoadContextUser(ClaimsPrincipal user);
       List<Claim> CreateUserClaims(AppUser appUser);
-      Task TryAddFacebookPassword(int userId, int id, string username, string password);
+      Task TryUpdateFacebookPassword(int userId, int id, string username, string password);
       Task DeleteFacebookCredential(string username, int userId);
       Task<List<FacebookCredential>> FacebookCredentials(int userId);
+      Task TryUpdateFacebookFriend(int userId, int id, string name, string profileLink);
+      Task DeleteFacebookFriend(string id, int userId);
+      Task<List<FacebookFriend>> FacebookFriends(int userId);
    }
    public class AppUserService : IAppUserService
    {
@@ -83,22 +86,6 @@ namespace TTWebCommon.Services
          {
             appUser = await ReadAppUserDataReaderAsync(odr);
          }
-         return appUser;
-      }
-
-      private async Task<AppUser> ReadAppUserDataReaderAsync(MySqlDataReader odr)
-      {
-         var appUser = new AppUser
-         {
-            Id = await odr.ReadMySqlIntegerAsync("appuser_id"),
-            Email = await odr.ReadMySqlStringAsync("email"),
-            Title = await odr.ReadMySqlStringAsync("title"),
-            Firstname = await odr.ReadMySqlStringAsync("firstname"),
-            Lastname = await odr.ReadMySqlStringAsync("lastname"),
-            Disabled = await odr.ReadMySqlBooleanAsync("disabled"),
-            Active = await odr.ReadMySqlBooleanAsync("active"),
-            Role = await odr.ReadMySqlEnumAsync<UserRole>("role_name")
-         };
          return appUser;
       }
 
@@ -162,39 +149,6 @@ namespace TTWebCommon.Services
          return claims;
       }
 
-      private async Task AddFacebookCredential(int userId, string username, string password)
-      {
-         if (!await FacebookCredentialsExists(userId, username))
-         {
-            string cmdStr = "INSERT INTO facebookcredentials(appuser_id, fb_username, fb_password) VALUES(@appuser_id, @fb_username, @fb_password)";
-            using MySqlCommand cmd = db.CreateCommand(cmdStr);
-            cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
-            cmd.Parameters.Add(new MySqlParameter("fb_username", username));
-            cmd.Parameters.Add(new MySqlParameter("fb_password", pwd.SimpleEncrypt(password)));
-            await cmd.ExecuteNonQueryAsync();
-         }
-      }
-
-      private async Task<bool> FacebookCredentialsExists(int userId, string username)
-      {
-         string cmdStr = "SELECT CASE WHEN EXISTS(SELECT id FROM facebookcredentials WHERE appuser_id=@appuser_id AND fb_username=@fb_username) THEN 1 ELSE 0 END FROM DUAL";
-         using MySqlCommand cmd = db.CreateCommand(cmdStr);
-         cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
-         cmd.Parameters.Add(new MySqlParameter("fb_username", username));
-         return await cmd.ReadMySqlScalarBoolean();
-      }
-
-      private async Task UpdateFacebookPassword(int userId, int id, string username, string password)
-      {
-         string cmdStr = "UPDATE facebookcredentials SET fb_password=@fb_password where id=@id AND appuser_id=@appuser_id AND fb_username=@fb_username";
-         using MySqlCommand cmd = db.CreateCommand(cmdStr);
-         cmd.Parameters.Add(new MySqlParameter("fb_password", pwd.SimpleEncrypt(password)));
-         cmd.Parameters.Add(new MySqlParameter("id", id));
-         cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
-         cmd.Parameters.Add(new MySqlParameter("fb_username", username));
-         await cmd.ExecuteNonQueryAsync();
-      }
-
       public async Task DeleteFacebookCredential(string username, int userId)
       {
          string cmdStr = "DELETE FROM facebookcredentials WHERE fb_username=@fb_username AND appuser_id=@appuser_id";
@@ -227,16 +181,130 @@ namespace TTWebCommon.Services
          return credentials;
       }
 
-      public async Task TryAddFacebookPassword(int userId, int id, string username, string password)
+      public async Task TryUpdateFacebookPassword(int userId, int id, string username, string password)
       {
-         if (!await FacebookCredentialsExists(userId, username))
-         {
-            await AddFacebookCredential(userId, username, password);
-         }
+         if (id > 0)
+            await UpdateFacebookCredential(userId, id, username, password);
          else
-         {
-            await UpdateFacebookPassword(userId, id, username, password);
-         }
+            await AddFacebookCredential(userId, username, password);
       }
+
+      public async Task TryUpdateFacebookFriend(int userId, int id, string name, string profileLink)
+      {
+         if (id > 0)
+            await UpdateFacebookFriend(id, name, profileLink);
+         else
+            await AddFacebookFriend(userId, name, profileLink);
+      }
+
+      public async Task DeleteFacebookFriend(string id, int userId)
+      {
+         string cmdStr = "DELETE FROM friend WHERE id=@id AND appuser_id=@appuser_id";
+         using MySqlCommand cmd = db.CreateCommand(cmdStr);
+         cmd.Parameters.Add(new MySqlParameter("id", id));
+         cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
+         await cmd.ExecuteNonQueryAsync();
+      }
+
+      public async Task<List<FacebookFriend>> FacebookFriends(int userId)
+      {
+         var friends = new List<FacebookFriend>();
+         string cmdStr = @"SELECT id, name, profile_link, active, disabled FROM friend WHERE appuser_id=@appuser_id";
+         using MySqlCommand cmd = db.CreateCommand(cmdStr);
+         cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
+         using MySqlDataReader odr = await cmd.ExecuteMySqlReaderAsync();
+         while (await odr.ReadAsync())
+         {
+            friends.Add(new FacebookFriend
+            {
+               Id = await odr.ReadMySqlIntegerAsync("id"),
+               AppUserId = userId,
+               Name = await odr.ReadMySqlStringAsync("name"),
+               ProfileLink = await odr.ReadMySqlStringAsync("profile_link"),
+               Active = await odr.ReadMySqlBooleanAsync("active"),
+               Disabled = await odr.ReadMySqlBooleanAsync("disabled"),
+            });
+         }
+         return friends;
+      }
+
+      #region Privat Methods
+
+      private async Task<AppUser> ReadAppUserDataReaderAsync(MySqlDataReader odr)
+      {
+         var appUser = new AppUser
+         {
+            Id = await odr.ReadMySqlIntegerAsync("appuser_id"),
+            Email = await odr.ReadMySqlStringAsync("email"),
+            Title = await odr.ReadMySqlStringAsync("title"),
+            Firstname = await odr.ReadMySqlStringAsync("firstname"),
+            Lastname = await odr.ReadMySqlStringAsync("lastname"),
+            Disabled = await odr.ReadMySqlBooleanAsync("disabled"),
+            Active = await odr.ReadMySqlBooleanAsync("active"),
+            Role = await odr.ReadMySqlEnumAsync<UserRole>("role_name")
+         };
+         return appUser;
+      }
+
+      private async Task AddFacebookCredential(int userId, string username, string password)
+      {
+         string cmdStr = "INSERT INTO facebookcredentials(appuser_id, fb_username, fb_password) VALUES(@appuser_id, @fb_username, @fb_password)";
+         using MySqlCommand cmd = db.CreateCommand(cmdStr);
+         cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
+         cmd.Parameters.Add(new MySqlParameter("fb_username", username));
+         cmd.Parameters.Add(new MySqlParameter("fb_password", pwd.SimpleEncrypt(password)));
+         await cmd.ExecuteNonQueryAsync();
+      }
+
+      private async Task<bool> IsFacebookCredentialsExists(int userId, string username)
+      {
+         string cmdStr = "SELECT id FROM facebookcredentials WHERE appuser_id=@appuser_id AND fb_username=@fb_username";
+         using MySqlCommand cmd = db.CreateCommand(cmdStr);
+         cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
+         cmd.Parameters.Add(new MySqlParameter("fb_username", username));
+         return await cmd.ReadMySqlScalarInt64Async() > 0;
+      }
+
+      private async Task UpdateFacebookCredential(int userId, int id, string username, string password)
+      {
+         string cmdStr = "UPDATE facebookcredentials SET fb_username=@fb_username, fb_password=@fb_password where id=@id AND appuser_id=@appuser_id";
+         using MySqlCommand cmd = db.CreateCommand(cmdStr);
+         cmd.Parameters.Add(new MySqlParameter("fb_username", username));
+         cmd.Parameters.Add(new MySqlParameter("fb_password", pwd.SimpleEncrypt(password)));
+         cmd.Parameters.Add(new MySqlParameter("id", id));
+         cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
+         await cmd.ExecuteNonQueryAsync();
+      }
+
+      private async Task UpdateFacebookFriend(int id, string name, string profileLink)
+      {
+         string cmdStr = "UPDATE friend SET name=@name, profile_link=@profile_link where id=@id";
+         using MySqlCommand cmd = db.CreateCommand(cmdStr);
+         cmd.Parameters.Add(new MySqlParameter("name", name));
+         cmd.Parameters.Add(new MySqlParameter("profile_link", profileLink));
+         cmd.Parameters.Add(new MySqlParameter("id", id));
+         await cmd.ExecuteNonQueryAsync();
+      }
+
+      private async Task AddFacebookFriend(int userId, string name, string profileLink)
+      {
+         string cmdStr = "INSERT INTO friend(appuser_id, name, profile_link) VALUES(@appuser_id, @name, @profile_link)";
+         using MySqlCommand cmd = db.CreateCommand(cmdStr);
+         cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
+         cmd.Parameters.Add(new MySqlParameter("name", name));
+         cmd.Parameters.Add(new MySqlParameter("profile_link", profileLink));
+         await cmd.ExecuteNonQueryAsync();
+      }
+
+      private async Task<bool> IsFacebookFriendExist(int userId, string profileLink)
+      {
+         string cmdStr = "SELECT id FROM friend WHERE appuser_id=@appuser_id AND profile_link=@profile_link";
+         using MySqlCommand cmd = db.CreateCommand(cmdStr);
+         cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
+         cmd.Parameters.Add(new MySqlParameter("profile_link", profileLink));
+         return await cmd.ReadMySqlScalarInt64Async() > 0;
+      }
+
+      #endregion
    }
 }
