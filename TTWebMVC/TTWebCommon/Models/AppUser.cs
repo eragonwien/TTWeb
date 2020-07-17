@@ -9,7 +9,7 @@ namespace TTWebCommon.Models
 {
    public class AppUser
    {
-      public int Id { get; set; }
+      public int Id { get; set; } = 0;
       public string Email { get; set; }
       public string Title { get; set; }
       public string Firstname { get; set; }
@@ -18,5 +18,7 @@ namespace TTWebCommon.Models
       public bool Active { get; set; }
       public List<FacebookCredential> FacebookCredentials { get; set; } = new List<FacebookCredential>();
       public UserRole Role { get; set; } = UserRole.NONE;
+
+      public static AppUser Empty = new AppUser();
    }
 }

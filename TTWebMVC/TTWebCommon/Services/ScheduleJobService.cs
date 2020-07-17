@@ -28,10 +28,12 @@ namespace TTWebCommon.Services
 
       public async Task AddScheduleJobDef(ScheduleJobDef def)
       {
-         string cmdStr = @"INSERT INTO schedulejobdef(appuser_id, name, type, interval_type, time_from, time_to, timezone_id, active) 
-            VALUES(@appuser_id, @name, @type, @interval_type, @time_from, @time_to, @timezone_id, @active)";
+         string cmdStr = @"INSERT INTO schedulejobdef(appuser_id, friend_id, facebookcredential_id, name, type, interval_type, time_from, time_to, timezone_id, active) 
+            VALUES(@appuser_id, @friend_id, @facebookcredential_id, @name, @type, @interval_type, @time_from, @time_to, @timezone_id, @active)";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("appuser_id", def.AppUserId));
+         cmd.Parameters.Add(new MySqlParameter("friend_id", def.FriendId));
+         cmd.Parameters.Add(new MySqlParameter("facebookcredential_id", def.FacebookCredentialId));
          cmd.Parameters.Add(new MySqlParameter("name", def.Name));
          cmd.Parameters.Add(new MySqlParameter("type", def.Type.ToString()));
          cmd.Parameters.Add(new MySqlParameter("interval_type", def.IntervalType.ToString()));
@@ -50,7 +52,7 @@ namespace TTWebCommon.Services
       public async Task<IEnumerable<ScheduleJobDef>> GetScheduleJobDefs(int userId)
       {
          List<ScheduleJobDef> defs = new List<ScheduleJobDef>();
-         string cmdStr = @"SELECT id, appuser_id, name, type, interval_type, time_from, time_to, timezone_id, active 
+         string cmdStr = @"SELECT id, appuser_id, friend_id, name, type, interval_type, time_from, time_to, timezone_id, active 
             FROM schedulejobdef WHERE appuser_id=@appuser_id";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
@@ -60,7 +62,6 @@ namespace TTWebCommon.Services
             defs.Add(new ScheduleJobDef
             {
                Id = await odr.ReadMySqlIntegerAsync("id"),
-               AppUserId = userId,
                Name = await odr.ReadMySqlStringAsync("name"),
                Type = await odr.ReadMySqlEnumAsync<ScheduleJobType>("type"),
                IntervalType = await odr.ReadMySqlEnumAsync<IntervalTypeEnum>("interval_type"),

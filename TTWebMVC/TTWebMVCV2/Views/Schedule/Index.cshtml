@@ -1,38 +1,41 @@
 ﻿@model IEnumerable<ScheduleJobDef>
 @{
    ScheduleButtonEnabled = true;
-   var createScheduleModel = new CreateScheduleViewModel();
 }
 
-@foreach (var def in Model)
+@if (Model.Any())
 {
-   <div class="box">
-      <article class="media">
-         <div class="media-content">
-            <div class="content">
-               <p><strong>@def.Name</strong></p>
-               <p>@def.Type.ToString(), @def.IntervalType.ToString(), @def.TimeFrom - @def.TimeTo - @def.TimeZone, @def.Active</p>
-            </div>
-            <nav class="level is-mobile">
-               <div class="level-left">
-                  <a class="level-item">
-                     <span class="icon is-small"><i class="fas fa-reply"></i></span>
-                  </a>
-                  <a class="level-item">
-                     <span class="icon is-small"><i class="fas fa-retweet"></i></span>
-                  </a>
-                  <a class="level-item">
-                     <span class="icon is-small"><i class="fas fa-heart"></i></span>
-                  </a>
+   <div class="tile is-ancestor">
+      @foreach (var def in Model)
+      {
+         <div class="tile is-4 box">
+            <article class="media w-100">
+               <div class="media-content">
+                  <div class="content">
+                     <p><strong>@def.Name</strong></p>
+                     <p>@def.Type.ToString(), @def.IntervalType.ToString(), @def.TimeFrom - @def.TimeTo - @def.TimeZone, @def.Active</p>
+                  </div>
+                  <nav class="level is-mobile">
+                     <div class="level-left">
+                        <a class="level-item">
+                           <span class="icon is-small"><i class="fas fa-reply"></i></span>
+                        </a>
+                        <a class="level-item">
+                           <span class="icon is-small"><i class="fas fa-retweet"></i></span>
+                        </a>
+                        <a class="level-item">
+                           <span class="icon is-small"><i class="fas fa-heart"></i></span>
+                        </a>
+                     </div>
+                  </nav>
                </div>
-            </nav>
+               <div class="media-right">
+                  <button class="delete"></button>
+               </div>
+            </article>
          </div>
-         <div class="media-right">
-            <button class="delete"></button>
-         </div>
-      </article>
+      }
    </div>
-
 }
 
-<partial name="_CreateScheduleModalPartial" model="createScheduleModel" />
+<partial name="_ScheduleModalPartial" model="ScheduleDefViewModel.Default" />

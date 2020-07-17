@@ -151,7 +151,7 @@ namespace TTWebCommon.Services
 
       public async Task DeleteFacebookCredential(string username, int userId)
       {
-         string cmdStr = "DELETE FROM facebookcredentials WHERE fb_username=@fb_username AND appuser_id=@appuser_id";
+         string cmdStr = "DELETE FROM facebookcredential WHERE fb_username=@fb_username AND appuser_id=@appuser_id";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("fb_username", username));
          cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
@@ -218,7 +218,6 @@ namespace TTWebCommon.Services
             friends.Add(new FacebookFriend
             {
                Id = await odr.ReadMySqlIntegerAsync("id"),
-               AppUserId = userId,
                Name = await odr.ReadMySqlStringAsync("name"),
                ProfileLink = await odr.ReadMySqlStringAsync("profile_link"),
                Active = await odr.ReadMySqlBooleanAsync("active"),
@@ -248,7 +247,7 @@ namespace TTWebCommon.Services
 
       private async Task AddFacebookCredential(int userId, string username, string password)
       {
-         string cmdStr = "INSERT INTO facebookcredentials(appuser_id, fb_username, fb_password) VALUES(@appuser_id, @fb_username, @fb_password)";
+         string cmdStr = "INSERT INTO facebookcredential(appuser_id, fb_username, fb_password) VALUES(@appuser_id, @fb_username, @fb_password)";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
          cmd.Parameters.Add(new MySqlParameter("fb_username", username));
@@ -258,7 +257,7 @@ namespace TTWebCommon.Services
 
       private async Task<bool> IsFacebookCredentialsExists(int userId, string username)
       {
-         string cmdStr = "SELECT id FROM facebookcredentials WHERE appuser_id=@appuser_id AND fb_username=@fb_username";
+         string cmdStr = "SELECT id FROM facebookcredential WHERE appuser_id=@appuser_id AND fb_username=@fb_username";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
          cmd.Parameters.Add(new MySqlParameter("fb_username", username));
@@ -267,7 +266,7 @@ namespace TTWebCommon.Services
 
       private async Task UpdateFacebookCredential(int userId, int id, string username, string password)
       {
-         string cmdStr = "UPDATE facebookcredentials SET fb_username=@fb_username, fb_password=@fb_password where id=@id AND appuser_id=@appuser_id";
+         string cmdStr = "UPDATE facebookcredential SET fb_username=@fb_username, fb_password=@fb_password where id=@id AND appuser_id=@appuser_id";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("fb_username", username));
          cmd.Parameters.Add(new MySqlParameter("fb_password", pwd.SimpleEncrypt(password)));

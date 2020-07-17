@@ -7,10 +7,16 @@ using TTWebCommon.Models;
 
 namespace TTWebMVCV2.Models
 {
-   public class CreateScheduleViewModel
+   public class ScheduleDefViewModel
    {
       [StringLength(16)]
       public string Name { get; set; }
+      [Required]
+      [Display(Name = "Friend")]
+      public int? FriendId { get; set; }
+      [Required]
+      [Display(Name = "Login")]
+      public int? FacebookCredentialId { get; set; }
       [Required]
       public ScheduleJobType Type { get; set; }
       [Required]
@@ -25,13 +31,17 @@ namespace TTWebMVCV2.Models
       [Required]
       public bool Active { get; set; }
 
-      public ScheduleJobDef ToScheduleJobDef(int appUserId)
+      public static ScheduleDefViewModel Default = new ScheduleDefViewModel();
+
+      public ScheduleJobDef ToScheduleJobDef(int appuserId)
       {
          return new ScheduleJobDef
          {
             Id = -1,
-            AppUserId = appUserId,
             Name = Name,
+            AppUserId = appuserId,
+            FriendId = FriendId.Value,
+            FacebookCredentialId = FacebookCredentialId.Value,
             Type = Type,
             IntervalType = InternvalType,
             TimeFrom = TimeFrom != null && TimeFrom.HasValue ? TimeFrom.Value.ToString("HH:mm") : null,

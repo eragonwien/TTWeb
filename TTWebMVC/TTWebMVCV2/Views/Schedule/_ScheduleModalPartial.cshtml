@@ -1,4 +1,4 @@
-﻿@model CreateScheduleViewModel
+﻿@model ScheduleDefViewModel
 @{
    var scheduleTypes = (IEnumerable<string>)ViewBag.ScheduleTypeList ?? Enumerable.Empty<string>();
    var intervalTypes = (IEnumerable<string>)ViewBag.IntervalTypeList ?? Enumerable.Empty<string>();
@@ -31,6 +31,38 @@
                         </p>
                         <p class="help is-danger">
                            @Html.ValidationMessageFor(m => m.Name)
+                        </p>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="field is-horizontal">
+                  <div class="field-label">
+                     @Html.LabelFor(m => m.FacebookCredentialId, new { @class = "label" })
+                  </div>
+                  <div class="field-body">
+                     <div class="field">
+                        <p class="control is-expanded">
+                           @Html.TextBoxFor(m => m.FacebookCredentialId, new { @class = "input" })
+                        </p>
+                        <p class="help is-danger">
+                           @Html.ValidationMessageFor(m => m.FacebookCredentialId)
+                        </p>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="field is-horizontal">
+                  <div class="field-label">
+                     @Html.LabelFor(m => m.FriendId, new { @class = "label" })
+                  </div>
+                  <div class="field-body">
+                     <div class="field">
+                        <p class="control is-expanded">
+                           @Html.TextBoxFor(m => m.FriendId, new { @class = "input" })
+                        </p>
+                        <p class="help is-danger">
+                           @Html.ValidationMessageFor(m => m.FriendId)
                         </p>
                      </div>
                   </div>

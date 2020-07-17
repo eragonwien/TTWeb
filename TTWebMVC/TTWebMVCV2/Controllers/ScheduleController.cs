@@ -17,16 +17,19 @@ namespace TTWebMVCV2.Controllers
    {
       private readonly ILogger<ScheduleController> log;
       private readonly IScheduleJobService scheduleJobService;
+      private readonly IAppUserService appUserService;
 
-      public ScheduleController(ILogger<ScheduleController> log, IScheduleJobService scheduleJobService)
+      public ScheduleController(ILogger<ScheduleController> log, IScheduleJobService scheduleJobService, IAppUserService appUserService)
       {
          this.log = log;
          this.scheduleJobService = scheduleJobService;
+         this.appUserService = appUserService;
       }
 
       [HttpGet]
       public async Task<IActionResult> Index()
       {
+         ViewBag.FriendsList = await appUserService.FacebookFriends(UserId);
          ViewBag.ScheduleTypeList = Helper.GetEnumStrings<ScheduleJobType>(true).Select(s => s.ToStringCapitalized());
          ViewBag.IntervalTypeList = Helper.GetEnumStrings<IntervalTypeEnum>(true).Select(s => s.ToStringCapitalized());
 
@@ -37,7 +40,7 @@ namespace TTWebMVCV2.Controllers
 
       [HttpPost]
       [ValidateAntiForgeryToken]
-      public async Task<IActionResult> Create(CreateScheduleViewModel model)
+      public async Task<IActionResult> Create(ScheduleDefViewModel model)
       {
          if (ModelState.IsValid)
          {
