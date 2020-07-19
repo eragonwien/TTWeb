@@ -1,41 +1,58 @@
-﻿@model IEnumerable<ScheduleJobDef>
+﻿@model List<ScheduleJobDef>
 @{
    ScheduleButtonEnabled = true;
+   var friendsList = (List<FacebookFriend>)ViewBag.FriendsList ?? new List<FacebookFriend>();
 }
-
+<script>
+   console.log(@Json.Serialize(friendsList.Select(f => f.Name)));
+</script>
 @if (Model.Any())
 {
    <div class="tile is-ancestor">
       @foreach (var def in Model)
       {
-         <div class="tile is-4 box">
+         int defIndex = Model.IndexOf(def);
+         <div class="tile is-4 box is-hoverable is-clickable modal-ajax-trigger" 
+              data-modal-target="#scheduleModal" 
+              data-modal-data-id="@def.Id"
+              data-modal-href="@Url.Action("update", "schedule")">
             <article class="media w-100">
                <div class="media-content">
-                  <div class="content">
-                     <p><strong>@def.Name</strong></p>
-                     <p>@def.Type.ToString(), @def.IntervalType.ToString(), @def.TimeFrom - @def.TimeTo - @def.TimeZone, @def.Active</p>
+                  <div class="content mb-4">
+                     <p class="mb-1"><strong>@def.Name</strong></p>
+                     <p class="mb-1">@def.Type.ToString()</p>
+                     <p class="mb-1">@def.IntervalType.ToString(), @def.TimeFrom - @def.TimeTo - @def.TimeZone</p>
                   </div>
                   <nav class="level is-mobile">
                      <div class="level-left">
                         <a class="level-item">
-                           <span class="icon is-small"><i class="fas fa-reply"></i></span>
+                           <span class="icon is-small"><i class="fas fa-info"></i></span>
                         </a>
                         <a class="level-item">
-                           <span class="icon is-small"><i class="fas fa-retweet"></i></span>
+                           <span class="icon is-small"><i class="fas fa-pen"></i></span>
                         </a>
                         <a class="level-item">
-                           <span class="icon is-small"><i class="fas fa-heart"></i></span>
+                           <span class="icon is-small"><i class="fas fa-trash"></i></span>
                         </a>
                      </div>
                   </nav>
                </div>
                <div class="media-right">
-                  <button class="delete"></button>
+                  <form method="post" asp-controller="Schedule" asp-action="ToggleActive">
+                     <div class="field">
+                        <input type="hidden" name="id" value="@def.Id" />
+                        <input id="switch-def-@defIndex"
+                               type="checkbox"
+                               class="switch is-rounded toggle-ajax"
+                               name="active"
+                               @(def.Active ? "checked" : "")>
+                        <label for="switch-def-@defIndex"></label>
+                     </div>
+                  </form>
                </div>
             </article>
          </div>
       }
    </div>
 }
-
-<partial name="_ScheduleModalPartial" model="ScheduleDefViewModel.Default" />
+<div id="scheduleModal" class="modal"></div>

@@ -1,6 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using SNGCommon;
+using SNGCommon.Extenstions.StringExtensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TTWebCommon.Models;
@@ -9,6 +13,7 @@ namespace TTWebMVCV2.Models
 {
    public class ScheduleDefViewModel
    {
+      public int? Id { get; set; }
       [StringLength(16)]
       public string Name { get; set; }
       [Required]
@@ -21,11 +26,11 @@ namespace TTWebMVCV2.Models
       public ScheduleJobType Type { get; set; }
       [Required]
       [Display(Name = "Interval")]
-      public IntervalTypeEnum InternvalType { get; set; }
+      public IntervalTypeEnum IntervalType { get; set; }
       [Required]
-      public DateTime? TimeFrom { get; set; }
+      public string TimeFrom { get; set; }
       [Required]
-      public DateTime? TimeTo { get; set; }
+      public string TimeTo { get; set; }
       [Required]
       public string TimeZone { get; set; }
       [Required]
@@ -33,22 +38,75 @@ namespace TTWebMVCV2.Models
 
       public static ScheduleDefViewModel Default = new ScheduleDefViewModel();
 
+      public ScheduleDefViewModel()
+      {
+
+      }
+
+      public ScheduleDefViewModel(ScheduleJobDef model)
+      {
+         if (model == null)
+         {
+            return;
+         }
+         Id = model.Id;
+         FriendId = model.FriendId;
+         FacebookCredentialId = model.FacebookCredentialId;
+         Type = model.Type;
+         IntervalType = model.IntervalType;
+         TimeFrom = model.TimeFrom;
+         TimeTo = model.TimeTo;
+         TimeZone = model.TimeZone;
+         Active = model.Active;
+      }
+
       public ScheduleJobDef ToScheduleJobDef(int appuserId)
       {
          return new ScheduleJobDef
          {
-            Id = -1,
+            Id = Id != null && Id.HasValue ? Id.Value : 0,
             Name = Name,
             AppUserId = appuserId,
             FriendId = FriendId.Value,
             FacebookCredentialId = FacebookCredentialId.Value,
             Type = Type,
-            IntervalType = InternvalType,
-            TimeFrom = TimeFrom != null && TimeFrom.HasValue ? TimeFrom.Value.ToString("HH:mm") : null,
-            TimeTo = TimeTo != null && TimeTo.HasValue ? TimeTo.Value.ToString("HH:mm") : null,
+            IntervalType = IntervalType,
+            TimeFrom = TimeFrom,
+            TimeTo = TimeTo,
             TimeZone = TimeZone,
             Active = Active,
          };
+      }
+   }
+
+   public class ScheduleDefModalViewModel : ScheduleDefViewModel
+   {
+      public IEnumerable<string> ScheduleTypes { get; set; }
+      public IEnumerable<string> IntervalTypes { get; set; }
+      public IEnumerable<SelectListItem> TimeZones { get; set; }
+
+      public ScheduleDefModalViewModel()
+      {
+         InitializeSelectLists();
+      }
+
+      public ScheduleDefModalViewModel(ScheduleJobDef scheduleJobDef) : base(scheduleJobDef)
+      {
+         InitializeSelectLists();
+      }
+
+      public bool HasValidId()
+      {
+         return Id != null && Id.HasValue && Id.Value > 0;
+      }
+
+      private void InitializeSelectLists()
+      {
+         ScheduleTypes = Helper.GetEnumStrings<ScheduleJobType>(true).Select(s => s.ToStringCapitalized());
+         IntervalTypes = Helper.GetEnumStrings<IntervalTypeEnum>(true).Select(s => s.ToStringCapitalized());
+
+         TimeZones = TimeZoneInfo.GetSystemTimeZones()
+            .Select(tz => new SelectListItem(tz.DisplayName, tz.Id, tz.Id == TimeZoneInfo.Utc.Id));
       }
    }
 }

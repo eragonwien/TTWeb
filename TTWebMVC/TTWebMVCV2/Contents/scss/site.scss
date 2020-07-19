@@ -1,4 +1,7 @@
 ﻿@import "bulma";
+@import "switch.extension";
+
+$box-shadow-hovered: 0 0.5em 1em -0.125em rgba($scheme-invert, 0.1), 0 0px 0 1px rgba($scheme-invert, 0.5);
 
 html, body {
    height: 100%;
@@ -43,6 +46,17 @@ form {
 span.has-icon-left {
    margin-left: 8px;
 }
+
 .w-100 {
    width: 100%;
+}
+
+.box.is-hoverable:hover {
+   -webkit-box-shadow: $box-shadow-hovered;
+   -moz-box-shadow: $box-shadow-hovered;
+   box-shadow: $box-shadow-hovered;
+}
+
+.is-clickable {
+   cursor: pointer;
 }

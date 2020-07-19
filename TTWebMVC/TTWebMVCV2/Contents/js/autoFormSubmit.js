@@ -17,4 +17,3 @@ $('form.autoSubmit').on('doneTyping', function () {
    $.post($(this).prop('action'), $(this).serialize());
 });
 
-

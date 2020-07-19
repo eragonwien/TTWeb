@@ -6,11 +6,11 @@
       data: data,
       success: onSuccess
    });
+}
 
-   function onBeforeSend(req) {
-      var token = $('#_AjaxFormAntiForgerySrc input[name="__RequestVerificationToken"]').val();
-      req.setRequestHeader('RequestVerificationToken', token);
-   }
+function onBeforeSend(req) {
+   var token = $('#_AjaxFormAntiForgerySrc input[name="__RequestVerificationToken"]').val();
+   req.setRequestHeader('RequestVerificationToken', token);
 }
 
 function ajaxPostForm(form, onSuccess) {
@@ -29,7 +29,7 @@ function parseNumber(value, base) {
    return parsedValue;
 }
 
-$('.modal button.modal-close, .modal [data-modal-close="true"]').click(function () {
+$(document).on('click', '.modal button.modal-close, .modal [data-modal-close="true"]', function () {
    $(this).closest('.modal').trigger('inactive');
 });
 
@@ -83,3 +83,34 @@ $('.modal-trigger[data-modal-target][data-modal-target!=""]').click(function () 
 $('.notification .delete').click(function () {
    $(this).closest('.notification').remove();
 });
+
+$('input[type="checkbox"]').change(function () {
+   $(this).val($(this).is(':checked') ? true : false);
+});
+
+$('.toggle-ajax').change(function () {
+   ajaxPostForm($(this).closest('form'));
+});
+
+$('.modal-ajax-trigger[data-modal-target][data-modal-target!=""][data-modal-href][data-modal-href!=""]').click(triggerAjaxModal);
+
+function triggerAjaxModal() {
+   const modalHref = $(this).attr('data-modal-href');
+   const modalTarget = $($(this).attr('data-modal-target'));
+   const modalDataId = $(this).attr('data-modal-data-id');
+
+   let modalData = { id: modalDataId};
+
+   $.ajax({
+      type: 'GET',
+      url: modalHref,
+      beforeSend: onBeforeSend,
+      data: modalData,
+      success: onSuccess
+   });
+
+   function onSuccess(html) {
+      modalTarget.html(html);
+      modalTarget.trigger('active');
+   }
+}
