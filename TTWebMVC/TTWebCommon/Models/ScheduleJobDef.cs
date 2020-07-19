@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -21,5 +22,10 @@ namespace TTWebCommon.Models
       public string TimeTo { get; set; }
       public string TimeZone { get; set; }
       public bool Active { get; set; } = false;
+
+      public ScheduleJobDef()
+      {
+
+      }
    }
 }

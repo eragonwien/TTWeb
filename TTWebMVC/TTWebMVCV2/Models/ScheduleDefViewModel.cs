@@ -50,6 +50,7 @@ namespace TTWebMVCV2.Models
             return;
          }
          Id = model.Id;
+         Name = model.Name;
          FriendId = model.FriendId;
          FacebookCredentialId = model.FacebookCredentialId;
          Type = model.Type;

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SNGCommon;
@@ -30,12 +32,13 @@ namespace TTWebMVCV2.Controllers
       public async Task<IActionResult> Index()
       {
          ViewBag.FriendsList = await appUserService.FacebookFriends(UserId);
-         ViewBag.ScheduleTypeList = Helper.GetEnumStrings<ScheduleJobType>(true).Select(s => s.ToStringCapitalized());
-         ViewBag.IntervalTypeList = Helper.GetEnumStrings<IntervalTypeEnum>(true).Select(s => s.ToStringCapitalized());
-
-         TimeZoneInfo timeZoneInfo = TimeZoneInfo.Utc;
-         ViewBag.TimeZoneSelectList = TimeZoneInfo.GetSystemTimeZones().Select(tz => new SelectListItem(tz.DisplayName, tz.Id, tz.Id == TimeZoneInfo.Utc.Id));
          return View(await scheduleJobService.GetScheduleJobDefs(UserId));
+      }
+
+      [HttpGet]
+      public PartialViewResult Create()
+      {
+         return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", new ScheduleDefModalViewModel());
       }
 
       [HttpPost]
@@ -54,6 +57,38 @@ namespace TTWebMVCV2.Controllers
             }
          }
          return RedirectToAction("Index");
+      }
+
+      [HttpGet]
+      public async Task<IActionResult> Update(int id)
+      {
+         return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", 
+            new ScheduleDefModalViewModel(await scheduleJobService.GetScheduleJobDef(id, UserId)));
+      }
+
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      public async Task<IActionResult> Update(ScheduleDefViewModel model)
+      {
+         if (ModelState.IsValid && model.Id > 0)
+         {
+            try
+            {
+               await scheduleJobService.UpdateScheduleJobDef(model.ToScheduleJobDef(UserId));
+            }
+            catch (Exception ex)
+            {
+               AddErrorNotification(ex.Message);
+            }
+         }
+         return RedirectToAction("Index");
+      }
+
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      public async Task ToggleActive(int id, bool active)
+      {
+         await scheduleJobService.ToggleActive(id, active);
       }
    }
 }

@@ -27,6 +27,8 @@ namespace TTWebCommon.Services
          this.db = db;
       }
 
+      private const string ScheduleJobDefSelect = @"SELECT id, appuser_id, friend_id, facebookcredential_id, name, type, interval_type, time_from, time_to, timezone_id, active FROM schedulejobdef";
+
       public async Task AddScheduleJobDef(ScheduleJobDef def)
       {
          string cmdStr = @"INSERT INTO schedulejobdef(appuser_id, friend_id, facebookcredential_id, name, type, interval_type, time_from, time_to, timezone_id, active) 
@@ -48,27 +50,14 @@ namespace TTWebCommon.Services
       public async Task<ScheduleJobDef> GetScheduleJobDef(int id, int userId)
       {
          ScheduleJobDef scheduleJobDef = new ScheduleJobDef();
-         string cmdStr = @"SELECT id, appuser_id, friend_id, facebookcredential_id, name, type, interval_type, time_from, time_to, timezone_id, active 
-            FROM schedulejobdef WHERE id=@id AND appuser_id=@appuser_id";
+         string cmdStr = ScheduleJobDefSelect + " WHERE id=@id AND appuser_id=@appuser_id";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("id", id));
          cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
          using var odr = await cmd.ExecuteMySqlReaderAsync();
          if (await odr.ReadAsync())
          {
-            scheduleJobDef = new ScheduleJobDef
-            {
-               Id = await odr.ReadMySqlIntegerAsync("id"),
-               Name = await odr.ReadMySqlStringAsync("name"),
-               FriendId = await odr.ReadMySqlIntegerAsync("friend_id"),
-               FacebookCredentialId = await odr.ReadMySqlIntegerAsync("facebookcredential_id"),
-               Type = await odr.ReadMySqlEnumAsync<ScheduleJobType>("type"),
-               IntervalType = await odr.ReadMySqlEnumAsync<IntervalTypeEnum>("interval_type"),
-               TimeFrom = await odr.ReadMySqlStringAsync("time_from"),
-               TimeTo = await odr.ReadMySqlStringAsync("time_to"),
-               TimeZone = await odr.ReadMySqlStringAsync("timezone_id"),
-               Active = await odr.ReadMySqlBooleanAsync("active"),
-            };
+            scheduleJobDef = await ReadScheduleJobDefAsync(odr);
          }
          return scheduleJobDef;
       }
@@ -76,25 +65,14 @@ namespace TTWebCommon.Services
       public async Task<List<ScheduleJobDef>> GetScheduleJobDefs(int userId)
       {
          List<ScheduleJobDef> defs = new List<ScheduleJobDef>();
-         string cmdStr = @"SELECT id, appuser_id, friend_id, name, type, interval_type, time_from, time_to, timezone_id, 
-            active 
-            FROM schedulejobdef WHERE appuser_id=@appuser_id";
+         string cmdStr = ScheduleJobDefSelect + " WHERE appuser_id=@appuser_id";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
          using var odr = await cmd.ExecuteMySqlReaderAsync();
          while (await odr.ReadAsync())
          {
-            defs.Add(new ScheduleJobDef
-            {
-               Id = await odr.ReadMySqlIntegerAsync("id"),
-               Name = await odr.ReadMySqlStringAsync("name"),
-               Type = await odr.ReadMySqlEnumAsync<ScheduleJobType>("type"),
-               IntervalType = await odr.ReadMySqlEnumAsync<IntervalTypeEnum>("interval_type"),
-               TimeFrom = await odr.ReadMySqlStringAsync("time_from"),
-               TimeTo = await odr.ReadMySqlStringAsync("time_to"),
-               TimeZone = await odr.ReadMySqlStringAsync("timezone_id"),
-               Active = await odr.ReadMySqlBooleanAsync("active"),
-            });
+            var scheduleJobDef = await ReadScheduleJobDefAsync(odr);
+            defs.Add(scheduleJobDef);
          }
          return defs.ToList();
       }
@@ -130,6 +108,24 @@ namespace TTWebCommon.Services
          cmd.Parameters.Add(new MySqlParameter("id", scheduleJobDef.Id));
          cmd.Parameters.Add(new MySqlParameter("appuser_id", scheduleJobDef.AppUserId));
          await cmd.ExecuteNonQueryAsync();
+      }
+
+      private async Task<ScheduleJobDef> ReadScheduleJobDefAsync(MySqlDataReader odr)
+      {
+         return new ScheduleJobDef
+         {
+            Id = await odr.ReadMySqlIntegerAsync("id"),
+            AppUserId = await odr.ReadMySqlIntegerAsync("appuser_id"),
+            Name = await odr.ReadMySqlStringAsync("name"),
+            FriendId = await odr.ReadMySqlIntegerAsync("friend_id"),
+            FacebookCredentialId = await odr.ReadMySqlIntegerAsync("facebookcredential_id"),
+            Type = await odr.ReadMySqlEnumAsync<ScheduleJobType>("type"),
+            IntervalType = await odr.ReadMySqlEnumAsync<IntervalTypeEnum>("interval_type"),
+            TimeFrom = await odr.ReadMySqlStringAsync("time_from"),
+            TimeTo = await odr.ReadMySqlStringAsync("time_to"),
+            TimeZone = await odr.ReadMySqlStringAsync("timezone_id"),
+            Active = await odr.ReadMySqlBooleanAsync("active"),
+         };
       }
    }
 }

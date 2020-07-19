@@ -29,18 +29,6 @@ function parseNumber(value, base) {
    return parsedValue;
 }
 
-$(document).on('click', '.modal button.modal-close, .modal [data-modal-close="true"]', function () {
-   $(this).closest('.modal').trigger('inactive');
-});
-
-$('.modal').on('active', function () {
-   $(this).addClass('is-active');
-});
-
-$('.modal').on('inactive', function () {
-   $(this).removeClass('is-active');
-});
-
 $('.password-toggle').click(function () {
    const input = $(this).closest('.field').find('input:first');
    const copyInput = input.clone();
@@ -74,19 +62,6 @@ function resetPasswordToggle(toggleButton) {
    input.remove();
    $(toggleButton).find('.icon :first-child').removeClass('fa-eye').addClass('fa-eye-slash');
 }
-
-$('.modal-trigger[data-modal-target][data-modal-target!=""]').click(function () {
-   const modalTarget = $($(this).attr('data-modal-target'));
-   modalTarget.trigger('active');
-});
-
-$('.notification .delete').click(function () {
-   $(this).closest('.notification').remove();
-});
-
-$('input[type="checkbox"]').change(function () {
-   $(this).val($(this).is(':checked') ? true : false);
-});
 
 $('.toggle-ajax').change(function () {
    ajaxPostForm($(this).closest('form'));
