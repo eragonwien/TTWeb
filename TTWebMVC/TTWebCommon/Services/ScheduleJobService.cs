@@ -27,7 +27,11 @@ namespace TTWebCommon.Services
          this.db = db;
       }
 
-      private const string ScheduleJobDefSelect = @"SELECT id, appuser_id, friend_id, facebookcredential_id, name, type, interval_type, time_from, time_to, timezone_id, active FROM schedulejobdef";
+      private const string ScheduleJobDefSelect = @"SELECT id, appuser_id, friend_id, facebookcredential_id, name, type, 
+         interval_type, time_from, time_to, timezone_id, active,
+         appuser_email, appuser_title, appuser_firstname, appuser_lastname, appuser_disabled, appuser_active, appuser_role, 
+         friend_name, friend_profile_link, friend_disabled
+         FROM v_schedulejobdef";
 
       public async Task AddScheduleJobDef(ScheduleJobDef def)
       {
@@ -77,9 +81,13 @@ namespace TTWebCommon.Services
          return defs.ToList();
       }
 
-      public Task RemoveScheduleJobDef(int id, int appUserId)
+      public async Task RemoveScheduleJobDef(int id, int appUserId)
       {
-         throw new NotImplementedException();
+         string cmdStr = @"DELETE FROM schedulejobdef WHERE id=@id AND appuser_id=@appuser_id";
+         using MySqlCommand cmd = db.CreateCommand(cmdStr);
+         cmd.Parameters.Add(new MySqlParameter("id", id));
+         cmd.Parameters.Add(new MySqlParameter("appuser_id", appUserId));
+         await cmd.ExecuteNonQueryAsync();
       }
 
       public async Task ToggleActive(int id, bool active)
@@ -125,6 +133,24 @@ namespace TTWebCommon.Services
             TimeTo = await odr.ReadMySqlStringAsync("time_to"),
             TimeZone = await odr.ReadMySqlStringAsync("timezone_id"),
             Active = await odr.ReadMySqlBooleanAsync("active"),
+            AppUser = new AppUser
+            {
+               Id = await odr.ReadMySqlIntegerAsync("appuser_id"),
+               Email = await odr.ReadMySqlStringAsync("appuser_email"),
+               Title = await odr.ReadMySqlStringAsync("appuser_title"),
+               Firstname = await odr.ReadMySqlStringAsync("appuser_firstname"),
+               Lastname = await odr.ReadMySqlStringAsync("appuser_lastname"),
+               Disabled = await odr.ReadMySqlBooleanAsync("appuser_disabled"),
+               Active = await odr.ReadMySqlBooleanAsync("appuser_active"),
+               Role = await odr.ReadMySqlEnumAsync<UserRole>("appuser_role"),
+            },
+            Friend = new FacebookFriend
+            {
+               Id = await odr.ReadMySqlIntegerAsync("friend_id"),
+               Name = await odr.ReadMySqlStringAsync("friend_name"),
+               ProfileLink = await odr.ReadMySqlStringAsync("friend_profile_link"),
+               Disabled = await odr.ReadMySqlBooleanAsync("friend_disabled"),
+            }
          };
       }
    }

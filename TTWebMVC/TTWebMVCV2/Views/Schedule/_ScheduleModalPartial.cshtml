@@ -154,8 +154,11 @@
          </fieldset>
       </form>
    </section>
-   <footer class="modal-card-foot" style="justify-content: flex-end;">
+   <footer class="modal-card-foot" style="justify-content: space-between;">
+      <a class="button is-danger ajax"
+         href="@Url.Action("Delete", "Schedule")"
+         data-params-id="@Model.Id"
+         data-success-reload="true">Delete</a>
       <button type="submit" class="button is-success" form="scheduleModalForm">Save changes</button>
-      <button class="button" data-modal-close="true">Cancel</button>
    </footer>
 </div>

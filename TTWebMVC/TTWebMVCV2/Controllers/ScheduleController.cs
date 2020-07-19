@@ -91,5 +91,12 @@ namespace TTWebMVCV2.Controllers
       {
          await scheduleJobService.ToggleActive(id, active);
       }
+
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      public async Task Delete(int id)
+      {
+         await scheduleJobService.RemoveScheduleJobDef(id, UserId);
+      }
    }
 }

@@ -14,7 +14,9 @@ namespace TTWebCommon.Models
       public int Id { get; set; } = 0;
       public string Name { get; set; }
       public int AppUserId { get; set; }
+      public AppUser AppUser { get; set; } = new AppUser();
       public int FriendId { get; set; }
+      public FacebookFriend Friend { get; set; } = new FacebookFriend();
       public int FacebookCredentialId { get; set; }
       public ScheduleJobType Type { get; set; } = ScheduleJobType.NONE;
       public IntervalTypeEnum IntervalType { get; set; } = IntervalTypeEnum.NONE;
