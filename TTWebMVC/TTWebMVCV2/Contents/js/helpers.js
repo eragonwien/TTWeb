@@ -64,7 +64,9 @@ function resetPasswordToggle(toggleButton) {
 }
 
 $('.toggle-ajax').change(function () {
-   ajaxPostForm($(this).closest('form'));
+   let data = getDataFromDataAttributes(this);
+   data.active = $(this).is(':checked');
+   ajaxPost($(this).attr('data-href'), data);
 });
 
 $('.modal-ajax-trigger[data-modal-target][data-modal-target!=""][data-modal-href][data-modal-href!=""]').click(triggerAjaxModal);
@@ -72,9 +74,8 @@ $('.modal-ajax-trigger[data-modal-target][data-modal-target!=""][data-modal-href
 function triggerAjaxModal() {
    const modalHref = $(this).attr('data-modal-href');
    const modalTarget = $($(this).attr('data-modal-target'));
-   const modalDataId = $(this).attr('data-modal-data-id');
 
-   let modalData = { id: modalDataId};
+   let modalData = getDataFromDataAttributes(this);
 
    $.ajax({
       type: 'GET',
@@ -88,4 +89,15 @@ function triggerAjaxModal() {
       modalTarget.html(html);
       modalTarget.trigger('active');
    }
+}
+
+function getDataFromDataAttributes(ele) {
+   let data = {};
+
+   const id = $(ele).attr('data-params-id');
+   if (id) {
+      data.id = id;
+   }
+
+   return data;
 }

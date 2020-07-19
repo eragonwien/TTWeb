@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SNGCommon;
+using SNGCommon.Extenstions.ArrayExtensions;
 using SNGCommon.Extenstions.StringExtensions;
 using TTWebCommon.Models;
 using TTWebCommon.Services;
@@ -32,7 +33,7 @@ namespace TTWebMVCV2.Controllers
       public async Task<IActionResult> Index()
       {
          ViewBag.FriendsList = await appUserService.FacebookFriends(UserId);
-         return View(await scheduleJobService.GetScheduleJobDefs(UserId));
+         return View((await scheduleJobService.GetScheduleJobDefs(UserId)).GroupIntoBundles(3));
       }
 
       [HttpGet]
