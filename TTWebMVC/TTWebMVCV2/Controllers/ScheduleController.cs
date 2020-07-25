@@ -37,9 +37,12 @@ namespace TTWebMVCV2.Controllers
       }
 
       [HttpGet]
-      public PartialViewResult Create()
+      public async Task<PartialViewResult> Create()
       {
-         return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", new ScheduleDefModalViewModel());
+         var createModel = new ScheduleDefModalViewModel()
+            .SetLogins(await appUserService.FacebookCredentials(UserId))
+            .SetFriends(await appUserService.FacebookFriends(UserId));
+         return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", createModel);
       }
 
       [HttpPost]
@@ -63,8 +66,11 @@ namespace TTWebMVCV2.Controllers
       [HttpGet]
       public async Task<IActionResult> Update(int id)
       {
-         return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", 
-            new ScheduleDefModalViewModel(await scheduleJobService.GetScheduleJobDef(id, UserId)));
+         var updateModel = new ScheduleDefModalViewModel(await scheduleJobService.GetScheduleJobDef(id, UserId))
+            .SetLogins(await appUserService.FacebookCredentials(UserId))
+            .SetFriends(await appUserService.FacebookFriends(UserId));
+
+         return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", updateModel);
       }
 
       [HttpPost]

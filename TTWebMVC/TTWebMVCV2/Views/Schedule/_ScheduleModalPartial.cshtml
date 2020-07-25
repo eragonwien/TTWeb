@@ -43,7 +43,9 @@
                <div class="field-body">
                   <div class="field">
                      <p class="control is-expanded">
-                        @Html.TextBoxFor(m => m.FacebookCredentialId, new { @class = "input" })
+                        <div class="select is-fullwidth">
+                           @Html.DropDownListFor(m => m.FacebookCredentialId, Model.Logins, "Select a login")
+                        </div>
                      </p>
                      <p class="help is-danger">
                         @Html.ValidationMessageFor(m => m.FacebookCredentialId)
@@ -59,7 +61,9 @@
                <div class="field-body">
                   <div class="field">
                      <p class="control is-expanded">
-                        @Html.TextBoxFor(m => m.FriendId, new { @class = "input" })
+                        <div class="select is-fullwidth">
+                           @Html.DropDownListFor(m => m.FriendId, Model.Friends, "Select a target")
+                        </div>
                      </p>
                      <p class="help is-danger">
                         @Html.ValidationMessageFor(m => m.FriendId)

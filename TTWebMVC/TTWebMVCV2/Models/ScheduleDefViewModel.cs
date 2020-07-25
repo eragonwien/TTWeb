@@ -82,9 +82,11 @@ namespace TTWebMVCV2.Models
 
    public class ScheduleDefModalViewModel : ScheduleDefViewModel
    {
-      public IEnumerable<string> ScheduleTypes { get; set; }
-      public IEnumerable<string> IntervalTypes { get; set; }
-      public IEnumerable<SelectListItem> TimeZones { get; set; }
+      public IEnumerable<string> ScheduleTypes { get; set; } = Enumerable.Empty<string>();
+      public IEnumerable<string> IntervalTypes { get; set; } = Enumerable.Empty<string>();
+      public IEnumerable<SelectListItem> TimeZones { get; set; } = Enumerable.Empty<SelectListItem>();
+      public IEnumerable<SelectListItem> Logins { get; set; } = Enumerable.Empty<SelectListItem>();
+      public IEnumerable<SelectListItem> Friends { get; set; } = Enumerable.Empty<SelectListItem>();
 
       public ScheduleDefModalViewModel()
       {
@@ -108,6 +110,24 @@ namespace TTWebMVCV2.Models
 
          TimeZones = TimeZoneInfo.GetSystemTimeZones()
             .Select(tz => new SelectListItem(tz.DisplayName, tz.Id, tz.Id == TimeZoneInfo.Utc.Id));
+      }
+
+      public ScheduleDefModalViewModel SetLogins(IEnumerable<FacebookCredential> logins)
+      {
+         if (logins != null && logins.Any())
+         {
+            Logins = logins.Select(l => new SelectListItem(l.Username, l.Id.ToString()));
+         }
+         return this;
+      }
+
+      public ScheduleDefModalViewModel SetFriends(IEnumerable<FacebookFriend> friends)
+      {
+         if (friends != null && friends.Any())
+         {
+            Friends = friends.Select(l => new SelectListItem(l.Name, l.Id.ToString()));
+         }
+         return this;
       }
    }
 }
