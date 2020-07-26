@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using SNGCommon;
 using SNGCommon.Extenstions.ArrayExtensions;
 using SNGCommon.Extenstions.StringExtensions;
+using TimeZoneConverter;
 using TTWebCommon.Models;
 using TTWebCommon.Services;
 using TTWebMVCV2.Models;
@@ -103,6 +104,14 @@ namespace TTWebMVCV2.Controllers
       public async Task Delete(int id)
       {
          await scheduleJobService.RemoveScheduleJobDef(id, UserId);
+      }
+
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      public IActionResult CheckTimezone(string timezone)
+      {
+         var tz = TZConvert.IanaToWindows(timezone);
+         return Ok(tz);
       }
    }
 }
