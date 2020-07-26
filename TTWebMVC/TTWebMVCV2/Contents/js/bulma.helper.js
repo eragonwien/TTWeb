@@ -1,4 +1,14 @@
-﻿// closes modal window
+﻿$(document).ready(function () {
+   attachDateTimePicker();
+});
+
+function attachDateTimePicker() {
+   bulmaCalendar.attach('input[type="time"]');
+   bulmaCalendar.attach('input[type="date"]');
+   $(document).find('button.datetimepicker-clear-button').attr('type', 'button');
+}
+
+// closes modal window
 $(document).on('click', '.modal button.modal-close, .modal [data-modal-close="true"]', function () {
    $(this).closest('.modal').trigger('inactive');
 });
@@ -6,6 +16,7 @@ $(document).on('click', '.modal button.modal-close, .modal [data-modal-close="tr
 // open modal listener
 $('.modal').on('active', function () {
    $(this).addClass('is-active');
+   attachDateTimePicker();
 });
 
 // close modal listener
@@ -23,3 +34,4 @@ $('.modal-trigger[data-modal-target][data-modal-target!=""]').click(function () 
 $('.notification .delete').click(function () {
    $(this).closest('.notification').remove();
 });
+

@@ -2,6 +2,7 @@
    {
       "outputFileName": "wwwroot/css/site.min.css",
       "inputFiles": [
+         "Contents/css/bulma-calendar.min.css",
          "Contents/css/bulma.css",
          "Contents/css/site.css"
       ]
@@ -9,6 +10,7 @@
    {
       "outputFileName": "wwwroot/js/site.min.js",
       "inputFiles": [
+         "Contents/js/bulma-calendar.js",
          "Contents/js/bulma.helper.js",
          "Contents/js/helper.js",
          "Contents/js/autoFormSubmit.js",

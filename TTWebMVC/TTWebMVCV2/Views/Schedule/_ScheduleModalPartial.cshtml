@@ -14,8 +14,8 @@
       <button class="delete" data-modal-close="true" aria-label="close"></button>
    </header>
    <section class="modal-card-body">
-      <form id="scheduleModalForm" 
-            method="post" 
+      <form id="scheduleModalForm"
+            method="post"
             action="@formAction"
             asp-antiforgery="true">
          <fieldset>
@@ -124,7 +124,7 @@
                <div class="field-body">
                   <div class="field">
                      <p class="control is-expanded">
-                        @Html.TextBoxFor(m => m.TimeFrom, new { @class = "input", @type = "time" })
+                        @Html.TextBoxFor(m => m.TimeFrom, new { @class = "input", @type = "time", @data_display_mode = "dialog" })
                      </p>
                      <p class="help is-danger">
                         @Html.ValidationMessageFor(m => m.TimeFrom)
@@ -132,7 +132,7 @@
                   </div>
                   <div class="field">
                      <p class="control is-expanded">
-                        @Html.TextBoxFor(m => m.TimeTo, new { @class = "input", @type = "time" })
+                        @Html.TextBoxFor(m => m.TimeTo, new { @class = "input", @type = "time", @data_display_mode = "dialog" })
                      </p>
                      <p class="help is-danger">
                         @Html.ValidationMessageFor(m => m.TimeTo)
@@ -154,7 +154,6 @@
                   </div>
                </div>
             </div>
-
          </fieldset>
       </form>
    </section>
