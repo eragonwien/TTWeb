@@ -107,9 +107,6 @@ namespace TTWebMVCV2.Models
       {
          ScheduleTypes = Helper.GetEnumStrings<ScheduleJobType>(true).Select(s => s.ToStringCapitalized());
          IntervalTypes = Helper.GetEnumStrings<IntervalTypeEnum>(true).Select(s => s.ToStringCapitalized());
-
-         TimeZones = TimeZoneInfo.GetSystemTimeZones()
-            .Select(tz => new SelectListItem(tz.DisplayName, tz.Id, tz.Id == TimeZoneInfo.Utc.Id));
       }
 
       public ScheduleDefModalViewModel SetLogins(IEnumerable<FacebookCredential> logins)
@@ -127,6 +124,17 @@ namespace TTWebMVCV2.Models
          {
             Friends = friends.Select(l => new SelectListItem(l.Name, l.Id.ToString()));
          }
+         return this;
+      }
+
+      public ScheduleDefModalViewModel SetTimezoneSelectList(string timezone)
+      {
+         if (!string.IsNullOrWhiteSpace(timezone))
+         {
+            TimeZone = timezone;
+         }
+         TimeZones = TimeZoneInfo.GetSystemTimeZones()
+            .Select(tz => new SelectListItem(tz.DisplayName, tz.Id, tz.Id == (TimeZone ?? TimeZoneInfo.Utc.Id)));
          return this;
       }
    }

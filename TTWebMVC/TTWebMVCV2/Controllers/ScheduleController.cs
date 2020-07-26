@@ -41,8 +41,9 @@ namespace TTWebMVCV2.Controllers
       public async Task<PartialViewResult> Create()
       {
          var createModel = new ScheduleDefModalViewModel()
-            .SetLogins(await appUserService.FacebookCredentials(UserId))
-            .SetFriends(await appUserService.FacebookFriends(UserId));
+            .SetTimezoneSelectList(UserTimezone)
+            .SetLogins(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId))
+            .SetFriends(UserFacebookFriends ?? await appUserService.FacebookFriends(UserId));
          return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", createModel);
       }
 
@@ -68,8 +69,9 @@ namespace TTWebMVCV2.Controllers
       public async Task<IActionResult> Update(int id)
       {
          var updateModel = new ScheduleDefModalViewModel(await scheduleJobService.GetScheduleJobDef(id, UserId))
-            .SetLogins(await appUserService.FacebookCredentials(UserId))
-            .SetFriends(await appUserService.FacebookFriends(UserId));
+            .SetTimezoneSelectList(UserTimezone)
+            .SetLogins(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId))
+            .SetFriends(UserFacebookFriends ?? await appUserService.FacebookFriends(UserId));
 
          return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", updateModel);
       }
@@ -110,8 +112,11 @@ namespace TTWebMVCV2.Controllers
       [ValidateAntiForgeryToken]
       public IActionResult CheckTimezone(string timezone)
       {
-         var tz = TZConvert.IanaToWindows(timezone);
-         return Ok(tz);
+         if (string.IsNullOrWhiteSpace(UserTimezone))
+         {
+            UserTimezone = TZConvert.IanaToWindows(timezone);
+         }
+         return Ok(UserTimezone);
       }
    }
 }

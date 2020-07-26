@@ -53,7 +53,13 @@ namespace TTWebMVCV2
             o.Cookie.SameSite = SameSiteMode.Strict;
          });
 
-         // authentication
+         // Session
+         services.AddSession(o =>
+         {
+            o.Cookie.Name = ".TTWeb.Session";
+         });
+
+         // Authentication
          services
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(co =>
@@ -110,6 +116,7 @@ namespace TTWebMVCV2
          app.UseAuthentication();
          app.UseAuthorization();
          app.UseExceptionLogging();
+         app.UseSession();
 
          app.UseEndpoints(endpoints =>
          {

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using OpenQA.Selenium.Interactions;
 using SNGCommon;
 using TTWebCommon.Models;
@@ -19,6 +21,12 @@ namespace TTWebMVCV2.Controllers
          return base.RedirectToAction(actionName, controllerName);
       }
 
+      #region Getters
+
+      private const string SessionKeyUserFacebookCredentials = "SessionKey.UserFacebookCredentials";
+      private const string SessionKeyUserFacebookFriends = "SessionKey.UserFacebookFriends";
+      private const string SessionKeyUserTimezone = "SessionKey.UserTimezone";
+
       protected int UserId
       {
          get
@@ -31,6 +39,44 @@ namespace TTWebMVCV2.Controllers
          }
       }
 
+      protected List<FacebookCredential> UserFacebookCredentials
+      {
+         get
+         {
+            return ReadSession<List<FacebookCredential>>(SessionKeyUserFacebookCredentials);
+         }
+         set
+         {
+            WriteToSession(SessionKeyUserFacebookCredentials, value);
+         }
+      }
+
+      protected List<FacebookFriend> UserFacebookFriends
+      {
+         get
+         {
+            return ReadSession<List<FacebookFriend>>(SessionKeyUserFacebookFriends);
+         }
+         set
+         {
+            WriteToSession(SessionKeyUserFacebookCredentials, value);
+         }
+      }
+
+      protected string UserTimezone
+      {
+         get
+         {
+            return HttpContext.Session.GetString(SessionKeyUserTimezone);
+         }
+         set
+         {
+            HttpContext.Session.SetString(SessionKeyUserTimezone, value);
+         }
+      }
+
+      #endregion
+
       protected void AddErrorNotification(string text)
       {
          var notifications = (List<string>)TempData[TempDataErrorNotificationsKey] ?? new List<string>();
@@ -40,5 +86,20 @@ namespace TTWebMVCV2.Controllers
          }
          TempData[TempDataErrorNotificationsKey] = notifications;
       }
+
+      #region Session
+
+      private void WriteToSession<T>(string key, T value)
+      {
+         HttpContext.Session.SetString(key, JsonConvert.SerializeObject(value));
+      }
+
+      private T ReadSession<T>(string key)
+      {
+         string strValue = HttpContext.Session.GetString(key);
+         return !string.IsNullOrWhiteSpace(strValue) ? (T)JsonConvert.DeserializeObject(strValue) : default;
+      }
+
+      #endregion
    }
 }
