@@ -60,3 +60,8 @@ span.has-icon-left {
 .is-clickable {
    cursor: pointer;
 }
+
+.notification > .delete {
+    right: 0.75rem;
+    top: 0.75rem;
+}

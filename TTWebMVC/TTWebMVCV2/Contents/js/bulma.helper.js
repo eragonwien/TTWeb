@@ -2,11 +2,11 @@
    //attachDateTimePicker();
 });
 
-function attachDateTimePicker() {
-   bulmaCalendar.attach('input[type="time"]');
-   bulmaCalendar.attach('input[type="date"]');
-   $(document).find('button.datetimepicker-clear-button').attr('type', 'button');
-}
+//function attachDateTimePicker() {
+//   bulmaCalendar.attach('input[type="time"]');
+//   bulmaCalendar.attach('input[type="date"]');
+//   $(document).find('button.datetimepicker-clear-button').attr('type', 'button');
+//}
 
 // closes modal window
 $(document).on('click', '.modal button.modal-close, .modal [data-modal-close="true"]', function () {

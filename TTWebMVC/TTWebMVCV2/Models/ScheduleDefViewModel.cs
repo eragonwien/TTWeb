@@ -11,131 +11,118 @@ using TTWebCommon.Models;
 
 namespace TTWebMVCV2.Models
 {
-   public class ScheduleDefViewModel
-   {
-      public int? Id { get; set; }
-      [StringLength(16)]
-      public string Name { get; set; }
-      [Required]
-      [Display(Name = "Friend")]
-      public int? FriendId { get; set; }
-      [Required]
-      [Display(Name = "Login")]
-      public int? FacebookCredentialId { get; set; }
-      [Required]
-      public ScheduleJobType Type { get; set; }
-      [Required]
-      [Display(Name = "Interval")]
-      public IntervalTypeEnum IntervalType { get; set; }
-      [Required]
-      public string TimeFrom { get; set; }
-      [Required]
-      public string TimeTo { get; set; }
-      [Required]
-      public string TimeZone { get; set; }
-      [Required]
-      public bool Active { get; set; }
+    public class ScheduleDefViewModel
+    {
+        public int? Id { get; set; }
+        [StringLength(16)]
+        public string Name { get; set; }
+        [Required]
+        [Display(Name = "Friend")]
+        public int? FriendId { get; set; }
+        [Required]
+        [Display(Name = "Login")]
+        public int? FacebookCredentialId { get; set; }
+        [Required]
+        public ScheduleJobType Type { get; set; }
+        [Required]
+        [Display(Name = "Interval")]
+        public IntervalTypeEnum IntervalType { get; set; }
+        [Required]
+        public string TimeFrom { get; set; }
+        [Required]
+        public string TimeTo { get; set; }
+        [Required]
+        public string TimeZone { get; set; }
+        [Required]
+        public bool Active { get; set; }
 
-      public static ScheduleDefViewModel Default = new ScheduleDefViewModel();
+        public IEnumerable<string> ScheduleTypes { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<string> IntervalTypes { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<SelectListItem> TimeZones { get; set; } = Enumerable.Empty<SelectListItem>();
+        public IEnumerable<SelectListItem> Logins { get; set; } = Enumerable.Empty<SelectListItem>();
+        public IEnumerable<SelectListItem> Friends { get; set; } = Enumerable.Empty<SelectListItem>();
 
-      public ScheduleDefViewModel()
-      {
+        public static ScheduleDefViewModel Default = new ScheduleDefViewModel();
 
-      }
+        public ScheduleDefViewModel()
+        {
+            InitializeSelectLists();
+        }
 
-      public ScheduleDefViewModel(ScheduleJobDef model)
-      {
-         if (model == null)
-         {
-            return;
-         }
-         Id = model.Id;
-         Name = model.Name;
-         FriendId = model.FriendId;
-         FacebookCredentialId = model.FacebookCredentialId;
-         Type = model.Type;
-         IntervalType = model.IntervalType;
-         TimeFrom = model.TimeFrom;
-         TimeTo = model.TimeTo;
-         TimeZone = model.TimeZone;
-         Active = model.Active;
-      }
+        public ScheduleDefViewModel(ScheduleJobDef scheduleJobDef)
+        {
+            if (scheduleJobDef != null)
+            {
+                Id = scheduleJobDef.Id;
+                Name = scheduleJobDef.Name;
+                FriendId = scheduleJobDef.FriendId;
+                FacebookCredentialId = scheduleJobDef.FacebookCredentialId;
+                Type = scheduleJobDef.Type;
+                IntervalType = scheduleJobDef.IntervalType;
+                TimeFrom = scheduleJobDef.TimeFrom;
+                TimeTo = scheduleJobDef.TimeTo;
+                TimeZone = scheduleJobDef.TimeZone;
+                Active = scheduleJobDef.Active;
+            }
+            InitializeSelectLists();
+        }
 
-      public ScheduleJobDef ToScheduleJobDef(int appuserId)
-      {
-         return new ScheduleJobDef
-         {
-            Id = Id != null && Id.HasValue ? Id.Value : 0,
-            Name = Name,
-            AppUserId = appuserId,
-            FriendId = FriendId.Value,
-            FacebookCredentialId = FacebookCredentialId.Value,
-            Type = Type,
-            IntervalType = IntervalType,
-            TimeFrom = TimeFrom,
-            TimeTo = TimeTo,
-            TimeZone = TimeZone,
-            Active = Active,
-         };
-      }
-   }
+        public ScheduleJobDef ToScheduleJobDef(int appuserId)
+        {
+            return new ScheduleJobDef
+            {
+                Id = Id != null && Id.HasValue ? Id.Value : 0,
+                Name = Name,
+                AppUserId = appuserId,
+                FriendId = FriendId.Value,
+                FacebookCredentialId = FacebookCredentialId.Value,
+                Type = Type,
+                IntervalType = IntervalType,
+                TimeFrom = TimeFrom,
+                TimeTo = TimeTo,
+                TimeZone = TimeZone,
+                Active = Active,
+            };
+        }
 
-   public class ScheduleDefModalViewModel : ScheduleDefViewModel
-   {
-      public IEnumerable<string> ScheduleTypes { get; set; } = Enumerable.Empty<string>();
-      public IEnumerable<string> IntervalTypes { get; set; } = Enumerable.Empty<string>();
-      public IEnumerable<SelectListItem> TimeZones { get; set; } = Enumerable.Empty<SelectListItem>();
-      public IEnumerable<SelectListItem> Logins { get; set; } = Enumerable.Empty<SelectListItem>();
-      public IEnumerable<SelectListItem> Friends { get; set; } = Enumerable.Empty<SelectListItem>();
+        public bool HasValidId()
+        {
+            return Id != null && Id.HasValue && Id.Value > 0;
+        }
 
-      public ScheduleDefModalViewModel()
-      {
-         InitializeSelectLists();
-      }
+        private void InitializeSelectLists()
+        {
+            ScheduleTypes = Helper.GetEnumStrings<ScheduleJobType>(true).Select(s => s.ToStringCapitalized());
+            IntervalTypes = Helper.GetEnumStrings<IntervalTypeEnum>(true).Select(s => s.ToStringCapitalized());
+        }
 
-      public ScheduleDefModalViewModel(ScheduleJobDef scheduleJobDef) : base(scheduleJobDef)
-      {
-         InitializeSelectLists();
-      }
+        public ScheduleDefViewModel SetLogins(IEnumerable<FacebookCredential> logins)
+        {
+            if (logins != null && logins.Any())
+            {
+                Logins = logins.Select(l => new SelectListItem(l.Username, l.Id.ToString()));
+            }
+            return this;
+        }
 
-      public bool HasValidId()
-      {
-         return Id != null && Id.HasValue && Id.Value > 0;
-      }
+        public ScheduleDefViewModel SetFriends(IEnumerable<FacebookFriend> friends)
+        {
+            if (friends != null && friends.Any())
+            {
+                Friends = friends.Select(l => new SelectListItem(l.Name, l.Id.ToString()));
+            }
+            return this;
+        }
 
-      private void InitializeSelectLists()
-      {
-         ScheduleTypes = Helper.GetEnumStrings<ScheduleJobType>(true).Select(s => s.ToStringCapitalized());
-         IntervalTypes = Helper.GetEnumStrings<IntervalTypeEnum>(true).Select(s => s.ToStringCapitalized());
-      }
-
-      public ScheduleDefModalViewModel SetLogins(IEnumerable<FacebookCredential> logins)
-      {
-         if (logins != null && logins.Any())
-         {
-            Logins = logins.Select(l => new SelectListItem(l.Username, l.Id.ToString()));
-         }
-         return this;
-      }
-
-      public ScheduleDefModalViewModel SetFriends(IEnumerable<FacebookFriend> friends)
-      {
-         if (friends != null && friends.Any())
-         {
-            Friends = friends.Select(l => new SelectListItem(l.Name, l.Id.ToString()));
-         }
-         return this;
-      }
-
-      public ScheduleDefModalViewModel SetTimezoneSelectList(string timezone)
-      {
-         if (!string.IsNullOrWhiteSpace(timezone))
-         {
-            TimeZone = timezone;
-         }
-         TimeZones = TimeZoneInfo.GetSystemTimeZones()
-            .Select(tz => new SelectListItem(tz.DisplayName, tz.Id, tz.Id == (TimeZone ?? TimeZoneInfo.Utc.Id)));
-         return this;
-      }
-   }
+        public ScheduleDefViewModel SetTimezoneSelectList(string timezone)
+        {
+            if (!string.IsNullOrWhiteSpace(timezone))
+            {
+                TimeZone = timezone;
+            }
+            TimeZones = TimeZoneInfo.GetSystemTimeZones()
+               .Select(tz => new SelectListItem(tz.DisplayName, tz.Id, tz.Id == (TimeZone ?? TimeZoneInfo.Utc.Id)));
+            return this;
+        }
+    }
 }

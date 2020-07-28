@@ -17,106 +17,116 @@ using TTWebMVCV2.Models;
 
 namespace TTWebMVCV2.Controllers
 {
-   public class ScheduleController : BaseController
-   {
-      private readonly ILogger<ScheduleController> log;
-      private readonly IScheduleJobService scheduleJobService;
-      private readonly IAppUserService appUserService;
+    public class ScheduleController : BaseController
+    {
+        private readonly ILogger<ScheduleController> log;
+        private readonly IScheduleJobService scheduleJobService;
+        private readonly IAppUserService appUserService;
 
-      public ScheduleController(ILogger<ScheduleController> log, IScheduleJobService scheduleJobService, IAppUserService appUserService)
-      {
-         this.log = log;
-         this.scheduleJobService = scheduleJobService;
-         this.appUserService = appUserService;
-      }
+        public ScheduleController(ILogger<ScheduleController> log, IScheduleJobService scheduleJobService, IAppUserService appUserService)
+        {
+            this.log = log;
+            this.scheduleJobService = scheduleJobService;
+            this.appUserService = appUserService;
+        }
 
-      [HttpGet]
-      public async Task<IActionResult> Index()
-      {
-         ViewBag.FriendsList = await appUserService.FacebookFriends(UserId);
-         return View((await scheduleJobService.GetScheduleJobDefs(UserId)).GroupIntoBundles(3));
-      }
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            ViewBag.FriendsList = await appUserService.FacebookFriends(UserId);
+            return View((await scheduleJobService.GetScheduleJobDefs(UserId)).GroupIntoBundles(3));
+        }
 
-      [HttpGet]
-      public async Task<PartialViewResult> Create()
-      {
-         var createModel = new ScheduleDefModalViewModel()
-            .SetTimezoneSelectList(UserTimezone)
-            .SetLogins(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId))
-            .SetFriends(UserFacebookFriends ?? await appUserService.FacebookFriends(UserId));
-         return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", createModel);
-      }
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var model = await BuildScheduleDefViewModel();
+            return View(model);
+        }
 
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task<IActionResult> Create(ScheduleDefViewModel model)
-      {
-         if (ModelState.IsValid)
-         {
-            try
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ScheduleDefViewModel model)
+        {
+            if (ModelState.IsValid)
             {
-               await scheduleJobService.AddScheduleJobDef(model.ToScheduleJobDef(UserId));
+                try
+                {
+                    await scheduleJobService.AddScheduleJobDef(model.ToScheduleJobDef(UserId));
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
             }
-            catch (Exception ex)
+            return View(await BindSelectLists(model));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Update(int id)
+        {
+            var updateModel = await BuildScheduleDefViewModel(id);
+            return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", updateModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(ScheduleDefViewModel model)
+        {
+            if (ModelState.IsValid && model.Id > 0)
             {
-               AddErrorNotification(ex.Message);
+                try
+                {
+                    await scheduleJobService.UpdateScheduleJobDef(model.ToScheduleJobDef(UserId));
+                }
+                catch (Exception ex)
+                {
+                    AddErrorNotification(ex.Message);
+                }
             }
-         }
-         return RedirectToAction("Index");
-      }
+            return RedirectToAction("Index");
+        }
 
-      [HttpGet]
-      public async Task<IActionResult> Update(int id)
-      {
-         var updateModel = new ScheduleDefModalViewModel(await scheduleJobService.GetScheduleJobDef(id, UserId))
-            .SetTimezoneSelectList(UserTimezone)
-            .SetLogins(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId))
-            .SetFriends(UserFacebookFriends ?? await appUserService.FacebookFriends(UserId));
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task ToggleActive(int id, bool active)
+        {
+            await scheduleJobService.ToggleActive(id, active);
+        }
 
-         return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", updateModel);
-      }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task Delete(int id)
+        {
+            await scheduleJobService.RemoveScheduleJobDef(id, UserId);
+        }
 
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task<IActionResult> Update(ScheduleDefViewModel model)
-      {
-         if (ModelState.IsValid && model.Id > 0)
-         {
-            try
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CheckTimezone(string timezone)
+        {
+            if (string.IsNullOrWhiteSpace(UserTimezone))
             {
-               await scheduleJobService.UpdateScheduleJobDef(model.ToScheduleJobDef(UserId));
+                UserTimezone = TZConvert.IanaToWindows(timezone);
             }
-            catch (Exception ex)
-            {
-               AddErrorNotification(ex.Message);
-            }
-         }
-         return RedirectToAction("Index");
-      }
+            return Ok(UserTimezone);
+        }
 
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task ToggleActive(int id, bool active)
-      {
-         await scheduleJobService.ToggleActive(id, active);
-      }
+        private async Task<ScheduleDefViewModel> BuildScheduleDefViewModel(int id = 0)
+        {
+            var model = id > 0 ? new ScheduleDefViewModel(await scheduleJobService.GetScheduleJobDef(id, UserId)) : ScheduleDefViewModel.Default;
+            await BindSelectLists(model);
+            return model;
+        }
 
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task Delete(int id)
-      {
-         await scheduleJobService.RemoveScheduleJobDef(id, UserId);
-      }
+        private async Task<ScheduleDefViewModel> BindSelectLists(ScheduleDefViewModel model)
+        {
+            model.SetTimezoneSelectList(UserTimezone)
+               .SetLogins(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId))
+               .SetFriends(UserFacebookFriends ?? await appUserService.FacebookFriends(UserId));
 
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public IActionResult CheckTimezone(string timezone)
-      {
-         if (string.IsNullOrWhiteSpace(UserTimezone))
-         {
-            UserTimezone = TZConvert.IanaToWindows(timezone);
-         }
-         return Ok(UserTimezone);
-      }
-   }
+            return model;
+        }
+    }
 }

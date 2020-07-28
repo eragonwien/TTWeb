@@ -1,0 +1,32 @@
+﻿@model FormButtonViewModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="level">
+    <div class="level-left">
+        <div class="level-item">
+            @if (Model.DisplayDeleteButton)
+            {
+                <button type="button" class="button is-danger">Delete</button>
+            }
+        </div>
+    </div>
+    <div class="level-right">
+        <div class="level-item">
+            <div class="buttons">
+                @if (Model.DisplayUpdateButton)
+                {
+                    <button type="submit" class="button is-success">Save changes</button>
+                }
+                @if (Model.DisplayCreateButton)
+                {
+                    <button type="submit" class="button is-success">Create</button>
+                }
+                @if (Model.DisplayCancelButton)
+                {
+                    <button type="button" class="button">Cancel</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Services\" />
-    <Folder Include="Views\Shared\EditorTemplates\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>

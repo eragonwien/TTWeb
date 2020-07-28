@@ -1,0 +1,152 @@
+﻿@model ScheduleDefViewModel
+@{ 
+
+}
+@Html.HiddenFor(m => m.Id)
+<div class="field is-horizontal">
+   <div class="field-label">
+      @Html.LabelFor(m => m.Name, new { @class = "label" })
+   </div>
+   <div class="field-body">
+      <div class="field">
+         <p class="control is-expanded">
+            @Html.TextBoxFor(m => m.Name, new { @class = "input" })
+         </p>
+         <p class="help is-danger">
+            @Html.ValidationMessageFor(m => m.Name)
+         </p>
+      </div>
+   </div>
+</div>
+
+<div class="field is-horizontal">
+   <div class="field-label">
+      @Html.LabelFor(m => m.FacebookCredentialId, new { @class = "label" })
+   </div>
+   <div class="field-body">
+      <div class="field">
+         <p class="control is-expanded">
+            <div class="select is-fullwidth">
+               @Html.DropDownListFor(m => m.FacebookCredentialId, Model.Logins, "Select a login")
+            </div>
+         </p>
+         <p class="help is-danger">
+            @Html.ValidationMessageFor(m => m.FacebookCredentialId)
+         </p>
+      </div>
+   </div>
+</div>
+
+<div class="field is-horizontal">
+   <div class="field-label">
+      @Html.LabelFor(m => m.FriendId, new { @class = "label" })
+   </div>
+   <div class="field-body">
+      <div class="field">
+         <p class="control is-expanded">
+            <div class="select is-fullwidth">
+               @Html.DropDownListFor(m => m.FriendId, Model.Friends, "Select a target")
+            </div>
+         </p>
+         <p class="help is-danger">
+            @Html.ValidationMessageFor(m => m.FriendId)
+         </p>
+      </div>
+   </div>
+</div>
+
+<div class="field is-horizontal">
+   <div class="field-label">
+      @Html.LabelFor(m => m.Type, new { @class = "label" })
+   </div>
+   <div class="field-body">
+      <div class="field is-narrow">
+         @foreach (string scheduleType in Model.ScheduleTypes)
+         {
+            <div class="control">
+
+               <label class="radio">
+                  @Html.RadioButtonFor(m => m.Type, scheduleType)
+                  @scheduleType
+               </label>
+            </div>
+         }
+         <p class="help is-danger">
+            @Html.ValidationMessageFor(m => m.Type)
+         </p>
+      </div>
+   </div>
+</div>
+
+<div class="field is-horizontal">
+   <div class="field-label">
+      @Html.LabelFor(m => m.IntervalType, new { @class = "label" })
+   </div>
+   <div class="field-body">
+      <div class="field is-narrow">
+         @foreach (string intervalType in Model.IntervalTypes)
+         {
+            <div class="control">
+               <label class="radio">
+                  @Html.RadioButtonFor(m => m.IntervalType, intervalType, new { @id = "" })
+                  @intervalType
+               </label>
+            </div>
+         }
+         <p class="help is-danger">
+            @Html.ValidationMessageFor(m => m.IntervalType)
+         </p>
+      </div>
+   </div>
+</div>
+
+<div class="field is-horizontal">
+   <div class="field-label">
+      <label class="label">Time</label>
+   </div>
+   <div class="field-body">
+      <div class="field">
+         <p class="control is-expanded">
+            @Html.TextBoxFor(m => m.TimeFrom, new { @class = "input", @type = "time", @data_display_mode = "dialog" })
+         </p>
+         <p class="help is-danger">
+            @Html.ValidationMessageFor(m => m.TimeFrom)
+         </p>
+      </div>
+      <div class="field">
+         <p class="control is-expanded">
+            @Html.TextBoxFor(m => m.TimeTo, new { @class = "input", @type = "time", @data_display_mode = "dialog" })
+         </p>
+         <p class="help is-danger">
+            @Html.ValidationMessageFor(m => m.TimeTo)
+         </p>
+      </div>
+
+   </div>
+</div>
+
+<div class="field is-horizontal">
+   <div class="field-label"></div>
+   <div class="field-body">
+      <div class="field is-narrow">
+         <div class="control">
+            <div class="select is-fullwidth">
+               @Html.DropDownListFor(m => m.TimeZone, Model.TimeZones)
+            </div>
+         </div>
+      </div>
+
+      <div class="field">
+         <div class="control">
+            <button type="button"
+                    class="button guess-timezone-button"
+                    data-href="@Url.Action("CheckTimezone", "Schedule")"
+                    data-selectlist="#TimeZone">
+               <span class="icon">
+                  <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+               </span>
+            </button>
+         </div>
+      </div>
+   </div>
+</div>

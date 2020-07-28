@@ -126,8 +126,8 @@ namespace TTWebMVCV2.Controllers
       public async Task<IActionResult> Profile()
       {
          var model = new ProfileUserViewModel(await appUserService.GetOne(UserId));
-         model.FacebookCredentials = await appUserService.FacebookCredentials(UserId);
-         model.FacebookFriends = await appUserService.FacebookFriends(UserId);
+         model.FacebookCredentials = UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId);
+         model.FacebookFriends = UserFacebookFriends ?? await appUserService.FacebookFriends(UserId);
          return View(model);
       }
 
@@ -144,7 +144,7 @@ namespace TTWebMVCV2.Controllers
       [HttpGet]
       public async Task<IActionResult> FacebookCredentials()
       {
-         return View(await appUserService.FacebookCredentials(UserId));
+         return View(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId));
       }
 
       [HttpPost]
