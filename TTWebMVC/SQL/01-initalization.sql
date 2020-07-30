@@ -112,5 +112,9 @@ create table ScheduleJobDetail (
     foreign key (schedulejobdef_id) references schedulejobdef(id)
 );
 
+INSERT INTO Role(name) values('ADMIN');
+
+insert into appuser(id, email, firstname, lastname, disabled, active) values(1, 'eragonwien@gmail.com', 'Son', 'Nguyen Hoang', 0, 1);
+update appuser set role_id=(select id from role where name='ADMIN') where email='eragonwien@gmail.com';
 
 

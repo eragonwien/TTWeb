@@ -53,6 +53,7 @@ namespace TTWebMVCV2.Controllers
                 try
                 {
                     await scheduleJobService.AddScheduleJobDef(model.ToScheduleJobDef(UserId));
+                    AddSuccessNotification("Schedule added successfully");
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
@@ -67,7 +68,7 @@ namespace TTWebMVCV2.Controllers
         public async Task<IActionResult> Update(int id)
         {
             var updateModel = await BuildScheduleDefViewModel(id);
-            return PartialView("~/Views/Schedule/_ScheduleModalPartial.cshtml", updateModel);
+            return View(updateModel);
         }
 
         [HttpPost]
@@ -79,13 +80,14 @@ namespace TTWebMVCV2.Controllers
                 try
                 {
                     await scheduleJobService.UpdateScheduleJobDef(model.ToScheduleJobDef(UserId));
+                    AddSuccessNotification("Schedule updated successfully");
                 }
                 catch (Exception ex)
                 {
-                    AddErrorNotification(ex.Message);
+                    ModelState.AddModelError("", ex.Message);
                 }
             }
-            return RedirectToAction("Index");
+            return RedirectToAction();
         }
 
         [HttpPost]

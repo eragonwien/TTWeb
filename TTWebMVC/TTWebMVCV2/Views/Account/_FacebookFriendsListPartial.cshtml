@@ -2,12 +2,15 @@
 @{
 
 }
-@foreach (var friend in Model)
+@if (Model != null)
 {
-   <div class="control facebook-friends-button">
-      <div class="tags has-addons">
-         <a class="tag is-link" data-name="@friend.Name" data-profileLink="@friend.ProfileLink" data-id="@friend.Id">@friend.Name</a>
-         <a class="tag is-delete" data-id="@friend.Id"></a>
-      </div>
-   </div>
+    @foreach (var friend in Model)
+    {
+        <div class="control facebook-friends-button">
+            <div class="tags has-addons">
+                <a class="tag is-link" data-name="@friend.Name" data-profileLink="@friend.ProfileLink" data-id="@friend.Id">@friend.Name</a>
+                <a class="tag is-delete" data-id="@friend.Id"></a>
+            </div>
+        </div>
+    }
 }

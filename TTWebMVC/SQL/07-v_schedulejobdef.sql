@@ -1,5 +1,4 @@
-DROP VIEW v_schedulejobdef;
-CREATE VIEW v_schedulejobdef AS
+CREATE OR REPLACE VIEW v_schedulejobdef AS
 select 
 	d.id, 
     d.appuser_id, 

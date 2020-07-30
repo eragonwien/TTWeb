@@ -1,5 +1,4 @@
-DROP VIEW v_appuser;
-CREATE VIEW v_appuser AS
+CREATE OR REPLACE VIEW v_appuser AS
     SELECT 
         appuser.id AS appuser_id,
         appuser.email AS email,

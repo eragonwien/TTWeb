@@ -1,5 +1,4 @@
-DROP VIEW v_appuser_facebook;
-CREATE VIEW v_appuser_facebook AS
+CREATE OR REPLACE VIEW v_appuser_facebook AS
     SELECT 
         appuser.id AS appuser_id,
         facebookcredential.id as fb_credential_id,

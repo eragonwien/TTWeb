@@ -17,182 +17,189 @@ using TTWebMVCV2.Models;
 
 namespace TTWebMVCV2.Controllers
 {
-   public class AccountController : BaseController
-   {
-      private readonly ILogger<AccountController> log;
-      private readonly IAppUserService appUserService;
+    public class AccountController : BaseController
+    {
+        private readonly ILogger<AccountController> log;
+        private readonly IAppUserService appUserService;
 
-      public AccountController(ILogger<AccountController> log, IAppUserService appUserService)
-      {
-         this.log = log;
-         this.appUserService = appUserService;
-      }
+        public AccountController(ILogger<AccountController> log, IAppUserService appUserService)
+        {
+            this.log = log;
+            this.appUserService = appUserService;
+        }
 
-      [AllowAnonymous]
-      [HttpGet]
-      public async Task<IActionResult> Login()
-      {
-         await Logout();
-         return View();
-      }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Login()
+        {
+            await Logout();
+            return View();
+        }
 
-      [AllowAnonymous]
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task<IActionResult> Logout()
-      {
-         await HttpContext.SignOutAsync(AuthenticationSettings.SchemeExternal);
-         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-         return Ok(Url.Action(nameof(Login)));
-      }
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(AuthenticationSettings.SchemeExternal);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Clear();
+            return Ok(Url.Action(nameof(Login)));
+        }
 
-      [AllowAnonymous]
-      [HttpGet]
-      public IActionResult LoginExternal(string provider)
-      {
-         var authProps = new AuthenticationProperties()
-         {
-            RedirectUri = Url.Action(nameof(LoginExternalCallback)),
-            AllowRefresh = true,
-            IsPersistent = true,
-            ExpiresUtc = DateTimeOffset.Now.AddDays(7)
-         };
-         return Challenge(authProps, provider);
-      }
-
-      [AllowAnonymous]
-      [HttpGet]
-      public async Task<IActionResult> LoginExternalCallback()
-      {
-         var authResult = await HttpContext.AuthenticateAsync(AuthenticationSettings.SchemeExternal);
-
-         // Get & create user
-         string email = authResult.Principal.FindFirst(ClaimTypes.Email)?.Value;
-         var appUser = await appUserService.GetOne(email);
-         if (appUser == null)
-         {
-            await appUserService.Create(new AppUser
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult LoginExternal(string provider)
+        {
+            var authProps = new AuthenticationProperties()
             {
-               Email = email,
-               Firstname = authResult.Principal.FindFirst(ClaimTypes.GivenName)?.Value,
-               Lastname = authResult.Principal.FindFirst(ClaimTypes.Surname)?.Value
-            });
-            appUser = await appUserService.GetOne(email);
-         }
+                RedirectUri = Url.Action(nameof(LoginExternalCallback)),
+                AllowRefresh = true,
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.Now.AddDays(7)
+            };
+            return Challenge(authProps, provider);
+        }
 
-         // logouts from external login
-         await HttpContext.SignOutAsync(AuthenticationSettings.SchemeExternal);
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> LoginExternalCallback()
+        {
+            var authResult = await HttpContext.AuthenticateAsync(AuthenticationSettings.SchemeExternal);
 
-         if (appUser == null)
-         {
-            return RedirectToAction(nameof(Login));
-         }
+            // Get & create user
+            string email = authResult.Principal.FindFirst(ClaimTypes.Email)?.Value;
+            var appUser = await appUserService.GetOne(email);
+            if (appUser == null)
+            {
+                await appUserService.Create(new AppUser
+                {
+                    Email = email,
+                    Firstname = authResult.Principal.FindFirst(ClaimTypes.GivenName)?.Value,
+                    Lastname = authResult.Principal.FindFirst(ClaimTypes.Surname)?.Value
+                });
+                appUser = await appUserService.GetOne(email);
+            }
 
-         if (!appUser.Active)
-         {
-            return RedirectToActionNoQueryString("NotActivated", "Account");
-         }
+            // logouts from external login
+            await HttpContext.SignOutAsync(AuthenticationSettings.SchemeExternal);
 
-         if (appUser.Disabled)
-         {
-            return RedirectToActionNoQueryString("Disabled", "Account");
-         }
+            if (appUser == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
 
-         // create claims
-         var claims = appUserService.CreateUserClaims(appUser);
-         var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-         var authProperties = CreateSignInAuthenticationProperties();
+            if (!appUser.Active)
+            {
+                return RedirectToActionNoQueryString("NotActivated", "Account");
+            }
 
-         // signIn
-         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimIdentity), authProperties);
-         return RedirectPermanent("/");
-      }
+            if (appUser.Disabled)
+            {
+                return RedirectToActionNoQueryString("Disabled", "Account");
+            }
 
-      [AllowAnonymous]
-      [HttpGet]
-      public IActionResult NotActivated(AppUser appUser)
-      {
-         return View(appUser);
-      }
+            // create claims
+            var claims = appUserService.CreateUserClaims(appUser);
+            var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = CreateSignInAuthenticationProperties();
 
-      [AllowAnonymous]
-      [HttpGet]
-      public IActionResult Disabled(AppUser appUser)
-      {
-         return View(appUser);
-      }
+            // signIn
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimIdentity), authProperties);
+            return RedirectPermanent("/");
+        }
 
-      [HttpGet]
-      public async Task<IActionResult> Profile()
-      {
-         var model = new ProfileUserViewModel(await appUserService.GetOne(UserId));
-         model.FacebookCredentials = UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId);
-         model.FacebookFriends = UserFacebookFriends ?? await appUserService.FacebookFriends(UserId);
-         return View(model);
-      }
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult NotActivated(AppUser appUser)
+        {
+            return View(appUser);
+        }
 
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task Profile(ProfileUserViewModel model)
-      {
-         if (ModelState.IsValid)
-         {
-            await appUserService.UpdateProfile(model.ToAppUser());
-         }
-      }
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult Disabled(AppUser appUser)
+        {
+            return View(appUser);
+        }
 
-      [HttpGet]
-      public async Task<IActionResult> FacebookCredentials()
-      {
-         return View(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId));
-      }
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var model = new ProfileUserViewModel(await appUserService.GetOne(UserId));
+            UserFacebookCredentials ??= await appUserService.FacebookCredentials(UserId);
+            model.FacebookCredentials = UserFacebookCredentials;
+            UserFacebookFriends ??= await appUserService.FacebookFriends(UserId);
+            model.FacebookFriends = UserFacebookFriends;
+            return View(model);
+        }
 
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task<IActionResult> UpdateFacebookCredential(FacebookCredentialViewModel model)
-      {
-         if (ModelState.IsValid)
-         {
-            await appUserService.TryUpdateFacebookPassword(UserId, model.Id.GetValueOrDefault(0), model.Username, model.Password);
-            return PartialView("~/Views/Account/_FacebookCredentialsListPartial.cshtml", await appUserService.FacebookCredentials(UserId));
-         }
-         return NoContent();
-      }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task Profile(ProfileUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await appUserService.UpdateProfile(model.ToAppUser());
+            }
+        }
 
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task DeleteFacebookCredential(string username)
-      {
-         await appUserService.DeleteFacebookCredential(username, UserId);
-      }
+        [HttpGet]
+        public async Task<IActionResult> FacebookCredentials()
+        {
+            return View(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId));
+        }
 
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task<IActionResult> UpdateFacebookFriend(FacebookFriendViewModel model)
-      {
-         if (ModelState.IsValid)
-         {
-            await appUserService.TryUpdateFacebookFriend(UserId, model.Id.GetValueOrDefault(0), model.Name, model.ProfileLink);
-            return PartialView("~/Views/Account/_FacebookFriendsListPartial.cshtml", await appUserService.FacebookFriends(UserId));
-         }
-         return NoContent();
-      }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateFacebookCredential(FacebookCredentialViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await appUserService.TryUpdateFacebookPassword(UserId, model.Id.GetValueOrDefault(0), model.Username, model.Password);
+                UserFacebookCredentials = await appUserService.FacebookCredentials(UserId);
+                return PartialView("~/Views/Account/_FacebookCredentialsListPartial.cshtml", UserFacebookCredentials);
+            }
+            return NoContent();
+        }
 
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task DeleteFacebookFriend(string id)
-      {
-         await appUserService.DeleteFacebookFriend(id, UserId);
-      }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task DeleteFacebookCredential(string username)
+        {
+            await appUserService.DeleteFacebookCredential(username, UserId);
+            UserFacebookCredentials.RemoveAll(c => c.Username == username);
+        }
 
-      private AuthenticationProperties CreateSignInAuthenticationProperties()
-      {
-         return new AuthenticationProperties
-         {
-            AllowRefresh = true,
-            IsPersistent = true,
-            IssuedUtc = DateTimeOffset.UtcNow
-         };
-      }
-   }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateFacebookFriend(FacebookFriendViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await appUserService.TryUpdateFacebookFriend(UserId, model.Id.GetValueOrDefault(0), model.Name, model.ProfileLink);
+                UserFacebookFriends = await appUserService.FacebookFriends(UserId);
+                return PartialView("~/Views/Account/_FacebookFriendsListPartial.cshtml", UserFacebookFriends);
+            }
+            return NoContent();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task DeleteFacebookFriend(string id)
+        {
+            await appUserService.DeleteFacebookFriend(id, UserId);
+            UserFacebookFriends.RemoveAll(f => f.Id.ToString() == id);
+        }
+
+        private AuthenticationProperties CreateSignInAuthenticationProperties()
+        {
+            return new AuthenticationProperties
+            {
+                AllowRefresh = true,
+                IsPersistent = true,
+                IssuedUtc = DateTimeOffset.UtcNow
+            };
+        }
+    }
 }

@@ -16,7 +16,6 @@ $(document).on('click', '.modal button.modal-close, .modal [data-modal-close="tr
 // open modal listener
 $('.modal').on('active', function () {
    $(this).addClass('is-active');
-   attachDateTimePicker();
 });
 
 // close modal listener

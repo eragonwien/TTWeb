@@ -3,8 +3,15 @@
 }
 @foreach (string notification in ErrorNotifications)
 {
-   <div class="notification is-danger">
-      <button class="delete"></button>
-      <span>@notification</span>
-   </div>
+    <div class="notification is-danger">
+        <button class="delete"></button>
+        <span>@notification</span>
+    </div>
+}
+@foreach (string notification in SuccessNotifications)
+{
+    <div class="notification is-success">
+        <button class="delete"></button>
+        <span>@notification</span>
+    </div>
 }

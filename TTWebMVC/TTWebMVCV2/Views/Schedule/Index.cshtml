@@ -16,10 +16,7 @@
             <div class="tile is-4 is-parent">
                <div class="tile is-child box is-hoverable is-clickable">
                   <article class="media w-100">
-                     <div class="media-content modal-ajax-trigger"
-                          data-modal-target="#scheduleModal"
-                          data-params-id="@def.Id"
-                          data-modal-href="@Url.Action("update", "schedule")">
+                     <div class="media-content" href="@Url.Action("update", "schedule")">
                         <div class="content mb-4">
                            <p class="mb-1"><strong>@def.Name</strong></p>
                            <p class="mb-1">@def.Type.ToString() - @def.Friend.Name</p>
@@ -45,4 +42,3 @@
       </div>
    }
 }
-<div id="scheduleModal" class="modal"></div>

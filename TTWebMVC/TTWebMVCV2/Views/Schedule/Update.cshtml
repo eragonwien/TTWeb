@@ -1,0 +1,11 @@
+﻿@model ScheduleDefViewModel
+@{
+    var formButtonViewModel = new FormButtonViewModel(FormSubmitType.UPDATE, Url.Action("Index"));
+}
+@using (Html.BeginForm("update", "schedule", FormMethod.Post, new { @id = "updateScheduleForm" }))
+{
+    <fieldset>
+        @Html.EditorForModel()
+        <partial name="_FormButtonsPartial" model="formButtonViewModel" />
+    </fieldset>
+}
