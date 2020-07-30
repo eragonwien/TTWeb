@@ -8,10 +8,11 @@
         <span>@notification</span>
     </div>
 }
-@foreach (string notification in SuccessNotifications)
+
+@if (!string.IsNullOrWhiteSpace(SuccessNotification))
 {
-    <div class="notification is-success">
+    <div class="notification is-success is-light">
         <button class="delete"></button>
-        <span>@notification</span>
+        <span>@SuccessNotification</span>
     </div>
 }

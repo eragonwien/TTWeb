@@ -88,14 +88,9 @@ namespace TTWebMVCV2.Controllers
             TempData[TempDataErrorNotificationsKey] = notifications;
         }
 
-        protected void AddSuccessNotification(string text)
+        protected void SetSuccessNotification(string text, params object[] textParams)
         {
-            var notifications = (List<string>)TempData[TempDataSuccessNotificationsKey] ?? new List<string>();
-            if (!notifications.Contains(text))
-            {
-                notifications.Add(text);
-            }
-            TempData[TempDataSuccessNotificationsKey] = notifications;
+            TempData[TempDataSuccessNotificationsKey] = string.Format(text, textParams);
         }
 
         #region Session

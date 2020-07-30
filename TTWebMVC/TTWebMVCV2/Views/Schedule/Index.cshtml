@@ -1,44 +1,30 @@
 ﻿@model Dictionary<int, List<ScheduleJobDef>>
 @{
-   ScheduleButtonEnabled = true;
-   var friendsList = (List<FacebookFriend>)ViewBag.FriendsList ?? new List<FacebookFriend>();
-   int defIndex = -1;
+    ScheduleButtonEnabled = true;
+    var friendsList = (List<FacebookFriend>)ViewBag.FriendsList ?? new List<FacebookFriend>();
+    int defIndex = -1;
 }
 @if (Model.Any())
 {
-   @foreach (var bundle in Model)
-   {
-      <div class="tile is-ancestor">
+    @foreach (var bundle in Model)
+    {
+        <div class="tile is-ancestor">
 
-         @foreach (var def in bundle.Value)
-         {
-            defIndex++;
-            <div class="tile is-4 is-parent">
-               <div class="tile is-child box is-hoverable is-clickable">
-                  <article class="media w-100">
-                     <div class="media-content" href="@Url.Action("update", "schedule")">
-                        <div class="content mb-4">
-                           <p class="mb-1"><strong>@def.Name</strong></p>
-                           <p class="mb-1">@def.Type.ToString() - @def.Friend.Name</p>
-                           <p class="mb-1">@def.IntervalType.ToString(), @def.TimeFrom - @def.TimeTo - @def.TimeZone</p>
-                        </div>
-                     </div>
-                     @*<div class="media-right">
-                        <div class="field">
-                           <input id="switch-def-@defIndex"
-                                  type="checkbox"
-                                  class="switch is-rounded toggle-ajax"
-                                  name="active"
-                                  data-href="@Url.Action("ToggleActive", "Schedule")"
-                                  data-params-id="@def.Id"
-                                  @(def.Active ? "checked" : "")>
-                           <label for="switch-def-@defIndex"></label>
-                        </div>
-                     </div>*@
-                  </article>
-               </div>
-            </div>
-         }
-      </div>
-   }
+            @foreach (var def in bundle.Value)
+            {
+                defIndex++;
+                <div class="tile is-4 is-parent">
+                    <div class="tile is-child box is-hoverable is-clickable">
+                        <a class="w-100 has-text-black" href="@Url.Action("update", "schedule", new { @id = def.Id })">
+                            <div class="content mb-4">
+                                <p class="mb-1"><strong>@def.Name</strong></p>
+                                <p class="mb-1">@def.Type.ToString() - @def.Friend.Name</p>
+                                <p class="mb-1">@def.IntervalType.ToString(), @def.TimeFrom - @def.TimeTo - @def.TimeZone</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 }

@@ -1,6 +1,6 @@
 ﻿@model ScheduleDefViewModel
 @{
-    var formButtonViewModel = new FormButtonViewModel(FormSubmitType.UPDATE, Url.Action("Index"));
+    var formButtonViewModel = new FormButtonViewModel(updateUrl: Url.Action("Update"), returnUrl: Url.Action("Index"), deleteUrl: Url.Action("Delete", new { @id = Model.Id }));
 }
 @using (Html.BeginForm("update", "schedule", FormMethod.Post, new { @id = "updateScheduleForm" }))
 {
@@ -9,3 +9,4 @@
         <partial name="_FormButtonsPartial" model="formButtonViewModel" />
     </fieldset>
 }
+<partial name="_DeleteModalPartial" model="formButtonViewModel" />

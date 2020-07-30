@@ -57,11 +57,11 @@ namespace TTWebMVCV2.Models
             }
         }
 
-        public string[] SuccessNotifications
+        public string SuccessNotification
         {
             get
             {
-                return (string[])TempData[BaseController.TempDataSuccessNotificationsKey] ?? new string[0];
+                return (string)TempData[BaseController.TempDataSuccessNotificationsKey];
             }
         }
     }

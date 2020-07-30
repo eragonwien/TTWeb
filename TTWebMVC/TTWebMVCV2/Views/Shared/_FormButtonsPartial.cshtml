@@ -5,26 +5,27 @@
 <div class="level">
     <div class="level-left">
         <div class="level-item">
-            @if (Model.DisplayDeleteButton)
-            {
-                <button type="button" class="button is-danger">Delete</button>
-            }
+
         </div>
     </div>
     <div class="level-right">
         <div class="level-item">
             <div class="buttons">
-                @if (Model.DisplayUpdateButton)
+                @if (Model.DisplayDeleteButton && Url.IsLocalUrl(Model.DeleteUrl))
+                {
+                    <button type="button" class="button is-danger modal-trigger" data-modal-target="#confirmDeleteModal">Delete</button>
+                }
+                @if (Model.DisplayCancelButton && Url.IsLocalUrl(Model.ReturnUrl))
+                {
+                    <a href="@Model.ReturnUrl" class="button">Cancel</a>
+                }
+                @if (Model.DisplayUpdateButton && Url.IsLocalUrl(Model.UpdateUrl))
                 {
                     <button type="submit" class="button is-success">Save changes</button>
                 }
-                @if (Model.DisplayCreateButton)
+                @if (Model.DisplayCreateButton && Url.IsLocalUrl(Model.CreateUrl))
                 {
                     <button type="submit" class="button is-success">Create</button>
-                }
-                @if (Model.DisplayCancelButton)
-                {
-                    <button type="button" class="button">Cancel</button>
                 }
             </div>
         </div>

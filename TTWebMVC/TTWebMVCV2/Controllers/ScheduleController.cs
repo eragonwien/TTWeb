@@ -53,7 +53,7 @@ namespace TTWebMVCV2.Controllers
                 try
                 {
                     await scheduleJobService.AddScheduleJobDef(model.ToScheduleJobDef(UserId));
-                    AddSuccessNotification("Schedule added successfully");
+                    SetSuccessNotification("Schedule added successfully");
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
@@ -80,7 +80,7 @@ namespace TTWebMVCV2.Controllers
                 try
                 {
                     await scheduleJobService.UpdateScheduleJobDef(model.ToScheduleJobDef(UserId));
-                    AddSuccessNotification("Schedule updated successfully");
+                    SetSuccessNotification("Schedule {0} updated successfully", model.Id);
                 }
                 catch (Exception ex)
                 {
@@ -99,9 +99,11 @@ namespace TTWebMVCV2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             await scheduleJobService.RemoveScheduleJobDef(id, UserId);
+            SetSuccessNotification("Element {0} successfully removed", id);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
