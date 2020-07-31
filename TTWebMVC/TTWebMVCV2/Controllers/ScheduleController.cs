@@ -87,7 +87,7 @@ namespace TTWebMVCV2.Controllers
                     ModelState.AddModelError("", ex.Message);
                 }
             }
-            return RedirectToAction();
+            return View(await BindSelectLists(model));
         }
 
         [HttpPost]
@@ -102,7 +102,7 @@ namespace TTWebMVCV2.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await scheduleJobService.RemoveScheduleJobDef(id, UserId);
-            SetSuccessNotification("Element {0} successfully removed", id);
+            SetSuccessNotification("Schedule {0} successfully removed", id);
             return RedirectToAction("Index");
         }
 

@@ -103,7 +103,7 @@ namespace TTWebCommon.Services
       {
          string cmdStr = @"UPDATE schedulejobdef SET friend_id=@friend_id, facebookcredential_id=@facebookcredential_id, 
             name=@name, type=@type, interval_type=@interval_type, time_from=@time_from, time_to=@time_to, 
-            timezone_id=@timezone_id WHERE id=@id and appuser_id=@appuser_id";
+            timezone_id=@timezone_id, active=@active WHERE id=@id and appuser_id=@appuser_id";
          using MySqlCommand cmd = db.CreateCommand(cmdStr);
          cmd.Parameters.Add(new MySqlParameter("friend_id", scheduleJobDef.FriendId));
          cmd.Parameters.Add(new MySqlParameter("facebookcredential_id", scheduleJobDef.FacebookCredentialId));
@@ -114,7 +114,8 @@ namespace TTWebCommon.Services
          cmd.Parameters.Add(new MySqlParameter("time_to", scheduleJobDef.TimeTo));
          cmd.Parameters.Add(new MySqlParameter("timezone_id", scheduleJobDef.TimeZone));
          cmd.Parameters.Add(new MySqlParameter("id", scheduleJobDef.Id));
-         cmd.Parameters.Add(new MySqlParameter("appuser_id", scheduleJobDef.AppUserId));
+         cmd.Parameters.Add(new MySqlParameter("active", scheduleJobDef.Active ? 1 : 0));
+            cmd.Parameters.Add(new MySqlParameter("appuser_id", scheduleJobDef.AppUserId));
          await cmd.ExecuteNonQueryAsync();
       }
 

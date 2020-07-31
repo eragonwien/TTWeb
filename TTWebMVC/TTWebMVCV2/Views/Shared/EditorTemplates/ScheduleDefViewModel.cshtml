@@ -8,14 +8,22 @@
       @Html.LabelFor(m => m.Name, new { @class = "label" })
    </div>
    <div class="field-body">
-      <div class="field">
-         <p class="control is-expanded">
-            @Html.TextBoxFor(m => m.Name, new { @class = "input" })
-         </p>
-         <p class="help is-danger">
-            @Html.ValidationMessageFor(m => m.Name)
-         </p>
-      </div>
+       <div class="field is-fullwidth">
+           <p class="control">
+               @Html.TextBoxFor(m => m.Name, new { @class = "input" })
+           </p>
+           <p class="help is-danger">
+               @Html.ValidationMessageFor(m => m.Name)
+           </p>
+       </div>
+       <div class="field is-narrow is-flex">
+           <input id="@Html.IdFor(m => m.Active)" type="checkbox" name="@Html.NameFor(m => m.Active)" class="switch is-rounded" @(Model.Active ? "checked" : "") value="true">
+           <label for="@Html.IdFor(m => m.Active)"></label>
+
+           <p class="help is-danger">
+               @Html.ValidationMessageFor(m => m.Active)
+           </p>
+       </div>
    </div>
 </div>
 
@@ -64,7 +72,6 @@
          @foreach (string scheduleType in Model.ScheduleTypes)
          {
             <div class="control">
-
                <label class="radio">
                   @Html.RadioButtonFor(m => m.Type, scheduleType)
                   @scheduleType
