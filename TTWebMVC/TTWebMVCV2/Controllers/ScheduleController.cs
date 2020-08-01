@@ -81,6 +81,7 @@ namespace TTWebMVCV2.Controllers
                 {
                     await scheduleJobService.UpdateScheduleJobDef(model.ToScheduleJobDef(UserId));
                     SetSuccessNotification("Schedule {0} updated successfully", model.Id);
+                    return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
@@ -126,9 +127,11 @@ namespace TTWebMVCV2.Controllers
 
         private async Task<ScheduleDefViewModel> BindSelectLists(ScheduleDefViewModel model)
         {
-            model.SetTimezoneSelectList(UserTimezone)
-               .SetLogins(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId))
-               .SetFriends(UserFacebookFriends ?? await appUserService.FacebookFriends(UserId));
+            model
+                .SetWeekDaySelectList(await scheduleJobService.GetScheduleWeekDays())
+                .SetTimezoneSelectList(UserTimezone)
+                .SetLogins(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId))
+                .SetFriends(UserFacebookFriends ?? await appUserService.FacebookFriends(UserId));
 
             return model;
         }

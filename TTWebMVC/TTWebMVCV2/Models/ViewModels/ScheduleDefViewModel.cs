@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TTWebCommon.Models;
+using TTWebCommon.Models.DataModels;
 
 namespace TTWebMVCV2.Models
 {
@@ -27,6 +28,7 @@ namespace TTWebMVCV2.Models
         [Required]
         [Display(Name = "Interval")]
         public IntervalTypeEnum IntervalType { get; set; }
+        public List<int> SelectedDaysOfWeek { get; set; } = new List<int>();
         [Required]
         public string TimeFrom { get; set; }
         [Required]
@@ -37,10 +39,11 @@ namespace TTWebMVCV2.Models
         public bool Active { get; set; }
 
         public IEnumerable<string> ScheduleTypes { get; set; } = Enumerable.Empty<string>();
-        public IEnumerable<string> IntervalTypes { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<SelectListItem> IntervalTypes { get; set; } = Enumerable.Empty<SelectListItem>();
         public IEnumerable<SelectListItem> TimeZones { get; set; } = Enumerable.Empty<SelectListItem>();
         public IEnumerable<SelectListItem> Logins { get; set; } = Enumerable.Empty<SelectListItem>();
         public IEnumerable<SelectListItem> Friends { get; set; } = Enumerable.Empty<SelectListItem>();
+        public IEnumerable<SelectListItem> DaysOfWeek { get; set; } = Enumerable.Empty<SelectListItem>();
 
         public static ScheduleDefViewModel Default = new ScheduleDefViewModel();
 
@@ -63,6 +66,7 @@ namespace TTWebMVCV2.Models
                 TimeTo = scheduleJobDef.TimeTo;
                 TimeZone = scheduleJobDef.TimeZone;
                 Active = scheduleJobDef.Active;
+                SelectedDaysOfWeek = scheduleJobDef.WeekDayIds.ToList();
             }
             InitializeSelectLists();
         }
@@ -82,6 +86,7 @@ namespace TTWebMVCV2.Models
                 TimeTo = TimeTo,
                 TimeZone = TimeZone,
                 Active = Active,
+                WeekDayIds = SelectedDaysOfWeek.ToList(),
             };
         }
 
@@ -93,7 +98,9 @@ namespace TTWebMVCV2.Models
         private void InitializeSelectLists()
         {
             ScheduleTypes = Helper.GetEnumStrings<ScheduleJobType>(true).Select(s => s.ToStringCapitalized());
-            IntervalTypes = Helper.GetEnumStrings<IntervalTypeEnum>(true).Select(s => s.ToStringCapitalized());
+            IntervalTypes = Helper.GetEnumStrings<IntervalTypeEnum>(true)
+                .Select(s => s.ToStringCapitalized())
+                .Select(s => new SelectListItem(s, s));
         }
 
         public ScheduleDefViewModel SetLogins(IEnumerable<FacebookCredential> logins)
@@ -122,6 +129,12 @@ namespace TTWebMVCV2.Models
             }
             TimeZones = TimeZoneInfo.GetSystemTimeZones()
                .Select(tz => new SelectListItem(tz.DisplayName, tz.Id, tz.Id == (TimeZone ?? TimeZoneInfo.Utc.Id)));
+            return this;
+        }
+
+        public ScheduleDefViewModel SetWeekDaySelectList(IEnumerable<ScheduleWeekDay> weekDays)
+        {
+            DaysOfWeek = weekDays.Select(d => new SelectListItem(d.DisplayText, d.Id.ToString(), SelectedDaysOfWeek.Contains(d.Id)));
             return this;
         }
     }

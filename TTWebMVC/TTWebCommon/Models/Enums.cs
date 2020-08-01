@@ -19,9 +19,9 @@ namespace TTWebCommon.Models
    {
 		NONE,
 		DAILY,
-		WEEKLY,
-		MONTHLY,
-		YEARLY
+		//WEEKLY,
+		//MONTHLY,
+		//YEARLY
    }
 
    public enum ScheduleJobStatus
@@ -33,5 +33,16 @@ namespace TTWebCommon.Models
 	{
 		NONE,
 		ADMIN,
+	}
+
+    public enum WeekDayEnum
+    {
+		Monday = 1,
+		Tuesday = 2,
+		Wednesday = 3,
+		Thursday = 4,
+		Friday = 5,
+		Saturday = 6,
+		Sunday = 7,
 	}
 }

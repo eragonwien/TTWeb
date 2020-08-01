@@ -116,3 +116,10 @@ function getDataFromDataAttributes(ele) {
 
    return data;
 }
+
+$(document).on('change', 'input[type="checkbox"]', function () {
+    var checkboxParent = $(this).parent();
+    if (checkboxParent.hasClass('button checkbox-button')) {
+        checkboxParent.toggleClass('is-success', $(this).is(':checked'));
+    }
+});

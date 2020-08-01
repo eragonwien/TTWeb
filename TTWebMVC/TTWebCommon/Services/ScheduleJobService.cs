@@ -3,156 +3,219 @@ using SNGCommon.Sql.MySql.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using TTWebCommon.Models;
+using TTWebCommon.Models.DataModels;
 
 namespace TTWebCommon.Services
 {
-   public interface IScheduleJobService
-   {
-      Task AddScheduleJobDef(ScheduleJobDef scheduleJobDef);
-      Task<List<ScheduleJobDef>> GetScheduleJobDefs(int userId);
-      Task<ScheduleJobDef> GetScheduleJobDef(int id, int userId);
-      Task RemoveScheduleJobDef(int id, int appUserId);
-      Task ToggleActive(int id, bool active);
-      Task UpdateScheduleJobDef(ScheduleJobDef scheduleJobDef);
-   }
+    public interface IScheduleJobService
+    {
+        Task AddScheduleJobDef(ScheduleJobDef scheduleJobDef);
+        Task<List<ScheduleJobDef>> GetScheduleJobDefs(int userId);
+        Task<ScheduleJobDef> GetScheduleJobDef(int id, int userId);
+        Task RemoveScheduleJobDef(int id, int appUserId);
+        Task ToggleActive(int id, bool active);
+        Task UpdateScheduleJobDef(ScheduleJobDef scheduleJobDef);
+        Task<List<ScheduleWeekDay>> GetScheduleWeekDays();
+    }
 
-   public class ScheduleJobService : IScheduleJobService
-   {
-      private readonly TTWebDbContext db;
+    public class ScheduleJobService : IScheduleJobService
+    {
+        private readonly TTWebDbContext db;
 
-      public ScheduleJobService(TTWebDbContext db)
-      {
-         this.db = db;
-      }
+        public ScheduleJobService(TTWebDbContext db)
+        {
+            this.db = db;
+        }
 
-      private const string ScheduleJobDefSelect = @"SELECT id, appuser_id, friend_id, facebookcredential_id, name, type, 
+        private const string ScheduleJobDefSelect = @"SELECT id, appuser_id, friend_id, facebookcredential_id, name, type, 
          interval_type, time_from, time_to, timezone_id, active,
          appuser_email, appuser_title, appuser_firstname, appuser_lastname, appuser_disabled, appuser_active, appuser_role, 
-         friend_name, friend_profile_link, friend_disabled
+         friend_name, friend_profile_link, friend_disabled, scheduleweekday_ids
          FROM v_schedulejobdef";
 
-      public async Task AddScheduleJobDef(ScheduleJobDef def)
-      {
-         string cmdStr = @"INSERT INTO schedulejobdef(appuser_id, friend_id, facebookcredential_id, name, type, interval_type, time_from, time_to, timezone_id, active) 
+        public async Task AddScheduleJobDef(ScheduleJobDef def)
+        {
+            string cmdStr = @"INSERT INTO schedulejobdef(appuser_id, friend_id, facebookcredential_id, name, type, interval_type, time_from, time_to, timezone_id, active) 
             VALUES(@appuser_id, @friend_id, @facebookcredential_id, @name, @type, @interval_type, @time_from, @time_to, @timezone_id, @active)";
-         using MySqlCommand cmd = db.CreateCommand(cmdStr);
-         cmd.Parameters.Add(new MySqlParameter("appuser_id", def.AppUserId));
-         cmd.Parameters.Add(new MySqlParameter("friend_id", def.FriendId));
-         cmd.Parameters.Add(new MySqlParameter("facebookcredential_id", def.FacebookCredentialId));
-         cmd.Parameters.Add(new MySqlParameter("name", def.Name));
-         cmd.Parameters.Add(new MySqlParameter("type", def.Type.ToString()));
-         cmd.Parameters.Add(new MySqlParameter("interval_type", def.IntervalType.ToString()));
-         cmd.Parameters.Add(new MySqlParameter("time_from", def.TimeFrom));
-         cmd.Parameters.Add(new MySqlParameter("time_to", def.TimeTo));
-         cmd.Parameters.Add(new MySqlParameter("timezone_id", def.TimeZone));
-         cmd.Parameters.Add(new MySqlParameter("active", def.Active ? 1 : 0));
-         await cmd.ExecuteNonQueryAsync();
-      }
+            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            cmd.Parameters.Add(new MySqlParameter("appuser_id", def.AppUserId));
+            cmd.Parameters.Add(new MySqlParameter("friend_id", def.FriendId));
+            cmd.Parameters.Add(new MySqlParameter("facebookcredential_id", def.FacebookCredentialId));
+            cmd.Parameters.Add(new MySqlParameter("name", def.Name));
+            cmd.Parameters.Add(new MySqlParameter("type", def.Type.ToString()));
+            cmd.Parameters.Add(new MySqlParameter("interval_type", def.IntervalType.ToString()));
+            cmd.Parameters.Add(new MySqlParameter("time_from", def.TimeFrom));
+            cmd.Parameters.Add(new MySqlParameter("time_to", def.TimeTo));
+            cmd.Parameters.Add(new MySqlParameter("timezone_id", def.TimeZone));
+            cmd.Parameters.Add(new MySqlParameter("active", def.Active ? 1 : 0));
+            await cmd.ExecuteNonQueryAsync();
 
-      public async Task<ScheduleJobDef> GetScheduleJobDef(int id, int userId)
-      {
-         ScheduleJobDef scheduleJobDef = new ScheduleJobDef();
-         string cmdStr = ScheduleJobDefSelect + " WHERE id=@id AND appuser_id=@appuser_id";
-         using MySqlCommand cmd = db.CreateCommand(cmdStr);
-         cmd.Parameters.Add(new MySqlParameter("id", id));
-         cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
-         using var odr = await cmd.ExecuteMySqlReaderAsync();
-         if (await odr.ReadAsync())
-         {
-            scheduleJobDef = await ReadScheduleJobDefAsync(odr);
-         }
-         return scheduleJobDef;
-      }
+            await UpdateScheduleDefJobWeekDays(def.Id, def.WeekDayIds);
+        }
 
-      public async Task<List<ScheduleJobDef>> GetScheduleJobDefs(int userId)
-      {
-         List<ScheduleJobDef> defs = new List<ScheduleJobDef>();
-         string cmdStr = ScheduleJobDefSelect + " WHERE appuser_id=@appuser_id";
-         using MySqlCommand cmd = db.CreateCommand(cmdStr);
-         cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
-         using var odr = await cmd.ExecuteMySqlReaderAsync();
-         while (await odr.ReadAsync())
-         {
-            var scheduleJobDef = await ReadScheduleJobDefAsync(odr);
-            defs.Add(scheduleJobDef);
-         }
-         return defs.ToList();
-      }
+        public async Task<ScheduleJobDef> GetScheduleJobDef(int id, int userId)
+        {
+            ScheduleJobDef scheduleJobDef = new ScheduleJobDef();
+            string cmdStr = ScheduleJobDefSelect + " WHERE id=@id AND appuser_id=@appuser_id";
+            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            cmd.Parameters.Add(new MySqlParameter("id", id));
+            cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
+            using var odr = await cmd.ExecuteMySqlReaderAsync();
+            if (await odr.ReadAsync())
+            {
+                scheduleJobDef = await ReadScheduleJobDefAsync(odr);
+            }
+            return scheduleJobDef;
+        }
 
-      public async Task RemoveScheduleJobDef(int id, int appUserId)
-      {
-         string cmdStr = @"DELETE FROM schedulejobdef WHERE id=@id AND appuser_id=@appuser_id";
-         using MySqlCommand cmd = db.CreateCommand(cmdStr);
-         cmd.Parameters.Add(new MySqlParameter("id", id));
-         cmd.Parameters.Add(new MySqlParameter("appuser_id", appUserId));
-         await cmd.ExecuteNonQueryAsync();
-      }
+        public async Task<List<ScheduleJobDef>> GetScheduleJobDefs(int userId)
+        {
+            List<ScheduleJobDef> defs = new List<ScheduleJobDef>();
+            string cmdStr = ScheduleJobDefSelect + " WHERE appuser_id=@appuser_id";
+            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
+            using var odr = await cmd.ExecuteMySqlReaderAsync();
+            while (await odr.ReadAsync())
+            {
+                var scheduleJobDef = await ReadScheduleJobDefAsync(odr);
+                defs.Add(scheduleJobDef);
+            }
+            return defs.ToList();
+        }
 
-      public async Task ToggleActive(int id, bool active)
-      {
-         string cmdStr = @"UPDATE schedulejobdef SET active=@active WHERE id=@id";
-         using MySqlCommand cmd = db.CreateCommand(cmdStr);
-         cmd.Parameters.Add(new MySqlParameter("active", active));
-         cmd.Parameters.Add(new MySqlParameter("id", id));
-         await cmd.ExecuteNonQueryAsync();
-      }
+        public async Task RemoveScheduleJobDef(int id, int appUserId)
+        {
+            string cmdStr = @"DELETE FROM schedulejobdef WHERE id=@id AND appuser_id=@appuser_id";
+            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            cmd.Parameters.Add(new MySqlParameter("id", id));
+            cmd.Parameters.Add(new MySqlParameter("appuser_id", appUserId));
+            await cmd.ExecuteNonQueryAsync();
+        }
 
-      public async Task UpdateScheduleJobDef(ScheduleJobDef scheduleJobDef)
-      {
-         string cmdStr = @"UPDATE schedulejobdef SET friend_id=@friend_id, facebookcredential_id=@facebookcredential_id, 
+        public async Task ToggleActive(int id, bool active)
+        {
+            string cmdStr = @"UPDATE schedulejobdef SET active=@active WHERE id=@id";
+            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            cmd.Parameters.Add(new MySqlParameter("active", active));
+            cmd.Parameters.Add(new MySqlParameter("id", id));
+            await cmd.ExecuteNonQueryAsync();
+        }
+
+        public async Task UpdateScheduleJobDef(ScheduleJobDef scheduleJobDef)
+        {
+            string cmdStr = @"UPDATE schedulejobdef SET friend_id=@friend_id, facebookcredential_id=@facebookcredential_id, 
             name=@name, type=@type, interval_type=@interval_type, time_from=@time_from, time_to=@time_to, 
             timezone_id=@timezone_id, active=@active WHERE id=@id and appuser_id=@appuser_id";
-         using MySqlCommand cmd = db.CreateCommand(cmdStr);
-         cmd.Parameters.Add(new MySqlParameter("friend_id", scheduleJobDef.FriendId));
-         cmd.Parameters.Add(new MySqlParameter("facebookcredential_id", scheduleJobDef.FacebookCredentialId));
-         cmd.Parameters.Add(new MySqlParameter("name", scheduleJobDef.Name));
-         cmd.Parameters.Add(new MySqlParameter("type", scheduleJobDef.Type));
-         cmd.Parameters.Add(new MySqlParameter("interval_type", scheduleJobDef.IntervalType));
-         cmd.Parameters.Add(new MySqlParameter("time_from", scheduleJobDef.TimeFrom));
-         cmd.Parameters.Add(new MySqlParameter("time_to", scheduleJobDef.TimeTo));
-         cmd.Parameters.Add(new MySqlParameter("timezone_id", scheduleJobDef.TimeZone));
-         cmd.Parameters.Add(new MySqlParameter("id", scheduleJobDef.Id));
-         cmd.Parameters.Add(new MySqlParameter("active", scheduleJobDef.Active ? 1 : 0));
+            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            cmd.Parameters.Add(new MySqlParameter("friend_id", scheduleJobDef.FriendId));
+            cmd.Parameters.Add(new MySqlParameter("facebookcredential_id", scheduleJobDef.FacebookCredentialId));
+            cmd.Parameters.Add(new MySqlParameter("name", scheduleJobDef.Name));
+            cmd.Parameters.Add(new MySqlParameter("type", scheduleJobDef.Type));
+            cmd.Parameters.Add(new MySqlParameter("interval_type", scheduleJobDef.IntervalType));
+            cmd.Parameters.Add(new MySqlParameter("time_from", scheduleJobDef.TimeFrom));
+            cmd.Parameters.Add(new MySqlParameter("time_to", scheduleJobDef.TimeTo));
+            cmd.Parameters.Add(new MySqlParameter("timezone_id", scheduleJobDef.TimeZone));
+            cmd.Parameters.Add(new MySqlParameter("id", scheduleJobDef.Id));
+            cmd.Parameters.Add(new MySqlParameter("active", scheduleJobDef.Active ? 1 : 0));
             cmd.Parameters.Add(new MySqlParameter("appuser_id", scheduleJobDef.AppUserId));
-         await cmd.ExecuteNonQueryAsync();
-      }
+            await cmd.ExecuteNonQueryAsync();
 
-      private async Task<ScheduleJobDef> ReadScheduleJobDefAsync(MySqlDataReader odr)
-      {
-         return new ScheduleJobDef
-         {
-            Id = await odr.ReadMySqlIntegerAsync("id"),
-            AppUserId = await odr.ReadMySqlIntegerAsync("appuser_id"),
-            Name = await odr.ReadMySqlStringAsync("name"),
-            FriendId = await odr.ReadMySqlIntegerAsync("friend_id"),
-            FacebookCredentialId = await odr.ReadMySqlIntegerAsync("facebookcredential_id"),
-            Type = await odr.ReadMySqlEnumAsync<ScheduleJobType>("type"),
-            IntervalType = await odr.ReadMySqlEnumAsync<IntervalTypeEnum>("interval_type"),
-            TimeFrom = await odr.ReadMySqlStringAsync("time_from"),
-            TimeTo = await odr.ReadMySqlStringAsync("time_to"),
-            TimeZone = await odr.ReadMySqlStringAsync("timezone_id"),
-            Active = await odr.ReadMySqlBooleanAsync("active"),
-            AppUser = new AppUser
+            await UpdateScheduleDefJobWeekDays(scheduleJobDef.Id, scheduleJobDef.WeekDayIds);
+        }
+
+        private async Task<ScheduleJobDef> ReadScheduleJobDefAsync(MySqlDataReader odr)
+        {
+            return new ScheduleJobDef
             {
-               Id = await odr.ReadMySqlIntegerAsync("appuser_id"),
-               Email = await odr.ReadMySqlStringAsync("appuser_email"),
-               Title = await odr.ReadMySqlStringAsync("appuser_title"),
-               Firstname = await odr.ReadMySqlStringAsync("appuser_firstname"),
-               Lastname = await odr.ReadMySqlStringAsync("appuser_lastname"),
-               Disabled = await odr.ReadMySqlBooleanAsync("appuser_disabled"),
-               Active = await odr.ReadMySqlBooleanAsync("appuser_active"),
-               Role = await odr.ReadMySqlEnumAsync<UserRole>("appuser_role"),
-            },
-            Friend = new FacebookFriend
+                Id = await odr.ReadMySqlIntegerAsync("id"),
+                AppUserId = await odr.ReadMySqlIntegerAsync("appuser_id"),
+                Name = await odr.ReadMySqlStringAsync("name"),
+                FriendId = await odr.ReadMySqlIntegerAsync("friend_id"),
+                FacebookCredentialId = await odr.ReadMySqlIntegerAsync("facebookcredential_id"),
+                Type = await odr.ReadMySqlEnumAsync<ScheduleJobType>("type"),
+                IntervalType = await odr.ReadMySqlEnumAsync<IntervalTypeEnum>("interval_type"),
+                TimeFrom = await odr.ReadMySqlStringAsync("time_from"),
+                TimeTo = await odr.ReadMySqlStringAsync("time_to"),
+                TimeZone = await odr.ReadMySqlStringAsync("timezone_id"),
+                Active = await odr.ReadMySqlBooleanAsync("active"),
+                AppUser = new AppUser
+                {
+                    Id = await odr.ReadMySqlIntegerAsync("appuser_id"),
+                    Email = await odr.ReadMySqlStringAsync("appuser_email"),
+                    Title = await odr.ReadMySqlStringAsync("appuser_title"),
+                    Firstname = await odr.ReadMySqlStringAsync("appuser_firstname"),
+                    Lastname = await odr.ReadMySqlStringAsync("appuser_lastname"),
+                    Disabled = await odr.ReadMySqlBooleanAsync("appuser_disabled"),
+                    Active = await odr.ReadMySqlBooleanAsync("appuser_active"),
+                    Role = await odr.ReadMySqlEnumAsync<UserRole>("appuser_role"),
+                },
+                Friend = new FacebookFriend
+                {
+                    Id = await odr.ReadMySqlIntegerAsync("friend_id"),
+                    Name = await odr.ReadMySqlStringAsync("friend_name"),
+                    ProfileLink = await odr.ReadMySqlStringAsync("friend_profile_link"),
+                    Disabled = await odr.ReadMySqlBooleanAsync("friend_disabled"),
+                },
+                WeekDayIds = (await odr.ReadMySqlStringAsync("scheduleweekday_ids"))
+                    .Split(',')
+                    .Where(wd => int.TryParse(wd, out int parsedId))
+                    .Select(wd => Convert.ToInt32(wd))
+                    .ToList(),
+            };
+        }
+
+        public async Task<List<ScheduleWeekDay>> GetScheduleWeekDays()
+        {
+            var weekdays = new List<ScheduleWeekDay>();
+            string cmdStr = @"SELECT id, name, display_text FROM scheduleweekday";
+            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            await using var odr = await cmd.ExecuteMySqlReaderAsync();
+            while (await odr.ReadAsync())
             {
-               Id = await odr.ReadMySqlIntegerAsync("friend_id"),
-               Name = await odr.ReadMySqlStringAsync("friend_name"),
-               ProfileLink = await odr.ReadMySqlStringAsync("friend_profile_link"),
-               Disabled = await odr.ReadMySqlBooleanAsync("friend_disabled"),
+                weekdays.Add(new ScheduleWeekDay
+                {
+                    Id = await odr.ReadMySqlIntegerAsync("id"),
+                    Name = await odr.ReadMySqlEnumAsync<WeekDayEnum>("name"),
+                    DisplayText = await odr.ReadMySqlStringAsync("display_text"),
+                });
             }
-         };
-      }
-   }
+            return weekdays;
+        }
+
+        private async Task UpdateScheduleDefJobWeekDays(int scheduleJobDefId, List<int> weekDayIds)
+        {
+            await DeleteScheduleDefJobWeekDays(scheduleJobDefId);
+
+            if (weekDayIds.Count == 0)
+                return;
+
+            var cmdStr = new StringBuilder(@"INSERT INTO jobweekday(schedulejobdef_id, scheduleweekday_id) values ");
+            for (int i = 0; i < weekDayIds.Count; i++)
+            {
+                cmdStr.Append($"(@schedulejobdef_id_{i}, @scheduleweekday_id_{i})");
+                if ((i+1) < weekDayIds.Count)
+                    cmdStr.Append(", ");
+            }
+            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+
+            for (int i = 0; i < weekDayIds.Count; i++)
+            {
+                cmd.Parameters.Add(new MySqlParameter($"schedulejobdef_id_{i}", scheduleJobDefId));
+                cmd.Parameters.Add(new MySqlParameter($"scheduleweekday_id_{i}", weekDayIds[i]));
+            }
+
+            await cmd.ExecuteNonQueryAsync();
+        }
+
+        private async Task DeleteScheduleDefJobWeekDays(int scheduleJobDefId)
+        {
+            string cmdStr = @"DELETE FROM jobweekday where schedulejobdef_id=@schedulejobdef_id";
+            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            cmd.Parameters.Add(new MySqlParameter("schedulejobdef_id", scheduleJobDefId));
+            await cmd.ExecuteNonQueryAsync();
+        }
+    }
 }

@@ -20,8 +20,16 @@ select
     a.role_name as appuser_role,
     f.name as friend_name,
     f.profile_link as friend_profile_link,
-    f.disabled as friend_disabled
+    f.disabled as friend_disabled,
+    jwd.scheduleweekday_ids
 from schedulejobdef d
 inner join v_appuser a on d.appuser_id=a.appuser_id
-left join friend f on d.friend_id=f.id and d.appuser_id=f.appuser_id; 
+left join friend f on d.friend_id=f.id and d.appuser_id=f.appuser_id
+left join (
+	select 
+		jobweekday.schedulejobdef_id,
+		group_concat(jobweekday.scheduleweekday_id order by jobweekday.scheduleweekday_id asc separator ',') as scheduleweekday_ids
+    from jobweekday
+    group by jobweekday.schedulejobdef_id
+) jwd on d.id=jwd.schedulejobdef_id
 ;

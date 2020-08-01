@@ -4,7 +4,7 @@ drop table if exists
     schedulejobpartner,
     partner,
     jobweekday,
-    weekday,
+    scheduleweekday,
     schedulejobdef,
     facebookcredential,
     friend,
@@ -75,18 +75,19 @@ create table ScheduleJobDef (
     FOREIGN KEY (friend_id) REFERENCES friend(id)
 );
 
-create table WeekDay (
-	id INT auto_increment primary key,
+create table ScheduleWeekDay (
+	id INT primary key,
     name varchar(16),
-    CONSTRAINT weekday_unique UNIQUE (name)
+    display_text varchar(32),
+    CONSTRAINT scheduleweekday_unique UNIQUE (name)
 );
 
 create table JobWeekDay (
     schedulejobdef_id int not null,
-    weekday_id int not null,
-    FOREIGN KEY (schedulejobdef_id) REFERENCES schedulejobdef(id),
-    FOREIGN KEY (weekday_id) REFERENCES WeekDay(id),
-    CONSTRAINT jobweekday_pk PRIMARY KEY (schedulejobdef_id, weekday_id)
+	scheduleweekday_id int not null,
+    FOREIGN KEY (scheduleweekday_id) REFERENCES schedulejobdef(id),
+    FOREIGN KEY (scheduleweekday_id) REFERENCES ScheduleWeekDay(id),
+    CONSTRAINT jobweekday_pk PRIMARY KEY (schedulejobdef_id, scheduleweekday_id)
 );
 
 create table Partner (
@@ -113,6 +114,14 @@ create table ScheduleJobDetail (
 );
 
 INSERT INTO Role(name) values('ADMIN');
+
+INSERT INTO ScheduleWeekDay(id, name, display_text) values(1, 'Monday', 'MO');
+INSERT INTO ScheduleWeekDay(id, name, display_text) values(2, 'Tuesday', 'TUE');
+INSERT INTO ScheduleWeekDay(id, name, display_text) values(3, 'Wednesday', 'WED');
+INSERT INTO ScheduleWeekDay(id, name, display_text) values(4, 'Thursday', 'THU');
+INSERT INTO ScheduleWeekDay(id, name, display_text) values(5, 'Friday', 'FRI');
+INSERT INTO ScheduleWeekDay(id, name, display_text) values(6, 'Saturday', 'SAT');
+INSERT INTO ScheduleWeekDay(id, name, display_text) values(7, 'Sunday', 'SUN');
 
 insert into appuser(id, email, firstname, lastname, disabled, active) values(1, 'eragonwien@gmail.com', 'Son', 'Nguyen Hoang', 0, 1);
 update appuser set role_id=(select id from role where name='ADMIN') where email='eragonwien@gmail.com';

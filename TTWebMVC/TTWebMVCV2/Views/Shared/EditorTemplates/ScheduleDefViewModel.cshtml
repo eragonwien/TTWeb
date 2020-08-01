@@ -90,21 +90,39 @@
       @Html.LabelFor(m => m.IntervalType, new { @class = "label" })
    </div>
    <div class="field-body">
-      <div class="field is-narrow">
-         @foreach (string intervalType in Model.IntervalTypes)
-         {
-            <div class="control">
-               <label class="radio">
-                  @Html.RadioButtonFor(m => m.IntervalType, intervalType, new { @id = "" })
-                  @intervalType
-               </label>
-            </div>
-         }
-         <p class="help is-danger">
-            @Html.ValidationMessageFor(m => m.IntervalType)
-         </p>
-      </div>
+       <div class="field is-expanded">
+           <div class="control">
+               <div class="select is-fullwidth">
+                   @Html.DropDownListFor(m => m.IntervalType, Model.IntervalTypes)
+               </div>
+           </div>
+           <p class="help is-danger">
+               @Html.ValidationMessageFor(m => m.IntervalType)
+           </p>
+       </div>
    </div>
+</div>
+
+<div class="field is-horizontal">
+    <div class="field-label"></div>
+    <div class="field-body">
+        <div class="field is-expanded">
+            <div class="control">
+                <div class="buttons">
+                    @foreach (var weekDay in Model.DaysOfWeek)
+                    {
+                        <label class="button checkbox-button @(weekDay.Selected ? "is-success": "")">
+                            <input type="checkbox" class="is-hidden" name="@Html.NameFor(m => m.SelectedDaysOfWeek)" value="@weekDay.Value" @(weekDay.Selected ? "checked" : "") />
+                            @weekDay.Text
+                        </label>
+                    }
+                </div>
+            </div>
+            <p class="help is-danger">
+                @Html.ValidationMessageFor(m => m.SelectedDaysOfWeek)
+            </p>
+        </div>
+    </div>
 </div>
 
 <div class="field is-horizontal">
