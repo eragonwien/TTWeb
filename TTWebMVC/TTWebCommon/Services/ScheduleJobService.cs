@@ -53,7 +53,7 @@ namespace TTWebCommon.Services
             cmd.Parameters.Add(new MySqlParameter("active", def.Active ? 1 : 0));
             await cmd.ExecuteNonQueryAsync();
 
-            await UpdateScheduleDefJobWeekDays(def.Id, def.WeekDayIds);
+            await UpdateScheduleDefJobWeekDays(def);
         }
 
         public async Task<ScheduleJobDef> GetScheduleJobDef(int id, int userId)
@@ -123,7 +123,7 @@ namespace TTWebCommon.Services
             cmd.Parameters.Add(new MySqlParameter("appuser_id", scheduleJobDef.AppUserId));
             await cmd.ExecuteNonQueryAsync();
 
-            await UpdateScheduleDefJobWeekDays(scheduleJobDef.Id, scheduleJobDef.WeekDayIds);
+            await UpdateScheduleDefJobWeekDays(scheduleJobDef);
         }
 
         private async Task<ScheduleJobDef> ReadScheduleJobDefAsync(MySqlDataReader odr)
@@ -159,7 +159,7 @@ namespace TTWebCommon.Services
                     ProfileLink = await odr.ReadMySqlStringAsync("friend_profile_link"),
                     Disabled = await odr.ReadMySqlBooleanAsync("friend_disabled"),
                 },
-                WeekDayIds = (await odr.ReadMySqlStringAsync("scheduleweekday_ids"))
+                WeekDayIds = (await odr.ReadMySqlStringAsync("scheduleweekday_ids", string.Empty))
                     .Split(',')
                     .Where(wd => int.TryParse(wd, out int parsedId))
                     .Select(wd => Convert.ToInt32(wd))
@@ -185,26 +185,26 @@ namespace TTWebCommon.Services
             return weekdays;
         }
 
-        private async Task UpdateScheduleDefJobWeekDays(int scheduleJobDefId, List<int> weekDayIds)
+        private async Task UpdateScheduleDefJobWeekDays(ScheduleJobDef def)
         {
-            await DeleteScheduleDefJobWeekDays(scheduleJobDefId);
+            await DeleteScheduleDefJobWeekDays(def.Id);
 
-            if (weekDayIds.Count == 0)
+            if (def.WeekDayIds.Count == 0 || def.IntervalType != IntervalTypeEnum.DAILY)
                 return;
 
             var cmdStr = new StringBuilder(@"INSERT INTO jobweekday(schedulejobdef_id, scheduleweekday_id) values ");
-            for (int i = 0; i < weekDayIds.Count; i++)
+            for (int i = 0; i < def.WeekDayIds.Count; i++)
             {
                 cmdStr.Append($"(@schedulejobdef_id_{i}, @scheduleweekday_id_{i})");
-                if ((i+1) < weekDayIds.Count)
+                if ((i+1) < def.WeekDayIds.Count)
                     cmdStr.Append(", ");
             }
             await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
 
-            for (int i = 0; i < weekDayIds.Count; i++)
+            for (int i = 0; i < def.WeekDayIds.Count; i++)
             {
-                cmd.Parameters.Add(new MySqlParameter($"schedulejobdef_id_{i}", scheduleJobDefId));
-                cmd.Parameters.Add(new MySqlParameter($"scheduleweekday_id_{i}", weekDayIds[i]));
+                cmd.Parameters.Add(new MySqlParameter($"schedulejobdef_id_{i}", def.Id));
+                cmd.Parameters.Add(new MySqlParameter($"scheduleweekday_id_{i}", def.WeekDayIds[i]));
             }
 
             await cmd.ExecuteNonQueryAsync();

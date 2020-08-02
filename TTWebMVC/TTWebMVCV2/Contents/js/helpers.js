@@ -123,3 +123,7 @@ $(document).on('change', 'input[type="checkbox"]', function () {
         checkboxParent.toggleClass('is-success', $(this).is(':checked'));
     }
 });
+
+$(document).on('change', 'select', function () {
+    $(this).valid();
+});

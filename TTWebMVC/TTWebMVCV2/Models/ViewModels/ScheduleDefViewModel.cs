@@ -9,32 +9,45 @@ using System.Linq;
 using System.Threading.Tasks;
 using TTWebCommon.Models;
 using TTWebCommon.Models.DataModels;
+using TTWebMVCV2.Helpers.ValidationAttributes;
 
 namespace TTWebMVCV2.Models
 {
     public class ScheduleDefViewModel
     {
         public int? Id { get; set; }
+
         [StringLength(16)]
         public string Name { get; set; }
+
         [Required]
         [Display(Name = "Friend")]
         public int? FriendId { get; set; }
+
         [Required]
         [Display(Name = "Login")]
         public int? FacebookCredentialId { get; set; }
+
         [Required]
         public ScheduleJobType Type { get; set; }
+
         [Required]
         [Display(Name = "Interval")]
+        [ToggleRequiredFields(IntervalTypeEnum.DAILY, "#SelectedDaysOfWeekField", "is-hidden")]
         public IntervalTypeEnum IntervalType { get; set; }
+
+        [RequiredIfDependentHasValue(DependentPropertyName = nameof(IntervalType), DependentDesiredValue = IntervalTypeEnum.DAILY)]
         public List<int> SelectedDaysOfWeek { get; set; } = new List<int>();
+
         [Required]
         public string TimeFrom { get; set; }
+
         [Required]
         public string TimeTo { get; set; }
+
         [Required]
         public string TimeZone { get; set; }
+
         [Required]
         public bool Active { get; set; }
 
@@ -98,9 +111,7 @@ namespace TTWebMVCV2.Models
         private void InitializeSelectLists()
         {
             ScheduleTypes = Helper.GetEnumStrings<ScheduleJobType>(true).Select(s => s.ToStringCapitalized());
-            IntervalTypes = Helper.GetEnumStrings<IntervalTypeEnum>(true)
-                .Select(s => s.ToStringCapitalized())
-                .Select(s => new SelectListItem(s, s));
+            IntervalTypes = Helper.GetEnumStrings<IntervalTypeEnum>(true).Select(s => new SelectListItem(s.ToStringCapitalized(), s));
         }
 
         public ScheduleDefViewModel SetLogins(IEnumerable<FacebookCredential> logins)

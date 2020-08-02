@@ -19,9 +19,9 @@ namespace TTWebCommon.Models
    {
 		NONE,
 		DAILY,
-		//WEEKLY,
-		//MONTHLY,
-		//YEARLY
+		WEEKLY,
+		MONTHLY,
+		YEARLY
    }
 
    public enum ScheduleJobStatus

@@ -103,7 +103,7 @@
    </div>
 </div>
 
-<div class="field is-horizontal">
+<div class="field is-horizontal @(Model.IntervalType != IntervalTypeEnum.DAILY ? "is-hidden" : "")" id="SelectedDaysOfWeekField">
     <div class="field-label"></div>
     <div class="field-body">
         <div class="field is-expanded">

@@ -11,6 +11,7 @@
       "outputFileName": "wwwroot/js/site.min.js",
       "inputFiles": [
          "Contents/js/bulma.helper.js",
+         "Contents/js/validation.helper.js",
          "Contents/js/helper.js",
          "Contents/js/autoFormSubmit.js",
          "Contents/js/navbar.component.js",
