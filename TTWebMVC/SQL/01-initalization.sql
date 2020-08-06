@@ -108,7 +108,7 @@ create table ScheduleJobPartner (
 create table ScheduleJobDetail (
 	id int auto_increment primary key,
     schedulejobdef_id int not null,
-    execution_time varchar(16) not null,
+    execution_time date not null,
     status varchar(16) not null default 'NEW',
     foreign key (schedulejobdef_id) references schedulejobdef(id)
 );

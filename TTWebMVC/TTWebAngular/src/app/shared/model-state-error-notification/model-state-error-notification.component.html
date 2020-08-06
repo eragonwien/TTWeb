@@ -1,9 +1,0 @@
-<div class="notification is-light" *ngIf="notification" [ngClass]="notificationClass">
-  <button class="delete" (click)="clearNotification()"></button>
-  <ul>
-    <li *ngFor="let text of notification.texts">
-      <span>{{ text }}</span>
-    </li>
-  </ul>
-</div>
-<br />

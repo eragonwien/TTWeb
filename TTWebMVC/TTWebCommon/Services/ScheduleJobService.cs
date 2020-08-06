@@ -14,11 +14,13 @@ namespace TTWebCommon.Services
     {
         Task AddScheduleJobDef(ScheduleJobDef scheduleJobDef);
         Task<List<ScheduleJobDef>> GetScheduleJobDefs(int userId);
+        Task<List<ScheduleJobDef>> GetOpeningScheduleJobDefs();
         Task<ScheduleJobDef> GetScheduleJobDef(int id, int userId);
         Task RemoveScheduleJobDef(int id, int appUserId);
         Task ToggleActive(int id, bool active);
         Task UpdateScheduleJobDef(ScheduleJobDef scheduleJobDef);
         Task<List<ScheduleWeekDay>> GetScheduleWeekDays();
+        Task AddScheduleJobDetail(ScheduleJobDetail detail);
     }
 
     public class ScheduleJobService : IScheduleJobService
@@ -31,10 +33,13 @@ namespace TTWebCommon.Services
         }
 
         private const string ScheduleJobDefSelect = @"SELECT id, appuser_id, friend_id, facebookcredential_id, name, type, 
-         interval_type, time_from, time_to, timezone_id, active,
-         appuser_email, appuser_title, appuser_firstname, appuser_lastname, appuser_disabled, appuser_active, appuser_role, 
-         friend_name, friend_profile_link, friend_disabled, scheduleweekday_ids
-         FROM v_schedulejobdef";
+             interval_type, time_from, time_to, timezone_id, active,
+             appuser_email, appuser_title, appuser_firstname, appuser_lastname, appuser_disabled, appuser_active, appuser_role, 
+             friend_name, friend_profile_link, friend_disabled, scheduleweekday_ids
+             FROM v_schedulejobdef";
+
+        private const string OpeningScheduleJobDefSelect = @"SELECT id, appuser_id, friend_id, facebookcredential_id, name, type, 
+             interval_type, time_from, time_to, timezone_id, active FROM v_open_schedulejob LIMIT 1";
 
         public async Task AddScheduleJobDef(ScheduleJobDef def)
         {
@@ -81,6 +86,20 @@ namespace TTWebCommon.Services
             while (await odr.ReadAsync())
             {
                 var scheduleJobDef = await ReadScheduleJobDefAsync(odr);
+                defs.Add(scheduleJobDef);
+            }
+            return defs.ToList();
+        }
+
+        public async Task<List<ScheduleJobDef>> GetOpeningScheduleJobDefs()
+        {
+            List<ScheduleJobDef> defs = new List<ScheduleJobDef>();
+            string cmdStr = OpeningScheduleJobDefSelect;
+            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            using var odr = await cmd.ExecuteMySqlReaderAsync();
+            while (await odr.ReadAsync())
+            {
+                var scheduleJobDef = await ReadOpenScheduleJobDefAsync(odr);
                 defs.Add(scheduleJobDef);
             }
             return defs.ToList();
@@ -167,6 +186,24 @@ namespace TTWebCommon.Services
             };
         }
 
+        private async Task<ScheduleJobDef> ReadOpenScheduleJobDefAsync(MySqlDataReader odr)
+        {
+            return new ScheduleJobDef
+            {
+                Id = await odr.ReadMySqlIntegerAsync("id"),
+                AppUserId = await odr.ReadMySqlIntegerAsync("appuser_id"),
+                Name = await odr.ReadMySqlStringAsync("name"),
+                FriendId = await odr.ReadMySqlIntegerAsync("friend_id"),
+                FacebookCredentialId = await odr.ReadMySqlIntegerAsync("facebookcredential_id"),
+                Type = await odr.ReadMySqlEnumAsync<ScheduleJobType>("type"),
+                IntervalType = await odr.ReadMySqlEnumAsync<IntervalTypeEnum>("interval_type"),
+                TimeFrom = await odr.ReadMySqlStringAsync("time_from"),
+                TimeTo = await odr.ReadMySqlStringAsync("time_to"),
+                TimeZone = await odr.ReadMySqlStringAsync("timezone_id"),
+                Active = await odr.ReadMySqlBooleanAsync("active"),
+            };
+        }
+
         public async Task<List<ScheduleWeekDay>> GetScheduleWeekDays()
         {
             var weekdays = new List<ScheduleWeekDay>();
@@ -196,7 +233,7 @@ namespace TTWebCommon.Services
             for (int i = 0; i < def.WeekDayIds.Count; i++)
             {
                 cmdStr.Append($"(@schedulejobdef_id_{i}, @scheduleweekday_id_{i})");
-                if ((i+1) < def.WeekDayIds.Count)
+                if ((i + 1) < def.WeekDayIds.Count)
                     cmdStr.Append(", ");
             }
             await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
@@ -216,6 +253,11 @@ namespace TTWebCommon.Services
             await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("schedulejobdef_id", scheduleJobDefId));
             await cmd.ExecuteNonQueryAsync();
+        }
+
+        public Task AddScheduleJobDetail(ScheduleJobDetail detail)
+        {
+            throw new NotImplementedException();
         }
     }
 }
