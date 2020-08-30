@@ -10,6 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SNGCommon.Services;
+using TTWebCommon.Middlewares;
+using TTWebCommon.Models;
+using TTWebCommon.Services;
 
 namespace TTWebApi
 {
@@ -25,7 +29,14 @@ namespace TTWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddTransient(_ => new TTWebDbContext(Configuration.GetConnectionString("Default")));
+            services.AddScoped<IPasswordHelperService, PasswordHelperService>(s => new PasswordHelperService(encryptionKey: Configuration["AppSettings:EncryptionKey"])); 
+            services.AddScoped<IAppUserService, AppUserService>();
+            services.AddScoped<IScheduleJobService, ScheduleJobService>();
+
+            services
+                .AddControllers()
+                .AddNewtonsoftJson(o => o.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,11 +46,9 @@ namespace TTWebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseGlobalErrorHandler();
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

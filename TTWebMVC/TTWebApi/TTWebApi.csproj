@@ -1,8 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<UserSecretsId>79fdae6e-e9df-4466-8212-179f771979a4</UserSecretsId>
+		<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\TTWebCommon\TTWebCommon.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="SNGCommon">
+			<HintPath>..\Libs\SNGCommon\SNGCommon.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Models\Common\" />
+	  <Folder Include="Models\Data\" />
+	  <Folder Include="Models\View\" />
+	</ItemGroup>
 
 
 </Project>
