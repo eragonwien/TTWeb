@@ -1,4 +1,3 @@
-use ttweb;
 drop table if exists
 	schedulejobdetail,
     schedulejobpartner,
