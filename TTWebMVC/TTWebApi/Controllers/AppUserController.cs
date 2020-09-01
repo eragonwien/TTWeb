@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using TTWebCommon.Models;
 using TTWebCommon.Services;
@@ -22,32 +23,41 @@ namespace TTWebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetUserByIdAsync(int id)
         {
-            var user = await userService.GetOne(id);
+            var user = await userService.GetUserByIdAsync(id);
+
             if (user == null)
-            {
-                return NotFound(id);
-            }
+                return BadRequest();
+
             return Ok(user);
         }
 
         [HttpPost]
-        public async Task PostAsync([FromBody] AppUser user)
+        public async Task<IActionResult> CreateUserAsync([FromBody] AppUser user)
         {
-            await userService.Create(user);
+            await userService.CreateUserAsync(user);
+            return CreatedAtAction(nameof(GetUserByIdAsync), new { id = user.Id }, user);
         }
 
-        [HttpPut("{id}")]
-        public async Task PutAsync([FromBody] AppUser user)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchUserAsync(int id, [FromBody] JsonPatchDocument<AppUser> userPatch)
         {
-            await userService.UpdateProfile(user);
+            var user = await userService.GetUserByIdAsync(id);
+
+            if (user == null)
+                return BadRequest();
+
+            userPatch.ApplyTo(user);
+            await userService.UpdateUserAsync(user);
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteAsync(int id)
+        public async Task DeleteUserAsync(int id)
         {
-            await userService.Remove(id);
+            await userService.DeleteUserAsync(id);
         }
     }
 }

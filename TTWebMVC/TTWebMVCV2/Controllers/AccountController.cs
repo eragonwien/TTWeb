@@ -69,16 +69,16 @@ namespace TTWebMVCV2.Controllers
 
             // Get & create user
             string email = authResult.Principal.FindFirst(ClaimTypes.Email)?.Value;
-            var appUser = await appUserService.GetOne(email);
+            var appUser = await appUserService.GetUserByEmailAsync(email);
             if (appUser == null)
             {
-                await appUserService.Create(new AppUser
+                await appUserService.CreateUserAsync(new AppUser
                 {
                     Email = email,
                     Firstname = authResult.Principal.FindFirst(ClaimTypes.GivenName)?.Value,
                     Lastname = authResult.Principal.FindFirst(ClaimTypes.Surname)?.Value
                 });
-                appUser = await appUserService.GetOne(email);
+                appUser = await appUserService.GetUserByEmailAsync(email);
             }
 
             // logouts from external login
@@ -126,10 +126,10 @@ namespace TTWebMVCV2.Controllers
         [HttpGet]
         public async Task<IActionResult> Profile()
         {
-            var model = new ProfileUserViewModel(await appUserService.GetOne(UserId));
-            UserFacebookCredentials ??= await appUserService.FacebookCredentials(UserId);
+            var model = new ProfileUserViewModel(await appUserService.GetUserByIdAsync(UserId));
+            UserFacebookCredentials ??= await appUserService.GetFacebookCredentialsByUserIdAsync(UserId);
             model.FacebookCredentials = UserFacebookCredentials;
-            UserFacebookFriends ??= await appUserService.FacebookFriends(UserId);
+            UserFacebookFriends ??= await appUserService.GetFacebookFriendsByUserIdAsync(UserId);
             model.FacebookFriends = UserFacebookFriends;
             return View(model);
         }
@@ -140,14 +140,14 @@ namespace TTWebMVCV2.Controllers
         {
             if (ModelState.IsValid)
             {
-                await appUserService.UpdateProfile(model.ToAppUser());
+                await appUserService.UpdateUserProfileAsync(model.ToAppUser());
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> FacebookCredentials()
         {
-            return View(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId));
+            return View(UserFacebookCredentials ?? await appUserService.GetFacebookCredentialsByUserIdAsync(UserId));
         }
 
         [HttpPost]
@@ -156,8 +156,8 @@ namespace TTWebMVCV2.Controllers
         {
             if (ModelState.IsValid)
             {
-                await appUserService.TryUpdateFacebookPassword(UserId, model.Id.GetValueOrDefault(0), model.Username, model.Password);
-                UserFacebookCredentials = await appUserService.FacebookCredentials(UserId);
+                await appUserService.TryUpdateFacebookPasswordAsync(UserId, model.Id.GetValueOrDefault(0), model.Username, model.Password);
+                UserFacebookCredentials = await appUserService.GetFacebookCredentialsByUserIdAsync(UserId);
                 return PartialView("~/Views/Account/_FacebookCredentialsListPartial.cshtml", UserFacebookCredentials);
             }
             return NoContent();
@@ -167,7 +167,7 @@ namespace TTWebMVCV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task DeleteFacebookCredential(string username)
         {
-            await appUserService.DeleteFacebookCredential(username, UserId);
+            await appUserService.DeleteFacebookCredentialAsync(username, UserId);
             UserFacebookCredentials.RemoveAll(c => c.Username == username);
         }
 
@@ -177,8 +177,8 @@ namespace TTWebMVCV2.Controllers
         {
             if (ModelState.IsValid)
             {
-                await appUserService.TryUpdateFacebookFriend(UserId, model.Id.GetValueOrDefault(0), model.Name, model.ProfileLink);
-                UserFacebookFriends = await appUserService.FacebookFriends(UserId);
+                await appUserService.TryUpdateFacebookFriendByUserIdAsync(UserId, model.Id.GetValueOrDefault(0), model.Name, model.ProfileLink);
+                UserFacebookFriends = await appUserService.GetFacebookFriendsByUserIdAsync(UserId);
                 return PartialView("~/Views/Account/_FacebookFriendsListPartial.cshtml", UserFacebookFriends);
             }
             return NoContent();
@@ -188,7 +188,7 @@ namespace TTWebMVCV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task DeleteFacebookFriend(string id)
         {
-            await appUserService.DeleteFacebookFriend(id, UserId);
+            await appUserService.DeleteFacebookFriendByUserIdAsync(id, UserId);
             UserFacebookFriends.RemoveAll(f => f.Id.ToString() == id);
         }
 

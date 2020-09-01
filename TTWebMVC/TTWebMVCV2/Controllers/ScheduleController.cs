@@ -33,7 +33,7 @@ namespace TTWebMVCV2.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            ViewBag.FriendsList = await appUserService.FacebookFriends(UserId);
+            ViewBag.FriendsList = await appUserService.GetFacebookFriendsByUserIdAsync(UserId);
             return View((await scheduleJobService.GetScheduleJobDefs(UserId)).GroupIntoBundles(3));
         }
 
@@ -130,8 +130,8 @@ namespace TTWebMVCV2.Controllers
             model
                 .SetWeekDaySelectList(await scheduleJobService.GetScheduleWeekDays())
                 .SetTimezoneSelectList(UserTimezone)
-                .SetLogins(UserFacebookCredentials ?? await appUserService.FacebookCredentials(UserId))
-                .SetFriends(UserFacebookFriends ?? await appUserService.FacebookFriends(UserId));
+                .SetLogins(UserFacebookCredentials ?? await appUserService.GetFacebookCredentialsByUserIdAsync(UserId))
+                .SetFriends(UserFacebookFriends ?? await appUserService.GetFacebookFriendsByUserIdAsync(UserId));
 
             return model;
         }
