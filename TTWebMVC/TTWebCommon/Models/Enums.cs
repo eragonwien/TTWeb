@@ -36,10 +36,10 @@ namespace TTWebCommon.Models
 	public enum UserRole
 	{
 		[EnumMember(Value = "Standard")]
-		Standard,
+		Standard = 1,
 
-		[EnumMember(Value = "Admin")]
-		Admin,
+		[EnumMember(Value = "Administrator")]
+		Administrator = 2,
 	}
 
     public enum WeekDayEnum

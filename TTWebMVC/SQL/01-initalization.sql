@@ -112,7 +112,8 @@ create table ScheduleJobDetail (
     foreign key (schedulejobdef_id) references schedulejobdef(id)
 );
 
-INSERT INTO Role(name) values('ADMIN');
+INSERT INTO Role(id, name) values(1, 'Standard');
+INSERT INTO Role(id, name) values(2, 'Administrator');
 
 INSERT INTO ScheduleWeekDay(id, name, display_text) values(1, 'Monday', 'MO');
 INSERT INTO ScheduleWeekDay(id, name, display_text) values(2, 'Tuesday', 'TUE');
@@ -123,6 +124,6 @@ INSERT INTO ScheduleWeekDay(id, name, display_text) values(6, 'Saturday', 'SAT')
 INSERT INTO ScheduleWeekDay(id, name, display_text) values(7, 'Sunday', 'SUN');
 
 insert into appuser(id, email, firstname, lastname, disabled, active) values(1, 'eragonwien@gmail.com', 'Son', 'Nguyen Hoang', 0, 1);
-update appuser set role_id=(select id from role where name='ADMIN') where email='eragonwien@gmail.com';
+update appuser set role_id=2 where email='eragonwien@gmail.com';
 
 

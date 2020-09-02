@@ -15,8 +15,5 @@ CREATE OR REPLACE VIEW v_appuser AS
         facebookcredential.fb_password
     FROM
         appuser
-        INNER JOIN facebookcredential on appuser.id=facebookcredential.appuser_id
-        LEFT JOIN role on appuser.role_id=role.id
-	WHERE
-		appuser.active=1
-        and appuser.disabled=0;
+        LEFT JOIN facebookcredential on appuser.id=facebookcredential.appuser_id
+        LEFT JOIN role on appuser.role_id=role.id;

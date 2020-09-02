@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using TTWebCommon.Models;
+using TTWebCommon.Models.Common.Exceptions;
 using TTWebCommon.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -22,13 +23,13 @@ namespace TTWebApi.Controllers
             this.userService = userService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = nameof(GetUserByIdAsync))]
         public async Task<IActionResult> GetUserByIdAsync(int id)
         {
             var user = await userService.GetUserByIdAsync(id);
 
             if (user == null)
-                return BadRequest();
+                throw new WebApiNotFoundException(string.Format("User with ID='{0}' not found", id));
 
             return Ok(user);
         }
@@ -37,7 +38,7 @@ namespace TTWebApi.Controllers
         public async Task<IActionResult> CreateUserAsync([FromBody] AppUser user)
         {
             await userService.CreateUserAsync(user);
-            return CreatedAtAction(nameof(GetUserByIdAsync), new { id = user.Id }, user);
+            return CreatedAtRoute(nameof(GetUserByIdAsync), new { id = user.Id }, user);
         }
 
         [HttpPatch("{id}")]

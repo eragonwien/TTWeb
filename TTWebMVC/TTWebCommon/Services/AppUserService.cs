@@ -74,16 +74,17 @@ namespace TTWebCommon.Services
 
         public async Task CreateUserAsync(AppUser user)
         {
-            string cmdStr = "INSERT INTO appuser(email, title, firstname, lastname, active) VALUES(@email, @title, @firstname, @lastname, @active)";
+            string cmdStr = "INSERT INTO appuser(email, title, firstname, lastname, active, role_id) VALUES(@email, @title, @firstname, @lastname, @active, @role_id)";
             await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("email", user.Email));
             cmd.Parameters.Add(new MySqlParameter("title", user.Title));
             cmd.Parameters.Add(new MySqlParameter("firstname", user.Firstname));
             cmd.Parameters.Add(new MySqlParameter("lastname", user.Lastname));
             cmd.Parameters.Add(new MySqlParameter("active", false));
+            cmd.Parameters.Add(new MySqlParameter("role_id", (int)UserRole.Standard));
             await cmd.ExecuteNonQueryAsync();
-
-            user = await GetUserByIdAsync(user.Id);
+            // return ID hier
+            user = await GetUserByEmailAsync(user.Email);
         }
 
         public async Task UpdateUserAsync(AppUser user)
@@ -289,14 +290,21 @@ namespace TTWebCommon.Services
                     Role = await odr.ReadMySqlEnumAsync<UserRole>("role_name")
                 };
             }
-            var fbCredential = new FacebookCredential
+
+            int credentialId = await odr.ReadMySqlIntegerAsync("fb_credential_id");
+
+            if (credentialId > 0)
             {
-                Id = await odr.ReadMySqlIntegerAsync("fb_credential_id"),
-                Username = await odr.ReadMySqlStringAsync("fb_username"),
-                Password = pwd.SimpleDecrypt(await odr.ReadMySqlStringAsync("fb_password"))
-            };
-            if (!appUser.FacebookCredentials.Any(c => c.Id == fbCredential.Id))
-                appUser.FacebookCredentials.Add(fbCredential);
+                var fbCredential = new FacebookCredential
+                {
+                    Id = credentialId,
+                    Username = await odr.ReadMySqlStringAsync("fb_username"),
+                    Password = pwd.SimpleDecrypt(await odr.ReadMySqlStringAsync("fb_password"))
+                };
+                if (!appUser.FacebookCredentials.Any(c => c.Id == fbCredential.Id))
+                    appUser.FacebookCredentials.Add(fbCredential);
+            }
+            
 
             return appUser;
         }

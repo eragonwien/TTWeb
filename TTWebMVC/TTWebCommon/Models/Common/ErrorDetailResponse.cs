@@ -10,13 +10,11 @@ namespace TTWebCommon.Models.Common
     {
         public int StatusCode { get; set; }
         public string Title { get; set; }
-        public string Detail { get; set; }
+        public string StackTrace { get; set; }
 
-        public ErrorDetailResponse(int statusCode, string title = null, string detail = null)
+        public ErrorDetailResponse()
         {
-            StatusCode = statusCode;
-            Title = title;
-            Detail = detail;
+            
         }
 
         public override string ToString()
