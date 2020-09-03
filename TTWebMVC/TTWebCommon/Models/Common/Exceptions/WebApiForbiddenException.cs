@@ -12,7 +12,7 @@ namespace TTWebCommon.Models.Common.Exceptions
 
         }
 
-        public WebApiForbiddenException(string message) : base(message)
+        public WebApiForbiddenException(string message, params object[] args) : base(string.Format(message, args))
         {
 
         }

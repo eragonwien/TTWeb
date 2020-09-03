@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 using TTWebCommon.Models;
 using TTWebCommon.Models.Common.Exceptions;
 using TTWebCommon.Services;
@@ -17,10 +18,12 @@ namespace TTWebApi.Controllers
     public class AppUserController : ControllerBase
     {
         private readonly IAppUserService userService;
+        private readonly IExceptionService exceptionService;
 
-        public AppUserController(IAppUserService userService)
+        public AppUserController(IAppUserService userService, IExceptionService exceptionService)
         {
             this.userService = userService;
+            this.exceptionService = exceptionService;
         }
 
         [HttpGet("{id}", Name = nameof(GetUserByIdAsync))]

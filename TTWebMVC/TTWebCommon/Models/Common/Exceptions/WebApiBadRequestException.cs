@@ -12,7 +12,7 @@ namespace TTWebCommon.Models.Common.Exceptions
 
         }
 
-        public WebApiBadRequestException(string message) : base(message)
+        public WebApiBadRequestException(string message, params object[] args) : base(string.Format(message, args))
         {
 
         }

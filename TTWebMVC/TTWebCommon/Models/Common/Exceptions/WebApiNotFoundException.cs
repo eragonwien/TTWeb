@@ -12,7 +12,7 @@ namespace TTWebCommon.Models.Common.Exceptions
 
         }
 
-        public WebApiNotFoundException(string message) : base(message)
+        public WebApiNotFoundException(string message, params object[] args) : base(string.Format(message, args))
         {
 
         }

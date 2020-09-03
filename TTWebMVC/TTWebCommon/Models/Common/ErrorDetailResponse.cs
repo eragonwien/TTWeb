@@ -8,8 +8,13 @@ namespace TTWebCommon.Models.Common
 {
     public class ErrorDetailResponse
     {
-        public int StatusCode { get; set; }
+        [JsonProperty("status_code")]
+        public int StatusCode { get; set; } = 500;
+
+        [JsonProperty("title", NullValueHandling = NullValueHandling.Ignore)]
         public string Title { get; set; }
+
+        [JsonProperty("stack_trace", NullValueHandling = NullValueHandling.Ignore)]
         public string StackTrace { get; set; }
 
         public ErrorDetailResponse()

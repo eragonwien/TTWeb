@@ -33,6 +33,7 @@ namespace TTWebApi
             services.AddScoped<IPasswordHelperService, PasswordHelperService>(s => new PasswordHelperService(encryptionKey: Configuration["AppSettings:EncryptionKey"])); 
             services.AddScoped<IAppUserService, AppUserService>();
             services.AddScoped<IScheduleJobService, ScheduleJobService>();
+            services.AddScoped<IExceptionService, ExceptionService>();
 
             services
                 .AddControllers()
