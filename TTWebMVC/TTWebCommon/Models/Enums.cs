@@ -52,4 +52,10 @@ namespace TTWebCommon.Models
 		Saturday = 6,
 		Sunday = 7,
 	}
+
+    public enum ErrorCode
+    {
+		INTERNAL_ERROR = 0,			// Unexpected error
+		DUPLICATE_INSERT = 1,		// Adding duplicate resource
+    }
 }

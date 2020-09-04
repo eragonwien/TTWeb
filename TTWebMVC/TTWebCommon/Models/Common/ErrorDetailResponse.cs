@@ -11,11 +11,23 @@ namespace TTWebCommon.Models.Common
         [JsonProperty("status_code")]
         public int StatusCode { get; set; } = 500;
 
+        [JsonIgnore]
+        public ErrorCode ErrorCodeValue { get; set; }
+
+        [JsonProperty("error_code", NullValueHandling = NullValueHandling.Ignore)]
+        public string ErrorCode
+        {
+            get
+            {
+                return ErrorCodeValue != Models.ErrorCode.INTERNAL_ERROR ? ErrorCodeValue.ToString() : null;
+            }
+        }
+
         [JsonProperty("title", NullValueHandling = NullValueHandling.Ignore)]
         public string Title { get; set; }
 
-        [JsonProperty("stack_trace", NullValueHandling = NullValueHandling.Ignore)]
-        public string StackTrace { get; set; }
+        [JsonProperty("detail", NullValueHandling = NullValueHandling.Ignore)]
+        public string Detail { get; set; }
 
         public ErrorDetailResponse()
         {
