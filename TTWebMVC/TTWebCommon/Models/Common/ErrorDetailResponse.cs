@@ -27,7 +27,7 @@ namespace TTWebCommon.Models.Common
         public string Title { get; set; }
 
         [JsonProperty("detail", NullValueHandling = NullValueHandling.Ignore)]
-        public string Detail { get; set; }
+        public Dictionary<string, string> Details { get; set; } = new Dictionary<string, string>();
 
         public ErrorDetailResponse()
         {

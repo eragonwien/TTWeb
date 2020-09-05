@@ -14,8 +14,7 @@ using TTWebCommon.Services;
 namespace TTWebApi.Controllers
 {
     [Route("appusers")]
-    [ApiController]
-    public class AppUserController : ControllerBase
+    public class AppUserController : BaseController
     {
         private readonly IAppUserService userService;
         private readonly IExceptionService exceptionService;
@@ -42,6 +41,13 @@ namespace TTWebApi.Controllers
         {
             await userService.CreateUserAsync(user);
             return CreatedAtRoute(nameof(GetUserByIdAsync), new { id = user.Id }, user);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] AppUser user)
+        {
+            await userService.UpdateUserAsync(user);
+            return NoContent();
         }
 
         [HttpPatch("{id}")]

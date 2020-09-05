@@ -18,21 +18,6 @@ FROM
 	LEFT JOIN facebookcredential on appuser.id=facebookcredential.appuser_id
 	LEFT JOIN role on appuser.role_id=role.id;
         
-
-
-CREATE OR REPLACE VIEW v_appuser_facebook AS
-SELECT 
-	appuser.id AS appuser_id,
-	facebookcredential.id as fb_credential_id,
-	facebookcredential.fb_username,
-	facebookcredential.fb_password
-FROM
-	appuser
-	INNER JOIN facebookcredential on appuser.id=facebookcredential.appuser_id
-WHERE
-	appuser.active=1
-	and appuser.disabled=0;
-        
 CREATE OR REPLACE VIEW v_schedulejobdef AS
 select 
 	d.id, 
@@ -60,8 +45,7 @@ select
 from schedulejobdef d
 inner join v_appuser a on d.appuser_id=a.appuser_id
 left join friend f on d.friend_id=f.id and d.appuser_id=f.appuser_id
-left join v_schedulejobdef_weekday jwd on d.id=jwd.schedulejobdef_id
-;
+left join v_schedulejobdef_weekday jwd on d.id=jwd.schedulejobdef_id;
 
 CREATE OR REPLACE VIEW v_schedulejobdef_weekday AS
 select 

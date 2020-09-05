@@ -10,6 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TTWebCommon.Models;
+using TTWebCommon.Models.Common.Exceptions;
 
 namespace TTWebCommon.Services
 {
@@ -42,7 +43,6 @@ namespace TTWebCommon.Services
             this.db = db;
             this.pwd = pwd;
         }
-
 
         public async Task<AppUser> GetUserByIdAsync(int id)
         {
@@ -90,7 +90,6 @@ namespace TTWebCommon.Services
         public async Task UpdateUserAsync(AppUser user)
         {
             await UpdateUserProfileAsync(user);
-            await UpdateUserFacebookCredentialsAsync(user);
         }
 
         public async Task DeleteUserAsync(int id)
@@ -127,39 +126,10 @@ namespace TTWebCommon.Services
             cmd.Parameters.Add(new MySqlParameter("lastname", appUser.Lastname));
             cmd.Parameters.Add(new MySqlParameter("id", appUser.Id));
             cmd.Parameters.Add(new MySqlParameter("email", appUser.Email));
-            await cmd.ExecuteNonQueryAsync();
-        }
+            int count = await cmd.ExecuteNonQueryAsync();
 
-        private async Task UpdateUserFacebookCredentialsAsync(AppUser user)
-        {
-            foreach (var fbCredential in user.FacebookCredentials)
-            {
-                if (fbCredential.Id < 0 || !await TryUpdateUserFacebookCredentialsAsync(fbCredential, user))
-                    await AddUserFacebookCredentialsAsync(fbCredential, user);
-            }
-        }
-
-        private async Task AddUserFacebookCredentialsAsync(FacebookCredential fbCredential, AppUser user)
-        {
-            string cmdStr = "INSERT INTO facebookcredential(appuser_id, fb_username, fb_password) VALUES(@appuser_id, @fb_username, @fb_password)";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
-            cmd.Parameters.Add(new MySqlParameter("appuser_id", user.Id));
-            cmd.Parameters.Add(new MySqlParameter("fb_username", fbCredential.Username));
-            cmd.Parameters.Add(new MySqlParameter("fb_password", pwd.SimpleEncrypt(fbCredential.Password)));
-            await cmd.ExecuteNonQueryAsync();
-        }
-
-        private async Task<bool> TryUpdateUserFacebookCredentialsAsync(FacebookCredential fbCredential, AppUser user)
-        {
-            string cmdStr = "UPDATE facebookcredential SET fb_username=@fb_username, fb_password=@fb_password where id=@id AND appuser_id=@appuser_id";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
-            cmd.Parameters.Add(new MySqlParameter("fb_username", fbCredential.Username));
-            cmd.Parameters.Add(new MySqlParameter("fb_password", pwd.SimpleEncrypt(fbCredential.Password)));
-            cmd.Parameters.Add(new MySqlParameter("id", fbCredential.Id));
-            cmd.Parameters.Add(new MySqlParameter("appuser_id", user.Id));
-            int updateCount = await cmd.ExecuteNonQueryAsync();
-
-            return updateCount > 0;
+            if (count == 0)
+                throw new WebApiNotFoundException("Appuser email={0}, id={1} does not exist", appUser.Email, appUser.Id);
         }
 
         public AppUser LoadContextUser(ClaimsPrincipal contextUser)
@@ -317,15 +287,6 @@ namespace TTWebCommon.Services
             cmd.Parameters.Add(new MySqlParameter("fb_username", username));
             cmd.Parameters.Add(new MySqlParameter("fb_password", pwd.SimpleEncrypt(password)));
             await cmd.ExecuteNonQueryAsync();
-        }
-
-        private async Task<bool> IsFacebookCredentialsExists(int userId, string username)
-        {
-            string cmdStr = "SELECT id FROM facebookcredential WHERE appuser_id=@appuser_id AND fb_username=@fb_username";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
-            cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
-            cmd.Parameters.Add(new MySqlParameter("fb_username", username));
-            return await cmd.ReadMySqlScalarInt64Async() > 0;
         }
 
         private async Task UpdateFacebookCredential(int userId, int id, string username, string password)
