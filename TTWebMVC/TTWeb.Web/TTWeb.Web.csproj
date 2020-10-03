@@ -5,6 +5,14 @@
     <UserSecretsId>71ce42b4-4750-4082-80b5-33bfa75d043f</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TTWeb.Data\TTWeb.Data.csproj" />
+  </ItemGroup>
+
 
 
 </Project>
