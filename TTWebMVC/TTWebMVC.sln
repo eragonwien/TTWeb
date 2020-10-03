@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWebCommon", "TTWebCommon\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWebMVCV2", "TTWebMVCV2\TTWebMVCV2.csproj", "{9B5586B0-A9D0-4C26-9BD3-F83495D88843}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTWebApi", "TTWebApi\TTWebApi.csproj", "{93447C4D-4981-481D-84F4-9EF1D23FCE21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTWeb.Web", "TTWeb.Web\TTWeb.Web.csproj", "{6D1734B3-5F13-4A5E-A8ED-49B05CB9267A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{9B5586B0-A9D0-4C26-9BD3-F83495D88843}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B5586B0-A9D0-4C26-9BD3-F83495D88843}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B5586B0-A9D0-4C26-9BD3-F83495D88843}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93447C4D-4981-481D-84F4-9EF1D23FCE21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93447C4D-4981-481D-84F4-9EF1D23FCE21}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93447C4D-4981-481D-84F4-9EF1D23FCE21}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93447C4D-4981-481D-84F4-9EF1D23FCE21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D1734B3-5F13-4A5E-A8ED-49B05CB9267A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D1734B3-5F13-4A5E-A8ED-49B05CB9267A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D1734B3-5F13-4A5E-A8ED-49B05CB9267A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D1734B3-5F13-4A5E-A8ED-49B05CB9267A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
