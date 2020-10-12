@@ -8,8 +8,6 @@ namespace TTWeb.Data.Models
 {
     public class UserPermission
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public UserPermissionEnum Value { get; set; }
         public string Description { get; set; }
@@ -18,6 +16,6 @@ namespace TTWeb.Data.Models
 
     public enum UserPermissionEnum
     {
-
+        DEFAULT
     }
 }

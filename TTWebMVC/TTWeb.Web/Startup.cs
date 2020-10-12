@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using TTWeb.BusinessLogic.Services;
 using TTWeb.Data.Database;
 
 namespace TTWeb.Web
@@ -28,13 +28,15 @@ namespace TTWeb.Web
         {
             services.AddControllersWithViews();
 
-            // DbContext
-            services.AddDbContextPool<TTWebContext>(o => o.UseMySql(Configuration.GetConnectionString("Default")));
+            services.AddDbContext<TTWebContext>(o => o.UseMySql(Configuration.GetConnectionString("Default")));
+            services.AddScoped<ISeedService, SeedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            InitializeDatabase(app, env);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -58,6 +60,16 @@ namespace TTWeb.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
+            var seedService = scope.ServiceProvider.GetRequiredService<ISeedService>();
+            seedService.Migrate();
+
+            if (env.IsDevelopment())
+                seedService.Seed();
         }
     }
 }
