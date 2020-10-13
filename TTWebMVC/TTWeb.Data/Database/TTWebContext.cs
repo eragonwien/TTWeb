@@ -23,38 +23,55 @@ namespace TTWeb.Data.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            #region LoginUser
+            ConfigureLoginUser(modelBuilder);
+            ConfigureUserPermission(modelBuilder);
+            ConfigureLoginUserPermissionMapping(modelBuilder);
+        }
 
+        private void ConfigureLoginUser(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<LoginUser>()
-               .HasKey(m => m.Id);
+                .HasKey(m => m.Id);
 
             modelBuilder.Entity<LoginUser>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
-            modelBuilder.Entity<LoginUser>().Property(e => e.Email).HasMaxLength(_maxLengthMediumString);
-            modelBuilder.Entity<LoginUser>().Property(e => e.FirstName).HasMaxLength(_maxLengthMediumString);
-            modelBuilder.Entity<LoginUser>().Property(e => e.LastName).HasMaxLength(_maxLengthMediumString);
+            modelBuilder.Entity<LoginUser>()
+                .Property(e => e.Email)
+                .HasMaxLength(_maxLengthMediumString)
+                .IsRequired();
 
-            #endregion
+            modelBuilder.Entity<LoginUser>()
+                .Property(e => e.FirstName)
+                .HasMaxLength(_maxLengthMediumString)
+                .IsRequired();
 
-            #region UserPermission
+            modelBuilder.Entity<LoginUser>()
+                .Property(e => e.LastName)
+                .HasMaxLength(_maxLengthMediumString)
+                .IsRequired();
+        }
 
+        private void ConfigureUserPermission(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<UserPermission>()
                .HasKey(m => m.Id);
 
             modelBuilder.Entity<UserPermission>()
                 .Property(e => e.Value)
+                .IsRequired()
                 .HasConversion(
                     v => v.ToString(),
                     v => (UserPermissionEnum)Enum.Parse(typeof(UserPermissionEnum), v));
 
-            modelBuilder.Entity<UserPermission>().Property(e => e.Description).HasMaxLength(_maxLengthLongtring);
+            modelBuilder.Entity<UserPermission>()
+                .Property(e => e.Description)
+                .HasMaxLength(_maxLengthLongtring);
+        }
 
-            #endregion
-
-            #region LoginUserPermissionMapping
-
+        private void ConfigureLoginUserPermissionMapping(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<LoginUserPermissionMapping>()
                 .HasKey(m => new { m.LoginUserId, m.UserPermissionId });
 
@@ -67,10 +84,6 @@ namespace TTWeb.Data.Database
                .HasOne(m => m.UserPermission)
                .WithMany(p => p.LoginUserPermissionMappings)
                .HasForeignKey(m => m.UserPermissionId);
-
-            #endregion
-
-
         }
     }
 }
