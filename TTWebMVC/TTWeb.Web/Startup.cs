@@ -1,15 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +14,7 @@ using Microsoft.Extensions.Hosting;
 using TTWeb.BusinessLogic.Configurations;
 using TTWeb.BusinessLogic.Services;
 using TTWeb.Data.Database;
-using TTWeb.Web.Extensions;
+using TTWeb.BusinessLogic.Extensions;
 
 namespace TTWeb.Web
 {
@@ -35,7 +30,8 @@ namespace TTWeb.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(Startup));
+            services.ConfigureAutoMapper();
+
             services.AddDbContext<TTWebContext>(o => o.UseMySql(Configuration.GetConnectionString("Default")));
             services.AddAppSetting<AuthenticationAppSetting>(Configuration, AuthenticationAppSetting.SectionName);
            

@@ -1,14 +1,25 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using TTWeb.BusinessLogic.MappingProfiles;
 
-namespace TTWeb.Web.Extensions
+namespace TTWeb.BusinessLogic.Extensions
 {
-    public static class ConfigurationExtension
+    public static class ServiceCollectionExtensions
     {
+        public static IServiceCollection ConfigureAutoMapper(this IServiceCollection services)
+        {
+            var mapperConfig = new MapperConfiguration(c =>
+            {
+                c.AddProfile<LoginUserProfile>();
+            });
+
+            services.AddSingleton(s => mapperConfig.CreateMapper());
+            
+            return services;
+        }
+
         public static void AddAppSetting<T>(
             this IServiceCollection services,
             IConfiguration configuration,

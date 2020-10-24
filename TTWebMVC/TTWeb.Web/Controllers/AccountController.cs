@@ -15,15 +15,15 @@ namespace TTWeb.Web.Controllers
 {
     public class AccountController : TTWebBaseController
     {
-        private readonly ILoginUserService loginUserService;
-        private readonly AuthenticationAppSetting authenticationAppSetting;
+        private readonly ILoginUserService _loginUserService;
+        private readonly AuthenticationAppSetting _authConfig;
 
         public AccountController(
             ILoginUserService loginUserService,
             AuthenticationAppSetting authenticationAppSetting)
         {
-            this.loginUserService = loginUserService;
-            this.authenticationAppSetting = authenticationAppSetting;
+            _loginUserService = loginUserService;
+            _authConfig = authenticationAppSetting;
         }
 
         [AllowAnonymous]
@@ -39,7 +39,7 @@ namespace TTWeb.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(authenticationAppSetting.ExternalCookieScheme);
+            await HttpContext.SignOutAsync(_authConfig.ExternalCookieScheme);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Clear();
             return Ok(Url.Action(nameof(Login)));
@@ -63,24 +63,23 @@ namespace TTWeb.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> LoginExternalCallback()
         {
-            var authResult = await HttpContext.AuthenticateAsync(authenticationAppSetting.ExternalCookieScheme);
+            var authResult = await HttpContext.AuthenticateAsync(_authConfig.ExternalCookieScheme);
 
             // Get & create user
             string email = authResult.Principal.FindFirst(ClaimTypes.Email)?.Value;
-            var user = await loginUserService.GetUserByEmailAsync(email);
+            var user = await _loginUserService.GetUserByEmailAsync(email);
             if (user == null)
             {
-                await loginUserService.CreateUserAsync(new LoginUserModel
+                user = await _loginUserService.CreateUserAsync(new LoginUserModel
                 {
                     Email = email,
                     FirstName = authResult.Principal.FindFirst(ClaimTypes.GivenName)?.Value,
                     LastName = authResult.Principal.FindFirst(ClaimTypes.Surname)?.Value
                 });
-                user = await loginUserService.GetUserByEmailAsync(email);
             }
 
             // logouts from external login
-            await HttpContext.SignOutAsync(authenticationAppSetting.ExternalCookieScheme);
+            await HttpContext.SignOutAsync(_authConfig.ExternalCookieScheme);
 
             if (user == null)
                 throw new Exception("Login user should not be null here");

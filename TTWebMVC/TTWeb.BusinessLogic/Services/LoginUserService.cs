@@ -13,8 +13,7 @@ namespace TTWeb.BusinessLogic.Services
     public interface ILoginUserService
     {
         Task<LoginUserModel> GetUserByEmailAsync(string email);
-        Task CreateUserAsync(LoginUserModel loginUserModel);
-        Task SaveChangesAsync();
+        Task<LoginUserModel> CreateUserAsync(LoginUserModel loginUserModel);
     }
 
     public class LoginUserService : ILoginUserService
@@ -28,16 +27,21 @@ namespace TTWeb.BusinessLogic.Services
             this.mapper = mapper;
         }
 
-        public async Task CreateUserAsync(LoginUserModel loginUserModel)
+        public async Task<LoginUserModel> CreateUserAsync(LoginUserModel loginUserModel)
         {
             if (loginUserModel is null) throw new ArgumentNullException(nameof(loginUserModel));
 
-            await db.LoginUsers.AddAsync(new LoginUser
+            var loginUser = new LoginUser
             {
                 Email = loginUserModel.Email,
                 FirstName = loginUserModel.FirstName,
                 LastName = loginUserModel.LastName
-            });
+            };
+
+            await db.LoginUsers.AddAsync(loginUser);
+            await db.SaveChangesAsync();
+
+            return mapper.Map<LoginUserModel>(loginUser);
         }
 
         public async Task<LoginUserModel> GetUserByEmailAsync(string email)
@@ -50,7 +54,5 @@ namespace TTWeb.BusinessLogic.Services
 
             return mapper.Map<LoginUserModel>(loginUser);
         }
-
-        public async Task SaveChangesAsync() => await db.SaveChangesAsync();
     }
 }
