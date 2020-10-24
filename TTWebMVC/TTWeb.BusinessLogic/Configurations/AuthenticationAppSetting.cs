@@ -8,5 +8,7 @@ namespace TTWeb.BusinessLogic.Configurations
     {
         public const string SectionName = "Authentication";
         public string ExternalCookieScheme { get; set; }
+        public TimeSpan CookieExpirationTimeSpan { get; set; }
+        public AuthenticationFacebookAppSetting Facebook { get; set; }
     }
 }

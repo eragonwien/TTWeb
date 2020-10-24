@@ -38,7 +38,11 @@ namespace TTWeb.Web
             services.AddAutoMapper(typeof(Startup));
             services.AddDbContext<TTWebContext>(o => o.UseMySql(Configuration.GetConnectionString("Default")));
             services.AddAppSetting<AuthenticationAppSetting>(Configuration, AuthenticationAppSetting.SectionName);
+           
+            services.AddScoped<ILoginUserService, LoginUserService>();
             services.AddScoped<ISeedService, SeedService>();
+
+            var authenticationConfig = GetConfigSectionValue<AuthenticationAppSetting>(AuthenticationAppSetting.SectionName);
 
             services.Configure<CookiePolicyOptions>(o =>
             {
@@ -50,22 +54,31 @@ namespace TTWeb.Web
             {
                 o.LoginPath = "/Account/Login";
                 o.LogoutPath = "/Account/Logout";
+                o.SlidingExpiration = true;
+                o.ExpireTimeSpan = authenticationConfig.CookieExpirationTimeSpan;
             });
 
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie()
+                .AddCookie(authenticationConfig.ExternalCookieScheme)
                 .AddFacebook(o =>
                 {
-                    o.SignInScheme = Configuration["Authentication:ExternalCookieScheme"];
-                    o.AppId = Configuration["Authentication:Facebook:AppId"];
-                    o.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                    o.SignInScheme = authenticationConfig.ExternalCookieScheme;
+                    o.AppId = authenticationConfig.Facebook.AppId;
+                    o.AppSecret = authenticationConfig.Facebook.AppSecret;
                 });
 
             services.AddAuthorization();
             var authenticatedPolicy = new AuthorizationPolicyBuilder()
                .RequireAuthenticatedUser()
                .Build();
+
+            services.AddSession(o =>
+            {
+                o.Cookie.Name = ".TTWeb.Session";
+            });
+
             services.AddControllersWithViews(o =>
             {
                 o.Filters.Add(new AuthorizeFilter(authenticatedPolicy));
@@ -99,6 +112,7 @@ namespace TTWeb.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
@@ -116,6 +130,13 @@ namespace TTWeb.Web
 
             if (env.IsDevelopment())
                 seedService.Seed();
+        }
+
+        private T GetConfigSectionValue<T>(string sectionName) where T : new()
+        {
+            var setting = new T();
+            Configuration.GetSection(sectionName).Bind(setting);
+            return setting;
         }
     }
 }

@@ -28,21 +28,21 @@ namespace TTWeb.Web.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> LoginAsync()
+        public async Task<IActionResult> Login()
         {
-            await LogoutAsync();
+            await Logout();
             return View();
         }
 
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LogoutAsync()
+        public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(authenticationAppSetting.ExternalCookieScheme);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Clear();
-            return Ok(Url.Action(nameof(LoginAsync)));
+            return Ok(Url.Action(nameof(Login)));
         }
 
         [AllowAnonymous]
