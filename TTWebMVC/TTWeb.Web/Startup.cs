@@ -38,12 +38,18 @@ namespace TTWeb.Web
             services.AddAutoMapper(typeof(Startup));
             services.AddDbContext<TTWebContext>(o => o.UseMySql(Configuration.GetConnectionString("Default")));
             services.AddAppSetting<AuthenticationAppSetting>(Configuration, AuthenticationAppSetting.SectionName);
-
             services.AddScoped<ISeedService, SeedService>();
 
-            services.ConfigureApplicationCookie(o =>
+            services.Configure<CookiePolicyOptions>(o =>
             {
-                o.Cookie.SameSite = SameSiteMode.Strict;
+                o.MinimumSameSitePolicy = SameSiteMode.Strict;
+                o.CheckConsentNeeded = context => false;
+            });
+
+            services.Configure<CookieAuthenticationOptions>(o =>
+            {
+                o.LoginPath = "/Account/Login";
+                o.LogoutPath = "/Account/Logout";
             });
 
             services
