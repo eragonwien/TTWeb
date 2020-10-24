@@ -50,6 +50,8 @@ namespace TTWeb.BusinessLogic.Services
                 return null;
 
             var loginUser = await db.LoginUsers
+                .Include(u => u.LoginUserPermissionMappings)
+                    .ThenInclude(m => m.UserPermission)
                 .FirstOrDefaultAsync(u => u.Email == email);
 
             return mapper.Map<LoginUserModel>(loginUser);

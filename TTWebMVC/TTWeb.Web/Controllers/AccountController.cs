@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -65,43 +66,52 @@ namespace TTWeb.Web.Controllers
         {
             var authResult = await HttpContext.AuthenticateAsync(_authConfig.ExternalCookieScheme);
 
-            // Get & create user
+            // Try retrive user from database
             string email = authResult.Principal.FindFirst(ClaimTypes.Email)?.Value;
             var user = await _loginUserService.GetUserByEmailAsync(email);
-            if (user == null)
-            {
-                user = await _loginUserService.CreateUserAsync(new LoginUserModel
-                {
-                    Email = email,
-                    FirstName = authResult.Principal.FindFirst(ClaimTypes.GivenName)?.Value,
-                    LastName = authResult.Principal.FindFirst(ClaimTypes.Surname)?.Value
-                });
-            }
 
-            // logouts from external login
+            // If user does not exists, creates an inactive user
+            user ??= await _loginUserService.CreateUserAsync(new LoginUserModel
+            {
+                Email = email,
+                FirstName = authResult.Principal.FindFirst(ClaimTypes.GivenName)?.Value,
+                LastName = authResult.Principal.FindFirst(ClaimTypes.Surname)?.Value
+            });
+
+            // Logouts from external login
             await HttpContext.SignOutAsync(_authConfig.ExternalCookieScheme);
 
-            if (user == null)
-                throw new Exception("Login user should not be null here");
+            if (user == null) throw new ArgumentNullException(nameof(user));
 
-            // create claims
             var claims = CreateUserClaims(user);
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = CreateSignInAuthenticationProperties();
 
-            // signIn
+            // signs in
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimIdentity), authProperties);
             return RedirectPermanent("/");
         }
 
-        private AuthenticationProperties CreateSignInAuthenticationProperties()
+        private IEnumerable<Claim> CreateUserClaims(LoginUserModel user)
         {
-            throw new NotImplementedException();
+            if (user is null) throw new ArgumentNullException(nameof(user));
+
+            yield return new Claim(ClaimTypes.Email, user.Email);
+            yield return new Claim(ClaimTypes.GivenName, user.FirstName);
+            yield return new Claim(ClaimTypes.Surname, user.LastName);
+
+            foreach (var userPermission in user.UserPermissions)
+                yield return new Claim(ClaimTypes.Role, userPermission.ToString());
         }
 
-        private IEnumerable<Claim> CreateUserClaims(LoginUserModel appUser)
+        private AuthenticationProperties CreateSignInAuthenticationProperties()
         {
-            throw new NotImplementedException();
+            return new AuthenticationProperties
+            {
+                AllowRefresh = true,
+                IsPersistent = true,
+                IssuedUtc = DateTimeOffset.UtcNow
+            };
         }
     }
 }

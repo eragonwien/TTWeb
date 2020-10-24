@@ -4,6 +4,7 @@ using System.Text;
 using TTWeb.BusinessLogic.Models;
 using TTWeb.Data.Models;
 using AutoMapper;
+using System.Linq;
 
 namespace TTWeb.BusinessLogic.MappingProfiles
 {
@@ -11,7 +12,8 @@ namespace TTWeb.BusinessLogic.MappingProfiles
     {
         public LoginUserProfile()
         {
-            CreateMap<LoginUser, LoginUserModel>();
+            CreateMap<LoginUser, LoginUserModel>()
+                .ForMember(m => m.UserPermissions, b => b.MapFrom(u => u.LoginUserPermissionMappings.Select(m => m.UserPermission.Value)));
         }
     }
 }
