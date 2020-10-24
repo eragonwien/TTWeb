@@ -4,3 +4,4 @@ packages
 .vs
 temp
 logs
+*.csproj.user
