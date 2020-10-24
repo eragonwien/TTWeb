@@ -30,15 +30,14 @@ namespace TTWeb.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureAutoMapper();
-
             services.AddDbContext<TTWebContext>(o => o.UseMySql(Configuration.GetConnectionString("Default")));
-            services.AddAppSetting<AuthenticationAppSetting>(Configuration, AuthenticationAppSetting.SectionName);
-           
-            services.AddScoped<ILoginUserService, LoginUserService>();
-            services.AddScoped<ISeedService, SeedService>();
 
-            var authenticationConfig = GetConfigSectionValue<AuthenticationAppSetting>(AuthenticationAppSetting.SectionName);
+            services
+                .RegisterAutoMapper()
+                .RegisterAppSetting<AuthenticationAppSetting>(Configuration, AuthenticationAppSetting.SectionName)
+                .RegisterEntityServices();
+
+            var authenticationConfig = Configuration.GetSectionValue<AuthenticationAppSetting>(AuthenticationAppSetting.SectionName);
 
             services.Configure<CookiePolicyOptions>(o =>
             {
@@ -126,13 +125,6 @@ namespace TTWeb.Web
 
             if (env.IsDevelopment())
                 seedService.Seed();
-        }
-
-        private T GetConfigSectionValue<T>(string sectionName) where T : new()
-        {
-            var setting = new T();
-            Configuration.GetSection(sectionName).Bind(setting);
-            return setting;
         }
     }
 }
