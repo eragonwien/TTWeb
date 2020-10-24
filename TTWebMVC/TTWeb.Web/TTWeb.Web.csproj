@@ -36,6 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Contents\js\" />
+    <Folder Include="Contents\css\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
 
