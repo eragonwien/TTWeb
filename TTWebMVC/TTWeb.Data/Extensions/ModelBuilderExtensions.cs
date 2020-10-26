@@ -9,7 +9,6 @@ namespace TTWeb.Data.Extensions
 {
     public static class ModelBuilderExtensions
     {
-        private const int _maxLengthShortString = 8;
         private const int _maxLengthMediumString = 64;
         private const int _maxLengthLongtring = 256;
 
