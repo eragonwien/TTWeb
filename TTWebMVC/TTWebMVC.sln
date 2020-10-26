@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWebMVCV2", "TTWebMVCV2\TT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWeb.Web", "TTWeb.Web\TTWeb.Web.csproj", "{6D1734B3-5F13-4A5E-A8ED-49B05CB9267A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTWeb.BusinessLogic", "TTWeb.BusinessLogic\TTWeb.BusinessLogic.csproj", "{842E95EC-82E2-4185-B111-0060E9674024}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWeb.BusinessLogic", "TTWeb.BusinessLogic\TTWeb.BusinessLogic.csproj", "{842E95EC-82E2-4185-B111-0060E9674024}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTWeb.Data", "TTWeb.Data\TTWeb.Data.csproj", "{CAD01E9B-B0A0-4466-9C91-9E6C25ED5545}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWeb.Data", "TTWeb.Data\TTWeb.Data.csproj", "{CAD01E9B-B0A0-4466-9C91-9E6C25ED5545}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Archives", "Archives", "{9753738C-4FC6-4245-BC87-71AA5C30DC4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EBE9A549-CBE8-48E3-82F7-F4AD12948713} = {9753738C-4FC6-4245-BC87-71AA5C30DC4F}
+		{9B5586B0-A9D0-4C26-9BD3-F83495D88843} = {9753738C-4FC6-4245-BC87-71AA5C30DC4F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68EA1773-2874-45DF-A8D8-2D1658CD5D8D}
