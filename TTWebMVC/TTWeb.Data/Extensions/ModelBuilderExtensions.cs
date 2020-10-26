@@ -87,12 +87,12 @@ namespace TTWeb.Data.Extensions
 
             modelBuilder.Entity<FacebookUser>()
                 .Property(u => u.Username)
-                .HasMaxLength(_maxLengthLongtring)
+                .HasMaxLength(_maxLengthMediumString)
                 .IsRequired();
 
             modelBuilder.Entity<FacebookUser>()
                 .Property(u => u.Password)
-                .HasMaxLength(_maxLengthLongtring)
+                .HasMaxLength(_maxLengthMediumString)
                 .IsRequired();
 
             return modelBuilder;

@@ -25,16 +25,16 @@ namespace TTWeb.Data.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
+                        .HasMaxLength(64);
 
                     b.Property<int>("SendScheduleId")
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
+                        .HasMaxLength(64);
 
                     b.HasKey("Id");
 

@@ -44,8 +44,8 @@ namespace TTWeb.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Username = table.Column<string>(maxLength: 256, nullable: false),
-                    Password = table.Column<string>(maxLength: 256, nullable: false),
+                    Username = table.Column<string>(maxLength: 64, nullable: false),
+                    Password = table.Column<string>(maxLength: 64, nullable: false),
                     SendScheduleId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
