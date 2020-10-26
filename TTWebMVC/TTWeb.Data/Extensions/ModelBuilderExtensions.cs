@@ -43,31 +43,10 @@ namespace TTWeb.Data.Extensions
             return modelBuilder;
         }
 
-        public static ModelBuilder ConfigureUserPermission(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<UserPermission>()
-               .HasKey(m => m.Id);
-
-            modelBuilder.Entity<UserPermission>()
-                .Property(m => m.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<UserPermission>()
-                .Property(e => e.Value)
-                .IsRequired()
-                .HasConversion<int>();
-
-            modelBuilder.Entity<UserPermission>()
-                .Property(e => e.Description)
-                .HasMaxLength(_maxLengthLongtring);
-
-            return modelBuilder;
-        }
-
         public static ModelBuilder ConfigureLoginUserPermissionMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginUserPermissionMapping>()
-                  .HasKey(m => new { m.LoginUserId, m.UserPermissionId });
+                  .HasKey(m => new { m.LoginUserId, m.UserPermission });
 
             modelBuilder.Entity<LoginUserPermissionMapping>()
                .HasOne(m => m.LoginUser)
@@ -76,10 +55,9 @@ namespace TTWeb.Data.Extensions
                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<LoginUserPermissionMapping>()
-               .HasOne(m => m.UserPermission)
-               .WithMany(p => p.LoginUserPermissionMappings)
-               .HasForeignKey(m => m.UserPermissionId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .Property(m => m.UserPermission)
+                .HasColumnName("UserPermissionId")
+                .HasConversion<int>();
 
             return modelBuilder;
         }

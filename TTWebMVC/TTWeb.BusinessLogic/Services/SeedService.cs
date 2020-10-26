@@ -32,23 +32,8 @@ namespace TTWeb.BusinessLogic.Services
 
         public void Seed()
         {
-            var userPermissions = SeedUserPermissionsAsync();
             var loginUsers = SeedLoginUserAsync();
-            SeedLoginUserPermissionMappingAsync(loginUsers, userPermissions);
-        }
-
-        private UserPermission[] SeedUserPermissionsAsync()
-        {
-            if (db.UserPermissions.Any())
-                return null;
-
-            var userPermissions = new List<UserPermission>
-            {
-                new UserPermission { Value = UserPermissionEnum.NONE }
-            };
-            db.UserPermissions.AddRange(userPermissions);
-            db.SaveChanges();
-            return userPermissions.ToArray();
+            SeedLoginUserPermissionMappingAsync(loginUsers);
         }
 
         private LoginUser[] SeedLoginUserAsync()
@@ -60,24 +45,20 @@ namespace TTWeb.BusinessLogic.Services
             {
                 new LoginUser { Email = "test@test.com", FirstName = "test", LastName = "dev" }
             };
+
             db.LoginUsers.AddRange(loginUsers);
             db.SaveChanges();
             return loginUsers.ToArray();
         }
 
-        private void SeedLoginUserPermissionMappingAsync(LoginUser[] loginUsers, UserPermission[] userPermissions)
+        private void SeedLoginUserPermissionMappingAsync(LoginUser[] loginUsers)
         {
             if (loginUsers == null
                 || loginUsers.Length == 0
-                || userPermissions == null
-                || userPermissions.Length == 0
                 || db.LoginUserPermissionMappings.Any())
                 return;
 
-            var mappings = new List<LoginUserPermissionMapping>
-            {
-                new LoginUserPermissionMapping { LoginUserId = loginUsers.First().Id, UserPermissionId = userPermissions.First().Id }
-            };
+            var mappings = loginUsers.Select(m => new LoginUserPermissionMapping { LoginUserId = m.Id, UserPermission = UserPermission.GUEST });
 
             db.LoginUserPermissionMappings.AddRange(mappings);
             db.SaveChanges();

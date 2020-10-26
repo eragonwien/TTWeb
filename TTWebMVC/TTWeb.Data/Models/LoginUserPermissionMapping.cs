@@ -8,7 +8,6 @@ namespace TTWeb.Data.Models
     {
         public int LoginUserId { get; set; }
         public LoginUser LoginUser { get; set; }
-        public int UserPermissionId { get; set; }
         public UserPermission UserPermission { get; set; }
     }
 }

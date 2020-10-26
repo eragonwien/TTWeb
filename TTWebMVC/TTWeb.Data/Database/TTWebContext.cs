@@ -12,14 +12,12 @@ namespace TTWeb.Data.Database
         }
 
         public DbSet<LoginUser> LoginUsers { get; set; }
-        public DbSet<UserPermission> UserPermissions { get; set; }
         public DbSet<LoginUserPermissionMapping> LoginUserPermissionMappings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .ConfigureLoginUser()
-                .ConfigureUserPermission()
                 .ConfigureLoginUserPermissionMapping()
                 .ConfigureFacebookUser()
                 .ConfigureFacebookUserReceiverMapping()

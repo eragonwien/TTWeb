@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TTWeb.Data.Database;
 
 namespace TTWeb.Data.Migrations
 {
     [DbContext(typeof(TTWebContext))]
-    partial class TTWebContextModelSnapshot : ModelSnapshot
+    [Migration("20201026145034_RemoveColumnUserPermission")]
+    partial class RemoveColumnUserPermission
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,11 +80,14 @@ namespace TTWeb.Data.Migrations
                     b.Property<int>("LoginUserId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserPermissionId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserPermission")
                         .HasColumnName("UserPermissionId")
                         .HasColumnType("int");
 
-                    b.HasKey("LoginUserId", "UserPermission");
+                    b.HasKey("LoginUserId", "UserPermissionId");
 
                     b.ToTable("LoginUserPermissionMappings");
                 });

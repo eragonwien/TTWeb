@@ -13,7 +13,7 @@ namespace TTWeb.BusinessLogic.MappingProfiles
         public LoginUserProfile()
         {
             CreateMap<LoginUser, LoginUserModel>()
-                .ForMember(m => m.UserPermissions, b => b.MapFrom(u => u.LoginUserPermissionMappings.Select(m => m.UserPermission.Value)));
+                .ForMember(m => m.UserPermissions, b => b.MapFrom(u => u.LoginUserPermissionMappings.Select(m => m.UserPermission)));
         }
     }
 }
