@@ -23,7 +23,6 @@ namespace TTWeb.Data.Database
                 .ConfigureLoginUserPermissionMapping()
                 .ConfigureFacebookUser()
                 .ConfigureFacebookUserReceiverMapping()
-                .ConfigureWeekday()
                 .ConfigureScheduleWeekdayMapping()
                 .ConfigureTimeFrame()
                 .ConfigureSchedule()

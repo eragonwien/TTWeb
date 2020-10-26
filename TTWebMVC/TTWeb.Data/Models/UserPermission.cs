@@ -16,6 +16,6 @@ namespace TTWeb.Data.Models
 
     public enum UserPermissionEnum
     {
-        DEFAULT
+        NONE = 1
     }
 }

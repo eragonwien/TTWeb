@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TTWeb.Data.Database;
 
 namespace TTWeb.Data.Migrations
 {
     [DbContext(typeof(TTWebContext))]
-    partial class TTWebContextModelSnapshot : ModelSnapshot
+    [Migration("20201026132635_AddEnumCoversion")]
+    partial class AddEnumCoversion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,10 +169,9 @@ namespace TTWeb.Data.Migrations
                     b.Property<int>("WeekdayId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Weekday")
-                        .HasColumnType("int");
-
                     b.HasKey("ScheduleId", "WeekdayId");
+
+                    b.HasIndex("WeekdayId");
 
                     b.ToTable("ScheduleWeekdayMapping");
                 });
@@ -213,6 +214,21 @@ namespace TTWeb.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserPermissions");
+                });
+
+            modelBuilder.Entity("TTWeb.Data.Models.Weekday", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Weekday");
                 });
 
             modelBuilder.Entity("TTWeb.Data.Models.LoginUserPermissionMapping", b =>
@@ -277,6 +293,12 @@ namespace TTWeb.Data.Migrations
                     b.HasOne("TTWeb.Data.Models.Schedule", "Schedule")
                         .WithMany("ScheduleWeekdayMappings")
                         .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TTWeb.Data.Models.Weekday", "Weekday")
+                        .WithMany("ScheduleWeekdayMappings")
+                        .HasForeignKey("WeekdayId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

@@ -44,7 +44,7 @@ namespace TTWeb.BusinessLogic.Services
 
             var userPermissions = new List<UserPermission>
             {
-                new UserPermission { Value = UserPermissionEnum.DEFAULT }
+                new UserPermission { Value = UserPermissionEnum.NONE }
             };
             db.UserPermissions.AddRange(userPermissions);
             db.SaveChanges();
@@ -67,7 +67,7 @@ namespace TTWeb.BusinessLogic.Services
 
         private void SeedLoginUserPermissionMappingAsync(LoginUser[] loginUsers, UserPermission[] userPermissions)
         {
-            if (loginUsers == null 
+            if (loginUsers == null
                 || loginUsers.Length == 0
                 || userPermissions == null
                 || userPermissions.Length == 0

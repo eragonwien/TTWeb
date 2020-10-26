@@ -2,8 +2,8 @@
 {
     public enum ScheduleAction
     {
-        LIKE,
-        COMMENT,
-        POST
+        LIKE = 1,
+        COMMENT = 2,
+        POST = 3
     }
 }
