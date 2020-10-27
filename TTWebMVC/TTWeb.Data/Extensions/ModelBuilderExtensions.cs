@@ -10,7 +10,7 @@ namespace TTWeb.Data.Extensions
     public static class ModelBuilderExtensions
     {
         private const int _maxLengthMediumString = 64;
-        private const int _maxLengthLongtring = 256;
+        private const int _maxLengthLongtring = 128;
 
         public static ModelBuilder ConfigureLoginUser(this ModelBuilder modelBuilder)
         {
@@ -27,17 +27,17 @@ namespace TTWeb.Data.Extensions
 
             modelBuilder.Entity<LoginUser>()
                 .Property(e => e.Email)
-                .HasMaxLength(_maxLengthMediumString)
+                .HasMaxLength(_maxLengthLongtring)
                 .IsRequired();
 
             modelBuilder.Entity<LoginUser>()
                 .Property(e => e.FirstName)
-                .HasMaxLength(_maxLengthMediumString)
+                .HasMaxLength(_maxLengthLongtring)
                 .IsRequired();
 
             modelBuilder.Entity<LoginUser>()
                 .Property(e => e.LastName)
-                .HasMaxLength(_maxLengthMediumString)
+                .HasMaxLength(_maxLengthLongtring)
                 .IsRequired();
 
             return modelBuilder;
@@ -119,9 +119,9 @@ namespace TTWeb.Data.Extensions
                .HasForeignKey(m => m.ScheduleId)
                .OnDelete(DeleteBehavior.Restrict);
 
-            // TODO: fix enum relationship
             modelBuilder.Entity<ScheduleWeekdayMapping>()
                .Property(m => m.Weekday)
+               .HasMaxLength(_maxLengthMediumString)
                .HasConversion<string>();
 
             return modelBuilder;
@@ -157,11 +157,13 @@ namespace TTWeb.Data.Extensions
             modelBuilder.Entity<Schedule>()
                 .Property(e => e.Action)
                 .IsRequired()
+                .HasMaxLength(_maxLengthMediumString)
                 .HasConversion<string>();
 
             modelBuilder.Entity<Schedule>()
                 .Property(e => e.IntervalType)
                 .IsRequired()
+                .HasMaxLength(_maxLengthMediumString)
                 .HasConversion<string>();
 
             modelBuilder.Entity<Schedule>()
