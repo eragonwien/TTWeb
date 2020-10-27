@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,14 @@ namespace TTWeb.Data.Extensions
     {
         private const int _maxLengthMediumString = 64;
         private const int _maxLengthLongtring = 128;
+
+        public static ModelBuilder RemovePluralizingTableNameConvention(this ModelBuilder modelBuilder)
+        {
+            foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
+                entity.SetTableName(entity.DisplayName());
+
+            return modelBuilder;
+        }
 
         public static ModelBuilder ConfigureLoginUser(this ModelBuilder modelBuilder)
         {

@@ -25,7 +25,8 @@ namespace TTWeb.Data.Database
                 .ConfigureTimeFrame()
                 .ConfigureSchedule()
                 .ConfigureScheduleJob()
-                .ConfigureScheduleJobResult();
+                .ConfigureScheduleJobResult()
+                .RemovePluralizingTableNameConvention();
         }
 
     }
