@@ -111,7 +111,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureScheduleWeekdayMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleWeekdayMapping>()
-                  .HasKey(m => new { m.ScheduleId, m.WeekdayId });
+                  .HasKey(m => new { m.ScheduleId, m.Weekday });
 
             modelBuilder.Entity<ScheduleWeekdayMapping>()
                .HasOne(m => m.Schedule)
@@ -119,9 +119,10 @@ namespace TTWeb.Data.Extensions
                .HasForeignKey(m => m.ScheduleId)
                .OnDelete(DeleteBehavior.Restrict);
 
+            // TODO: fix enum relationship
             modelBuilder.Entity<ScheduleWeekdayMapping>()
-               .Property(m => m.WeekdayId)
-               .HasConversion<int>();
+               .Property(m => m.Weekday)
+               .HasConversion<string>();
 
             return modelBuilder;
         }
