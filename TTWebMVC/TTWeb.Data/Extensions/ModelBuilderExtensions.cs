@@ -221,7 +221,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedLoginUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginUser>()
-                .HasData(new LoginUser { Email = "test@test.com", FirstName = "test", LastName = "dev" });
+                .HasData(new LoginUser { Id = 1, Email = "test@test.com", FirstName = "test", LastName = "dev" });
 
             return modelBuilder;
         }
@@ -237,15 +237,17 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedFacebookUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FacebookUser>()
-                .HasData(new FacebookUser { Username = "eragonwien@gmail.com", Password = "1234" });
+                .HasData(new FacebookUser { Id = 1, Username = "eragonwien@gmail.com", Password = "1234" });
 
             return modelBuilder;
         }
+
         public static ModelBuilder SeedSchedule(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Schedule>()
                 .HasData(new Schedule
                 {
+                    Id = 1,
                     Action = ScheduleAction.LIKE,
                     IntervalType = ScheduleIntervalType.Daily,
                     SenderId = 1
@@ -276,7 +278,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedTimeFrame(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleTimeFrame>()
-                .HasData(new ScheduleTimeFrame { ScheduleId = 1, From = TimeSpan.FromHours(9), To = TimeSpan.FromHours(14) });
+                .HasData(new ScheduleTimeFrame { Id = 1, ScheduleId = 1, From = TimeSpan.FromHours(9), To = TimeSpan.FromHours(14) });
 
             return modelBuilder;
         }
@@ -284,7 +286,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedScheduleJob(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleJob>()
-                .HasData(new ScheduleJob { ScheduleId = 1 });
+                .HasData(new ScheduleJob { Id = 1, ScheduleId = 1 });
 
             return modelBuilder;
         }
@@ -292,7 +294,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedScheduleJobResult(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleJobResult>()
-                .HasData(new ScheduleJobResult { ScheduleJobId = 1 });
+                .HasData(new ScheduleJobResult { Id = 1, ScheduleJobId = 1 });
 
             return modelBuilder;
         }
