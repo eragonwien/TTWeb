@@ -13,13 +13,7 @@ namespace TTWeb.Data.Extensions
         private const int _maxLengthMediumString = 64;
         private const int _maxLengthLongtring = 128;
 
-        public static ModelBuilder RemovePluralizingTableNameConvention(this ModelBuilder modelBuilder)
-        {
-            foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
-                entity.SetTableName(entity.DisplayName());
-
-            return modelBuilder;
-        }
+        #region Models
 
         public static ModelBuilder ConfigureLoginUser(this ModelBuilder modelBuilder)
         {
@@ -138,14 +132,14 @@ namespace TTWeb.Data.Extensions
 
         public static ModelBuilder ConfigureTimeFrame(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TimeFrame>()
+            modelBuilder.Entity<ScheduleTimeFrame>()
                 .HasKey(u => u.Id);
 
-            modelBuilder.Entity<TimeFrame>()
+            modelBuilder.Entity<ScheduleTimeFrame>()
                 .Property(m => m.Id)
                 .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<TimeFrame>()
+            modelBuilder.Entity<ScheduleTimeFrame>()
                .HasOne(m => m.Schedule)
                .WithMany(u => u.TimeFrames)
                .HasForeignKey(m => m.ScheduleId)
@@ -219,5 +213,102 @@ namespace TTWeb.Data.Extensions
 
             return modelBuilder;
         }
+
+        #endregion
+
+        #region Seeding
+
+        public static ModelBuilder SeedLoginUser(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<LoginUser>()
+                .HasData(new LoginUser { Email = "test@test.com", FirstName = "test", LastName = "dev" });
+
+            return modelBuilder;
+        }
+
+        public static ModelBuilder SeedLoginUserPermissionMapping(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<LoginUserPermissionMapping>()
+                .HasData(new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.GUEST });
+
+            return modelBuilder;
+        }
+
+        public static ModelBuilder SeedFacebookUser(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<FacebookUser>()
+                .HasData(new FacebookUser { Username = "eragonwien@gmail.com", Password = "1234" });
+
+            return modelBuilder;
+        }
+        public static ModelBuilder SeedSchedule(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Schedule>()
+                .HasData(new Schedule
+                {
+                    Action = ScheduleAction.LIKE,
+                    IntervalType = ScheduleIntervalType.Daily,
+                    SenderId = 1
+                });
+
+            return modelBuilder;
+        }
+
+        public static ModelBuilder SeedFacebookUserReceiverMapping(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ScheduleReceiverMapping>()
+                .HasData(new ScheduleReceiverMapping { ReceiverId = 1, ScheduleId = 1 });
+
+            return modelBuilder;
+        }
+
+        public static ModelBuilder SeedScheduleWeekdayMapping(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ScheduleWeekdayMapping>()
+                .HasData(
+                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Monday },
+                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Wednesday },
+                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Friday });
+
+            return modelBuilder;
+        }
+
+        public static ModelBuilder SeedTimeFrame(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ScheduleTimeFrame>()
+                .HasData(new ScheduleTimeFrame { ScheduleId = 1, From = TimeSpan.FromHours(9), To = TimeSpan.FromHours(14) });
+
+            return modelBuilder;
+        }
+
+        public static ModelBuilder SeedScheduleJob(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ScheduleJob>()
+                .HasData(new ScheduleJob { ScheduleId = 1 });
+
+            return modelBuilder;
+        }
+
+        public static ModelBuilder SeedScheduleJobResult(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ScheduleJobResult>()
+                .HasData(new ScheduleJobResult { ScheduleJobId = 1 });
+
+            return modelBuilder;
+        }
+
+        #endregion
+
+        #region Configurations
+
+        public static ModelBuilder RemovePluralizingTableNameConvention(this ModelBuilder modelBuilder)
+        {
+            foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
+                entity.SetTableName(entity.DisplayName());
+
+            return modelBuilder;
+        }
+
+        #endregion
     }
 }

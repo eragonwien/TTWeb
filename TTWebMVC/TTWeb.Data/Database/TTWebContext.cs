@@ -17,6 +17,7 @@ namespace TTWeb.Data.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
+                .RemovePluralizingTableNameConvention()
                 .ConfigureLoginUser()
                 .ConfigureLoginUserPermissionMapping()
                 .ConfigureFacebookUser()
@@ -26,7 +27,15 @@ namespace TTWeb.Data.Database
                 .ConfigureSchedule()
                 .ConfigureScheduleJob()
                 .ConfigureScheduleJobResult()
-                .RemovePluralizingTableNameConvention();
+                .SeedLoginUser()
+                .SeedLoginUserPermissionMapping()
+                .SeedFacebookUser()
+                .SeedSchedule()
+                .SeedFacebookUserReceiverMapping()
+                .SeedScheduleWeekdayMapping()
+                .SeedTimeFrame()
+                .SeedScheduleJob()
+                .SeedScheduleJobResult();
         }
 
     }

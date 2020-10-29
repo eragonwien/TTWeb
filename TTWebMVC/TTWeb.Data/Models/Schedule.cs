@@ -11,7 +11,7 @@ namespace TTWeb.Data.Models
         public FacebookUser Sender { get; set; }
         public ICollection<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
         public ICollection<ScheduleWeekdayMapping> ScheduleWeekdayMappings { get; set; }
-        public ICollection<TimeFrame> TimeFrames { get; set; }
+        public ICollection<ScheduleTimeFrame> TimeFrames { get; set; }
         public ICollection<ScheduleJob> ScheduleJobs { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace TTWeb.BusinessLogic.Extensions
             });
 
             services.AddSingleton(s => mapperConfig.CreateMapper());
-            
+
             return services;
         }
 
@@ -42,7 +42,6 @@ namespace TTWeb.BusinessLogic.Extensions
         public static IServiceCollection RegisterEntityServices(this IServiceCollection services)
         {
             services.AddScoped<ILoginUserService, LoginUserService>();
-            services.AddScoped<ISeedService, SeedService>();
 
             return services;
         }
