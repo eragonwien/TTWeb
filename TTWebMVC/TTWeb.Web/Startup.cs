@@ -34,10 +34,10 @@ namespace TTWeb.Web
 
             services
                 .RegisterAutoMapper()
-                .RegisterAppSetting<AuthenticationAppSetting>(Configuration, AuthenticationAppSetting.SectionName)
+                .RegisterConfigurationOptions()
                 .RegisterEntityServices();
 
-            var authenticationConfig = Configuration.GetSectionValue<AuthenticationAppSetting>(AuthenticationAppSetting.SectionName);
+            var facebookAppSettings = Configuration.GetSection("Providers:Facebook").Get<ProviderFacebookAppSettings>();
 
             services.Configure<CookiePolicyOptions>(o =>
             {
@@ -50,7 +50,7 @@ namespace TTWeb.Web
                 o.LoginPath = "/Account/Login";
                 o.LogoutPath = "/Account/Logout";
                 o.SlidingExpiration = true;
-                o.ExpireTimeSpan = authenticationConfig.CookieExpirationTimeSpan;
+                o.ExpireTimeSpan = TimeSpan.FromMinutes(20);
             });
 
             services

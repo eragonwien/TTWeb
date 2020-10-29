@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Net;
 using TTWeb.BusinessLogic.Configurations;
 using TTWeb.BusinessLogic.MappingProfiles;
 using TTWeb.BusinessLogic.Services;
+using TTWeb.Data.Database;
 
 namespace TTWeb.BusinessLogic.Extensions
 {
@@ -43,6 +46,17 @@ namespace TTWeb.BusinessLogic.Extensions
         {
             services.AddScoped<ILoginUserService, LoginUserService>();
 
+            return services;
+        }
+
+        public static IServiceCollection RegisterDbContext(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<TTWebContext>(o => o.UseMySql(configuration.GetConnectionString("TTWeb")));
+            return services;
+        }
+
+        public static IServiceCollection RegisterConfigurationOptions(this IServiceCollection services)
+        {
             return services;
         }
     }
