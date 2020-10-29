@@ -55,8 +55,10 @@ namespace TTWeb.BusinessLogic.Extensions
             return services;
         }
 
-        public static IServiceCollection RegisterConfigurationOptions(this IServiceCollection services)
+        public static IServiceCollection RegisterConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<ProvidersAppSettings>(configuration.GetSection("Providers"));
+
             return services;
         }
     }
