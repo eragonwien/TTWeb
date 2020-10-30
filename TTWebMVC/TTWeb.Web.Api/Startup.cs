@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TTWeb.BusinessLogic.Extensions;
+using TTWeb.Data.Database;
+using TTWeb.Web.Api.Extensions;
 using TTWeb.Web.Api.Middlewares;
 
 namespace TTWeb.Web.Api

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
+using TTWeb.Data.Database;
+using TTWeb.Web.Api.Extensions;
 
 namespace TTWeb.Web.Api
 {
@@ -15,7 +17,9 @@ namespace TTWeb.Web.Api
             {
                 log.Info("Initialize Program");
                 var host = CreateHostBuilder(args).Build();
-                host.Run();
+                host
+                    .MigrateDatabase<TTWebContext>()
+                    .Run();
             }
             catch (Exception ex)
             {
