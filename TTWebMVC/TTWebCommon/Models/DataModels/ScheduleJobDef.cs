@@ -1,11 +1,4 @@
-﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using TTWebCommon.Extensions;
-using TTWebCommon.Facebook;
+﻿using System.Collections.Generic;
 
 namespace TTWebCommon.Models
 {

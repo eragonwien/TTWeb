@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TTWeb.Data.Models
+﻿namespace TTWeb.Data.Models
 {
     public class LoginUserPermissionMapping
     {

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
+using AutoMapper;
 using TTWeb.BusinessLogic.Models;
 using TTWeb.Data.Models;
-using AutoMapper;
-using System.Linq;
 
 namespace TTWeb.BusinessLogic.MappingProfiles
 {

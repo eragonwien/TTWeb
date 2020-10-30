@@ -1,11 +1,8 @@
-﻿using MySql.Data.MySqlClient;
-using Renci.SshNet.Security.Cryptography;
-using SNGCommon.Sql.MySql.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
+using SNGCommon.Sql.MySql.Extensions;
 
 namespace TTWebCommon.Models
 {

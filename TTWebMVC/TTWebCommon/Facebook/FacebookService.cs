@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using OpenQA.Selenium.Firefox;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
-using System.Text;
+using Microsoft.AspNetCore.Hosting;
+using OpenQA.Selenium.Firefox;
 
 namespace TTWebCommon.Facebook
 {

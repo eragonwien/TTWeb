@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TTWeb.BusinessLogic.Models.Account
+﻿namespace TTWeb.BusinessLogic.Models.Account
 {
     public class LoginModel
     {

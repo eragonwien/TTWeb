@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using SNGCommon.Extenstions.StringExtensions;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using SNGCommon.Extenstions.StringExtensions;
 
 namespace TTWebMVCV2.Helpers.ValidationAttributes
 {

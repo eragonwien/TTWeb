@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace TTWebMVCV2.Models
+﻿namespace TTWebMVCV2.Models
 {
    public class AppSettings
    {

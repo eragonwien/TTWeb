@@ -1,9 +1,8 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Net;
 using TTWeb.BusinessLogic.Configurations;
 using TTWeb.BusinessLogic.MappingProfiles;
 using TTWeb.BusinessLogic.Services;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TTWebCommon.Models.DataModels
+﻿namespace TTWebCommon.Models.DataModels
 {
     public class ScheduleWeekDay
     {

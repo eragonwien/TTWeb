@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using SNGCommon;
 using SNGCommon.Extenstions.ArrayExtensions;
-using SNGCommon.Extenstions.StringExtensions;
 using TimeZoneConverter;
-using TTWebCommon.Models;
 using TTWebCommon.Services;
 using TTWebMVCV2.Models;
 

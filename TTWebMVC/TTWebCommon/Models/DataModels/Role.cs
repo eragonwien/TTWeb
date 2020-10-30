@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TTWebCommon.Models
+﻿namespace TTWebCommon.Models
 {
    public class Role
    {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TTWeb.Data.Models;
 using TTWeb.Data.Extensions;
+using TTWeb.Data.Models;
 
 namespace TTWeb.Data.Database
 {

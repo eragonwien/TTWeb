@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using SNGCommon;
-using SNGCommon.Extenstions.StringExtensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SNGCommon;
+using SNGCommon.Extenstions.StringExtensions;
 using TTWebCommon.Models;
 using TTWebCommon.Models.DataModels;
 using TTWebMVCV2.Helpers.ValidationAttributes;

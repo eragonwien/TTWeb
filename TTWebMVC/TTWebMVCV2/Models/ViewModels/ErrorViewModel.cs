@@ -1,5 +1,3 @@
-using System;
-
 namespace TTWebMVCV2.Models
 {
    public class ErrorViewModel
