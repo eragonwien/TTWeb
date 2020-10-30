@@ -13,13 +13,13 @@ namespace TTWeb.BusinessLogic.Services
 
     public class LoginUserService : ILoginUserService
     {
-        private readonly TTWebContext db;
-        private readonly IMapper mapper;
+        private readonly TTWebContext _context;
+        private readonly IMapper _mapper;
 
-        public LoginUserService(TTWebContext db, IMapper mapper)
+        public LoginUserService(TTWebContext context, IMapper mapper)
         {
-            this.db = db;
-            this.mapper = mapper;
+            _context = context;
+            _mapper = mapper;
         }
 
         public async Task<LoginUserModel> CreateUserAsync(LoginUserModel loginUserModel)
@@ -33,10 +33,15 @@ namespace TTWeb.BusinessLogic.Services
                 LastName = loginUserModel.LastName
             };
 
-            await db.LoginUsers.AddAsync(loginUser);
-            await db.SaveChangesAsync();
+            await _context.LoginUsers.AddAsync(loginUser);
+            await _context.SaveChangesAsync();
 
-            return mapper.Map<LoginUserModel>(loginUser);
+            return _mapper.Map<LoginUserModel>(loginUser);
+        }
+
+        public Task<LoginUserModel> GetOrAddUserAsync(LoginUserModel loginUserModel)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<LoginUserModel> GetUserByEmailAsync(string email)
@@ -44,11 +49,11 @@ namespace TTWeb.BusinessLogic.Services
             if (string.IsNullOrWhiteSpace(email))
                 return null;
 
-            var loginUser = await db.LoginUsers
+            var loginUser = await _context.LoginUsers
                 .Include(u => u.LoginUserPermissionMappings)
                 .FirstOrDefaultAsync(u => u.Email == email);
 
-            return mapper.Map<LoginUserModel>(loginUser);
+            return _mapper.Map<LoginUserModel>(loginUser);
         }
     }
 }
