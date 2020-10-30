@@ -9,9 +9,9 @@ namespace TTWeb.Web.Api.Middlewares
     public class WebApiExceptionHandlerMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger _logger;
+        private readonly ILogger<WebApiExceptionHandlerMiddleware> _logger;
 
-        public WebApiExceptionHandlerMiddleware(RequestDelegate next, ILogger logger)
+        public WebApiExceptionHandlerMiddleware(RequestDelegate next, ILogger<WebApiExceptionHandlerMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -30,7 +30,6 @@ namespace TTWeb.Web.Api.Middlewares
             }
         }
 
-        ///
         private Task HandleExceptionAsync(HttpContext httpContext, Exception ex)
         {
             // TODO: return status code base on exception type
