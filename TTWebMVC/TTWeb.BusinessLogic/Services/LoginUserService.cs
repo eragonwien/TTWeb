@@ -10,11 +10,6 @@ using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Services
 {
-    public interface ILoginUserService
-    {
-        Task<LoginUserModel> GetUserByEmailAsync(string email);
-        Task<LoginUserModel> CreateUserAsync(LoginUserModel loginUserModel);
-    }
 
     public class LoginUserService : ILoginUserService
     {

@@ -32,13 +32,15 @@ namespace TTWeb.Web.Api.Middlewares
             }
         }
 
+        ///
         private Task HandleExceptionAsync(HttpContext httpContext, Exception ex)
         {
+            // TODO: return status code base on exception type
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return httpContext.Response.WriteAsync(new
             {
-                StatusCode = httpContext.Response.StatusCode,
+                httpContext.Response.StatusCode,
                 Message = "Internal Server Error"
             }.ToString());
         }
