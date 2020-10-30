@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.Data.Database;
+using TTWeb.Web.Api.Middlewares;
 
 namespace TTWeb.Web.Api
 {
@@ -65,6 +66,7 @@ namespace TTWeb.Web.Api
             app.UseRouting();
             app.UseAuthorization();
             app.UseAuthorization();
+            app.UseMiddleware<WebApiExceptionHandlerMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
