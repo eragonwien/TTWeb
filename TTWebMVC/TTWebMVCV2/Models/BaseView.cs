@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Internal;
 using TTWebCommon.Models;
+using TTWebCommon.Models.DataModels;
 using TTWebCommon.Services;
 using TTWebMVCV2.Controllers;
 

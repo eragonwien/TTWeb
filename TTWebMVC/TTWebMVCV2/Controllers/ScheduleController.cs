@@ -6,6 +6,7 @@ using SNGCommon.Extenstions.ArrayExtensions;
 using TimeZoneConverter;
 using TTWebCommon.Services;
 using TTWebMVCV2.Models;
+using TTWebMVCV2.Models.ViewModels;
 
 namespace TTWebMVCV2.Controllers
 {

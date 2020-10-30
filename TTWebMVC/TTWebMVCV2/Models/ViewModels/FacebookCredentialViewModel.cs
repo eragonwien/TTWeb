@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TTWebCommon.Models;
+using TTWebCommon.Models.DataModels;
 
-namespace TTWebMVCV2.Models
+namespace TTWebMVCV2.Models.ViewModels
 {
    public class FacebookCredentialViewModel
    {

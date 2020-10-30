@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TTWebCommon.Models
+namespace TTWebCommon.Models.DataModels
 {
     public class ScheduleJobDef
     {

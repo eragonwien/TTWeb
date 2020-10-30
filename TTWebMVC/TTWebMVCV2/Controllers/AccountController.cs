@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SNGCommon;
 using TTWebCommon.Models;
+using TTWebCommon.Models.DataModels;
 using TTWebCommon.Services;
 using TTWebMVCV2.Models;
+using TTWebMVCV2.Models.ViewModels;
 
 namespace TTWebMVCV2.Controllers
 {

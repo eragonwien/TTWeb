@@ -1,4 +1,4 @@
-﻿namespace TTWebCommon.Models
+﻿namespace TTWebCommon.Models.DataModels
 {
    public class Partner
    {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace TTWebCommon.Models
+namespace TTWebCommon.Models.DataModels
 {
     public class FacebookCredential
     {

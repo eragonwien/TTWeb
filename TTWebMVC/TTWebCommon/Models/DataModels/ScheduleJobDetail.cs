@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TTWebCommon.Models
+namespace TTWebCommon.Models.DataModels
 {
    public class ScheduleJobDetail
    {

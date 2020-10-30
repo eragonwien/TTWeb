@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using TTWebMVCV2.Models;
+using TTWebMVCV2.Models.ViewModels;
 
 namespace TTWebMVCV2.Controllers
 {

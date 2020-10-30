@@ -9,7 +9,7 @@ using TTWebCommon.Models;
 using TTWebCommon.Models.DataModels;
 using TTWebMVCV2.Helpers.ValidationAttributes;
 
-namespace TTWebMVCV2.Models
+namespace TTWebMVCV2.Models.ViewModels
 {
     public class ScheduleDefViewModel
     {

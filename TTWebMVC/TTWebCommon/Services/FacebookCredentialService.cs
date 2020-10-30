@@ -5,6 +5,7 @@ using SNGCommon.Services;
 using SNGCommon.Sql.MySql.Extensions;
 using TTWebCommon.Models;
 using TTWebCommon.Models.Common.Exceptions;
+using TTWebCommon.Models.DataModels;
 
 namespace TTWebCommon.Services
 {

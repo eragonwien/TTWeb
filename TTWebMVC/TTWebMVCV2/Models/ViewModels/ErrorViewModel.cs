@@ -1,4 +1,4 @@
-namespace TTWebMVCV2.Models
+namespace TTWebMVCV2.Models.ViewModels
 {
    public class ErrorViewModel
    {

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TTWebCommon.Models;
+using TTWebCommon.Models.DataModels;
 
 namespace TTWebMVCV2.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TTWebMVCV2.Models
+namespace TTWebMVCV2.Models.ViewModels
 {
    public class FacebookFriendViewModel
    {

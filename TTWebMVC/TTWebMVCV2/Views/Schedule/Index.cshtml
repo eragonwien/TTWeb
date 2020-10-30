@@ -1,4 +1,5 @@
-﻿@model Dictionary<int, List<ScheduleJobDef>>
+﻿@using TTWebCommon.Models.DataModels
+@model Dictionary<int, List<TTWebCommon.Models.DataModels.ScheduleJobDef>>
 @{
     ScheduleButtonEnabled = true;
     var friendsList = (List<FacebookFriend>)ViewBag.FriendsList ?? new List<FacebookFriend>();
