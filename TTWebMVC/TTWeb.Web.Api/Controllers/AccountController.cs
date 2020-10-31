@@ -37,9 +37,10 @@ namespace TTWeb.Web.Api.Controllers
             if (!await _externalAuthService.IsTokenValidAsync(loginModel)) throw new InvalidTokenException();
 
             var loginUserModel = _mapper.Map<LoginUserModel>(loginModel);
-            loginUserModel = await _loginUserService.GetOrAddUserAsync(loginUserModel);
+            loginUserModel = await _loginUserService.GetUserByEmailAsync(loginUserModel.Email);
 
-            if (loginUserModel == null) throw new InsertOperationFailedException(nameof(loginUserModel));
+            if (loginUserModel == null)
+                loginUserModel = await _loginUserService.CreateUserAsync(loginUserModel);
 
             var tokenModel = await GetNewToken();
 

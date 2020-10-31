@@ -34,12 +34,8 @@ namespace TTWeb.BusinessLogic.Services
             await _context.LoginUsers.AddAsync(loginUser);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<LoginUserModel>(loginUser);
-        }
-
-        public Task<LoginUserModel> GetOrAddUserAsync(LoginUserModel loginUserModel)
-        {
-            throw new NotImplementedException();
+            loginUserModel = _mapper.Map<LoginUserModel>(loginUser);
+            return loginUserModel;
         }
 
         public async Task<LoginUserModel> GetUserByEmailAsync(string email)

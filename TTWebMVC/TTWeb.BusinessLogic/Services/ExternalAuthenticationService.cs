@@ -1,19 +1,26 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.Account;
 
 namespace TTWeb.BusinessLogic.Services
 {
     public class ExternalAuthenticationService : IExternalAuthenticationService
     {
-#pragma warning disable CS1998 // TODO: adds facebook token validation
+        private readonly IHostEnvironment _env;
+
+        public ExternalAuthenticationService(IHostEnvironment env)
+        {
+            _env = env;
+        }
+
+#pragma warning disable CS1998 // TODO: Adds facebook validation
         public async Task<bool> IsTokenValidAsync(ExternalLoginModel loginModel)
-#pragma warning restore CS1998
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (loginModel is null) throw new System.ArgumentNullException(nameof(loginModel));
 
-#if DEBUG
-            return true;
-#endif
+            if (_env.IsDevelopment()) return true;
+            return false;
         }
     }
 }
