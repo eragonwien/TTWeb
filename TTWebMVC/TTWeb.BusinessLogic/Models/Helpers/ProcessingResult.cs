@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TTWeb.BusinessLogic.Models
+namespace TTWeb.BusinessLogic.Models.Helpers
 {
     public class ProcessingResult
     {

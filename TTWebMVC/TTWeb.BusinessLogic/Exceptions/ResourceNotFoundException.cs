@@ -23,13 +23,14 @@ namespace TTWeb.BusinessLogic.Exceptions
 
         }
 
-        public ResourceNotFoundException(T resource) : base(BuildMessage(resource))
+        public ResourceNotFoundException(T resource, string id)
+            : base(BuildMessage(resource, id))
         {
         }
 
-        private static string BuildMessage(T resource)
+        private static string BuildMessage(T resource, string id)
         {
-            return $"Resource '{nameof(resource)}' not found";
+            return $"{nameof(resource)} '{id}' not found";
         }
     }
 }

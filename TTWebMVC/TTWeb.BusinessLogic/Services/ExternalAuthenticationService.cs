@@ -1,14 +1,19 @@
 ﻿using System.Threading.Tasks;
-using TTWeb.BusinessLogic.Models;
 using TTWeb.BusinessLogic.Models.Account;
 
 namespace TTWeb.BusinessLogic.Services
 {
     public class ExternalAuthenticationService : IExternalAuthenticationService
     {
-        public Task<LoginUserModel> ValidateTokenAsync(LoginModel loginModel)
+#pragma warning disable CS1998 // TODO: adds facebook token validation
+        public async Task<bool> IsTokenValidAsync(ExternalLoginModel loginModel)
+#pragma warning restore CS1998
         {
-            throw new System.NotImplementedException();
+            if (loginModel is null) throw new System.ArgumentNullException(nameof(loginModel));
+
+#if DEBUG
+            return true;
+#endif
         }
     }
 }

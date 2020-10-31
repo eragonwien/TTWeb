@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Account;
+using TTWeb.BusinessLogic.Models.Entities.LoginUser;
 using TTWeb.BusinessLogic.Services;
 
 namespace TTWeb.Web.Api.Controllers
@@ -14,30 +16,30 @@ namespace TTWeb.Web.Api.Controllers
     {
         private readonly IExternalAuthenticationService _externalAuthService;
         private readonly ILoginUserService _loginUserService;
+        private readonly IMapper _mapper;
 
         public AccountController(
             IExternalAuthenticationService externalAuthService,
-            ILoginUserService loginUserService)
+            ILoginUserService loginUserService,
+            IMapper mapper)
         {
             _externalAuthService = externalAuthService;
             _loginUserService = loginUserService;
+            _mapper = mapper;
         }
 
 
         // POST api/<AccountController>
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
+        public async Task<IActionResult> Login([FromBody] ExternalLoginModel loginModel)
         {
-            var loginUserModel = await _externalAuthService.ValidateTokenAsync(loginModel);
+            if (!await _externalAuthService.IsTokenValidAsync(loginModel)) throw new InvalidTokenException();
 
-            // creates new exception and handles it in global handler
-            if (loginUserModel == null) throw new Exception(nameof(loginUserModel));
-
+            var loginUserModel = _mapper.Map<LoginUserModel>(loginModel);
             loginUserModel = await _loginUserService.GetOrAddUserAsync(loginUserModel);
 
-            // should never happens -> 500
-            if (loginUserModel == null) throw new Exception(nameof(loginUserModel));
+            if (loginUserModel == null) throw new InsertOperationFailedException(nameof(loginUserModel));
 
             var tokenModel = await GetNewToken();
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TTWeb.Data.Models;
 
-namespace TTWeb.BusinessLogic.Models
+namespace TTWeb.BusinessLogic.Models.Entities.LoginUser
 {
     public class LoginUserModel
     {
