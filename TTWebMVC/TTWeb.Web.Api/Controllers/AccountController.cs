@@ -14,16 +14,13 @@ namespace TTWeb.Web.Api.Controllers
     {
         private readonly IExternalAuthenticationService _externalAuthService;
         private readonly ILoginUserService _loginUserService;
-        private readonly ILogger<AccountController> _log;
 
         public AccountController(
             IExternalAuthenticationService externalAuthService,
-            ILoginUserService loginUserService,
-            ILogger<AccountController> log)
+            ILoginUserService loginUserService)
         {
             _externalAuthService = externalAuthService;
             _loginUserService = loginUserService;
-            _log = log;
         }
 
 

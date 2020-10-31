@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using TTWeb.BusinessLogic.Configurations;
 using TTWeb.BusinessLogic.MappingProfiles;
 using TTWeb.BusinessLogic.Services;
@@ -50,13 +51,22 @@ namespace TTWeb.BusinessLogic.Extensions
 
         public static IServiceCollection RegisterDbContext(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<TTWebContext>(o => o.UseMySql(configuration.GetConnectionString("TTWeb")));
+            services.AddDbContext<TTWebContext>(o => o.UseSqlServer(configuration.GetConnectionString("TTWeb")));
             return services;
         }
 
         public static IServiceCollection RegisterConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<ProvidersAppSettings>(configuration.GetSection("Providers"));
+            return services;
+        }
+
+        public static IServiceCollection RegisterSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TTWeb API", Version = "V1" });
+            });
 
             return services;
         }

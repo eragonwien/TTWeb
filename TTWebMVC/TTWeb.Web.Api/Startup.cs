@@ -30,7 +30,8 @@ namespace TTWeb.Web.Api
                 .RegisterDbContext(Configuration)
                 .RegisterConfigurationOptions(Configuration)
                 .RegisterAutoMapper()
-                .RegisterEntityServices();
+                .RegisterEntityServices()
+                .RegisterSwagger();
 
             services.AddAuthorization();
 
@@ -56,11 +57,13 @@ namespace TTWeb.Web.Api
             }
 
             app.UseHttpsRedirection();
+
+            app.UseMiddleware<WebApiExceptionHandlerMiddleware>();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "TTWeb API V1"); });
+
             app.UseRouting();
             app.UseAuthorization();
-            app.UseAuthorization();
-            app.UseMiddleware<WebApiExceptionHandlerMiddleware>();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
