@@ -6,3 +6,4 @@ temp
 logs
 *.csproj.user
 appsettings.*.json
+.config
