@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using TTWeb.BusinessLogic.Configurations;
 using TTWeb.BusinessLogic.MappingProfiles;
+using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Services;
 using TTWeb.Data.Database;
 
@@ -57,7 +57,7 @@ namespace TTWeb.BusinessLogic.Extensions
 
         public static IServiceCollection RegisterConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<ProvidersAppSettings>(configuration.GetSection("Providers"));
+            services.Configure<AuthenticationProvidersAppSettings>(configuration.GetSection("Authentication:Providers"));
             return services;
         }
 
