@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -5,7 +6,11 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Text;
 using TTWeb.BusinessLogic.Extensions;
+using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.Web.Api.Middlewares;
 
 namespace TTWeb.Web.Api
@@ -30,6 +35,12 @@ namespace TTWeb.Web.Api
                 .RegisterAutoMapper()
                 .RegisterEntityServices()
                 .RegisterSwagger();
+
+            var authenticationAppSettings = Configuration.GetSection("Authentication").Get<AuthenticationAppSettings>();
+
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(o => ConfigureJwtBearerOptions(o, authenticationAppSettings));
 
             services.AddAuthorization();
 
@@ -69,5 +80,18 @@ namespace TTWeb.Web.Api
         }
 
         private AuthorizationPolicy DefaultAuthorizationPolicy => new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+
+        private void ConfigureJwtBearerOptions(JwtBearerOptions options, AuthenticationAppSettings authenticationAppSettings)
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationAppSettings.Methods.JWT.Secret)),
+                ClockSkew = TimeSpan.Zero
+            };
+        }
     }
 }

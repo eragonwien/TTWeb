@@ -45,7 +45,7 @@ namespace TTWeb.BusinessLogic.Extensions
         public static IServiceCollection RegisterEntityServices(this IServiceCollection services)
         {
             services.AddScoped<ILoginUserService, LoginUserService>();
-
+            services.AddScoped<IExternalAuthenticationService, ExternalAuthenticationService>();
             return services;
         }
 
@@ -57,7 +57,7 @@ namespace TTWeb.BusinessLogic.Extensions
 
         public static IServiceCollection RegisterConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<AuthenticationProvidersAppSettings>(configuration.GetSection("Authentication:Providers"));
+            services.Configure<AuthenticationAppSettings>(configuration.GetSection(AuthenticationAppSettings.Section));
             return services;
         }
 
