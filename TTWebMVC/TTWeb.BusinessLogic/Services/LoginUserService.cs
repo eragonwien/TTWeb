@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities.LoginUser;
 using TTWeb.Data.Database;
 using TTWeb.Data.Models;
@@ -23,6 +25,7 @@ namespace TTWeb.BusinessLogic.Services
         public async Task<LoginUserModel> CreateUserAsync(LoginUserModel loginUserModel)
         {
             if (loginUserModel is null) throw new ArgumentNullException(nameof(loginUserModel));
+            if (!IsValidEmailAddress(loginUserModel.Email)) throw new InvalidInputException(nameof(loginUserModel.Email));
 
             var loginUser = new LoginUser
             {
@@ -40,14 +43,30 @@ namespace TTWeb.BusinessLogic.Services
 
         public async Task<LoginUserModel> GetUserByEmailAsync(string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
-                return null;
+            if (!IsValidEmailAddress(email)) throw new InvalidInputException(nameof(email));
 
             var loginUser = await _context.LoginUsers
                 .Include(u => u.LoginUserPermissionMappings)
                 .FirstOrDefaultAsync(u => u.Email == email);
 
             return _mapper.Map<LoginUserModel>(loginUser);
+        }
+
+        private bool IsValidEmailAddress(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email)) return false;
+
+            try
+            {
+                return Regex.IsMatch(email, 
+                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$", 
+                    RegexOptions.IgnoreCase,
+                    TimeSpan.FromMilliseconds(250));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
         }
     }
 }

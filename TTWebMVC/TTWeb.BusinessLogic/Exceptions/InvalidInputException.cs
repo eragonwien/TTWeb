@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace TTWeb.BusinessLogic.Exceptions
 {
@@ -7,11 +8,11 @@ namespace TTWeb.BusinessLogic.Exceptions
     {
         public InvalidInputException()
         {
-
+            throw new NotImplementedException();
         }
 
-        public InvalidInputException(string message)
-            : base(message)
+        public InvalidInputException(string propertyName)
+            : base(BuildErrorMessage(propertyName))
         {
 
         }
@@ -19,7 +20,12 @@ namespace TTWeb.BusinessLogic.Exceptions
         public InvalidInputException(string message, Exception innerException)
             : base(message, innerException)
         {
+            throw new NotImplementedException();
+        }
 
+        private static string BuildErrorMessage(string propertyName)
+        {
+            return $"Property '{propertyName}' has invalid value";
         }
     }
 }
