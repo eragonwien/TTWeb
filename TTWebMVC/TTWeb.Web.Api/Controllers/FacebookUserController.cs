@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities.FacebookUser;
-using TTWeb.BusinessLogic.Services.FacebookUser;
+using TTWeb.BusinessLogic.Services.Facebook;
 
 namespace TTWeb.Web.Api.Controllers
 {
@@ -22,7 +22,6 @@ namespace TTWeb.Web.Api.Controllers
         {
             if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
 
-            // TODO: validates and throws exception inside addAsync
             facebookUser = await _facebookUserService.AddAsync(facebookUser);
 
             return Ok(facebookUser);
@@ -32,13 +31,10 @@ namespace TTWeb.Web.Api.Controllers
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] FacebookUserModel updateModel)
         {
             if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
+            if (id != updateModel.Id) throw new InvalidInputException(nameof(updateModel.Id));
+            ThrowExceptionOnUnauthorizedAccess(updateModel.LoginUserId);
 
-            // TODO: moves this block inside updateAsync
-            var facebookUser = await _facebookUserService.GetByIdAsync(id);
-            if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), id.ToString());
-            ThrowExceptionOnUnauthorizedAccess(facebookUser.LoginUserId);
-
-            facebookUser = await _facebookUserService.UpdateAsync(updateModel, facebookUser);
+            var facebookUser = await _facebookUserService.UpdateAsync(updateModel);
 
             return Ok(facebookUser);
         }
@@ -48,12 +44,7 @@ namespace TTWeb.Web.Api.Controllers
         {
             if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
 
-            // TODO: moves this block inside deleteAsync
-            var facebookUser = await _facebookUserService.GetByIdAsync(id);
-            if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), id.ToString());
-            ThrowExceptionOnUnauthorizedAccess(facebookUser.LoginUserId);
-
-            await _facebookUserService.DeleteAsync(id);
+            await _facebookUserService.DeleteAsync(id, LoginUserId);
 
             return NoContent();
         }
