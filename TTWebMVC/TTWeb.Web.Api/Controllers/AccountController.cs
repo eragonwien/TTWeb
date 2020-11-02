@@ -27,8 +27,7 @@ namespace TTWeb.Web.Api.Controllers
         private readonly IMapper _mapper;
         private readonly AuthenticationAppSettings _authenticationAppSettings;
 
-        public AccountController(
-            IExternalAuthenticationService externalAuthService,
+        public AccountController(IExternalAuthenticationService externalAuthService,
             ILoginUserService loginUserService,
             IMapper mapper,
             IOptions<AuthenticationAppSettings> authenticationAppSettings)
@@ -77,7 +76,10 @@ namespace TTWeb.Web.Api.Controllers
             return loginTokenModel;
         }
 
-        private JwtSecurityToken CreateSecurityToken(string secretKey, DateTime expirationDateUtc, JwtSecurityTokenHandler tokenHandler, ClaimsIdentity subject = null)
+        private JwtSecurityToken CreateSecurityToken(string secretKey,
+            DateTime expirationDateUtc,
+            JwtSecurityTokenHandler tokenHandler,
+            ClaimsIdentity subject = null)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
