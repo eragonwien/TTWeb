@@ -22,17 +22,17 @@ namespace TTWeb.Web.Api.Controllers
     [ApiController]
     public class AccountController : BaseController
     {
-        private readonly IExternalAuthenticationService _externalAuthService;
+        private readonly IAuthenticationHelperService _authHelperService;
         private readonly ILoginUserService _loginUserService;
         private readonly IMapper _mapper;
         private readonly AuthenticationAppSettings _authenticationAppSettings;
 
-        public AccountController(IExternalAuthenticationService externalAuthService,
+        public AccountController(IAuthenticationHelperService authHelperService,
             ILoginUserService loginUserService,
             IMapper mapper,
             IOptions<AuthenticationAppSettings> authenticationAppSettings)
         {
-            _externalAuthService = externalAuthService;
+            _authHelperService = authHelperService;
             _loginUserService = loginUserService;
             _mapper = mapper;
             _authenticationAppSettings = authenticationAppSettings.Value;
@@ -44,7 +44,7 @@ namespace TTWeb.Web.Api.Controllers
         public async Task<IActionResult> Login([FromBody] ExternalLoginModel loginModel)
         {
             if (!ModelState.IsValid) throw new InvalidInputException(ModelState); 
-            if (!await _externalAuthService.IsTokenValidAsync(loginModel)) throw new InvalidTokenException();
+            if (!await _authHelperService.IsTokenValidAsync(loginModel)) throw new InvalidTokenException();
 
             var loginUserModel = _mapper.Map<LoginUserModel>(loginModel);
             loginUserModel = await _loginUserService.GetUserByEmailAsync(loginUserModel.Email);

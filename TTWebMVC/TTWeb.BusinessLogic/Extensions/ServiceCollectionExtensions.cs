@@ -45,7 +45,7 @@ namespace TTWeb.BusinessLogic.Extensions
         public static IServiceCollection RegisterEntityServices(this IServiceCollection services)
         {
             services.AddScoped<ILoginUserService, LoginUserService>();
-            services.AddScoped<IExternalAuthenticationService, ExternalAuthenticationService>();
+            services.AddScoped<IAuthenticationHelperService, AuthenticationHelperService>();
             return services;
         }
 
