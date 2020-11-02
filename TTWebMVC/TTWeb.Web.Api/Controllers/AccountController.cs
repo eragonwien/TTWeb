@@ -14,7 +14,8 @@ using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.Entities.LoginUser;
-using TTWeb.BusinessLogic.Services;
+using TTWeb.BusinessLogic.Services.Authentication;
+using TTWeb.BusinessLogic.Services.LoginUser;
 
 namespace TTWeb.Web.Api.Controllers
 {
@@ -47,8 +48,8 @@ namespace TTWeb.Web.Api.Controllers
             if (!await _authHelperService.IsTokenValidAsync(loginModel)) throw new InvalidTokenException();
 
             var loginUserModel = _mapper.Map<LoginUserModel>(loginModel);
-            loginUserModel = await _loginUserService.GetUserByEmailAsync(loginUserModel.Email);
-            loginUserModel ??= await _loginUserService.CreateUserAsync(loginUserModel);
+            loginUserModel = await _loginUserService.GetByEmailAsync(loginUserModel.Email);
+            loginUserModel ??= await _loginUserService.CreateAsync(loginUserModel);
 
             var loginTokenModel = CreateLoginTokenModel(loginUserModel);
             return Ok(loginTokenModel);
@@ -94,6 +95,7 @@ namespace TTWeb.Web.Api.Controllers
         {
             var claims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.GivenName, user.FirstName),
                 new Claim(ClaimTypes.Surname, user.LastName)

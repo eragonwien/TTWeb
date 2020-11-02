@@ -6,9 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities.LoginUser;
 using TTWeb.Data.Database;
-using TTWeb.Data.Models;
 
-namespace TTWeb.BusinessLogic.Services
+namespace TTWeb.BusinessLogic.Services.LoginUser
 {
     public class LoginUserService : ILoginUserService
     {
@@ -21,13 +20,13 @@ namespace TTWeb.BusinessLogic.Services
             _mapper = mapper;
         }
 
-        public async Task<LoginUserModel> CreateUserAsync(LoginUserModel loginUserModel)
+        public async Task<LoginUserModel> CreateAsync(LoginUserModel loginUserModel)
         {
             if (loginUserModel is null) throw new ArgumentNullException(nameof(loginUserModel));
             if (!IsValidEmailAddress(loginUserModel.Email))
                 throw new InvalidInputException(nameof(loginUserModel.Email));
 
-            var loginUser = new LoginUser
+            var loginUser = new Data.Models.LoginUser
             {
                 Email = loginUserModel.Email,
                 FirstName = loginUserModel.FirstName,
@@ -41,7 +40,7 @@ namespace TTWeb.BusinessLogic.Services
             return loginUserModel;
         }
 
-        public async Task<LoginUserModel> GetUserByEmailAsync(string email)
+        public async Task<LoginUserModel> GetByEmailAsync(string email)
         {
             if (!IsValidEmailAddress(email)) throw new InvalidInputException(nameof(email));
 

@@ -7,6 +7,9 @@ using Microsoft.OpenApi.Models;
 using TTWeb.BusinessLogic.MappingProfiles;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Services;
+using TTWeb.BusinessLogic.Services.Authentication;
+using TTWeb.BusinessLogic.Services.Encryption;
+using TTWeb.BusinessLogic.Services.LoginUser;
 using TTWeb.Data.Database;
 
 namespace TTWeb.BusinessLogic.Extensions
@@ -41,6 +44,7 @@ namespace TTWeb.BusinessLogic.Extensions
 
         public static IServiceCollection RegisterEntityServices(this IServiceCollection services)
         {
+            services.AddTransient<IEncryptionHelper, EncryptionHelper>();
             services.AddScoped<ILoginUserService, LoginUserService>();
             services.AddScoped<IAuthenticationHelperService, AuthenticationHelperService>();
             return services;

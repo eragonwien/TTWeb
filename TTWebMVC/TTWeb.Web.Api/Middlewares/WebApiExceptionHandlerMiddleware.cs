@@ -41,7 +41,7 @@ namespace TTWeb.Web.Api.Middlewares
                 case InvalidInputException invalidInput:
                 case InvalidTokenException invalidToken:
                 case ResourceNotFoundException resourceNotFound:
-                case InsertOperationFailedException insertOperationFailed:
+                case ResourceAccessDeniedException resourceAccessDenied:
                     statusCode = HttpStatusCode.BadRequest;
                     break;
             }

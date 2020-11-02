@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.Account;
 
-namespace TTWeb.BusinessLogic.Services
+namespace TTWeb.BusinessLogic.Services.Authentication
 {
     public interface IAuthenticationHelperService
     {

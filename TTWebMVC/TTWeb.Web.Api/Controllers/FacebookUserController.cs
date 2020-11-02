@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using TTWeb.BusinessLogic.Exceptions;
+using TTWeb.BusinessLogic.Models.Entities.FacebookUser;
+using TTWeb.BusinessLogic.Services.FacebookUser;
 
 namespace TTWeb.Web.Api.Controllers
 {
@@ -6,10 +10,51 @@ namespace TTWeb.Web.Api.Controllers
     [ApiController]
     public class FacebookUserController : BaseController
     {
-        // TODO: encrypts password of facebook user in authentication service
-        // TODO: adds facebook user of login user
+        private readonly IFacebookUserService _facebookUserService;
+
+        public FacebookUserController(IFacebookUserService facebookUserService)
+        {
+            _facebookUserService = facebookUserService;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add([FromBody] FacebookUserModel facebookUser)
+        {
+            if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
+
+            facebookUser = await _facebookUserService.AddAsync(facebookUser);
+
+            return Ok(facebookUser);
+        }
+
+        [HttpPatch("{:id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] FacebookUserModel updateModel)
+        {
+            if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
+
+            var facebookUser = await _facebookUserService.GetByIdAsync(id);
+            if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), id.ToString());
+            if (facebookUser.LoginUserId != LoginUserId) throw new ResourceAccessDeniedException();
+
+            facebookUser = await _facebookUserService.UpdateAsync(updateModel, facebookUser);
+
+            return Ok(facebookUser);
+        }
+
         // TODO: gets facebook users of login user
-        // TODO: updates facebook user of login user
-        // TODO: deletes facebook user of login user
+        [HttpDelete("{:id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
+
+            var facebookUser = await _facebookUserService.GetByIdAsync(id);
+
+            if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), id.ToString());
+            if (facebookUser.LoginUserId != LoginUserId) throw new ResourceAccessDeniedException();
+
+            await _facebookUserService.DeleteAsync(id);
+
+            return NoContent();
+        }
     }
 }

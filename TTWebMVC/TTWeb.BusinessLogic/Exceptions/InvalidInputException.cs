@@ -9,7 +9,6 @@ namespace TTWeb.BusinessLogic.Exceptions
     {
         public InvalidInputException()
         {
-            throw new NotImplementedException();
         }
 
         public InvalidInputException(string propertyName)
@@ -20,7 +19,6 @@ namespace TTWeb.BusinessLogic.Exceptions
         public InvalidInputException(string message, Exception innerException)
             : base(message, innerException)
         {
-            throw new NotImplementedException();
         }
 
         public InvalidInputException(ModelStateDictionary modelState) : base(BuildErrorMessage(modelState))

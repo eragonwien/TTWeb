@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using TTWeb.BusinessLogic.Models.Account;
 
-namespace TTWeb.BusinessLogic.Services
+namespace TTWeb.BusinessLogic.Services.Authentication
 {
     public class AuthenticationHelperService : IAuthenticationHelperService
     {

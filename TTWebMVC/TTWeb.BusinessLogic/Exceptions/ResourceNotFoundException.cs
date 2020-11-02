@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 
 namespace TTWeb.BusinessLogic.Exceptions
 {
@@ -26,7 +27,7 @@ namespace TTWeb.BusinessLogic.Exceptions
 
         private static string BuildMessage(string resourceName, string id)
         {
-            return $"{resourceName} '{id}' not found";
+            return $"Resource {resourceName} of ID '{id}' not found";
         }
     }
 }
