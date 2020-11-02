@@ -2,7 +2,7 @@
 {
     public class AuthenticationMethodsAppSettings
     {
-        public AuthenticationMethodJWTAppSettings JWT { get; set; }
+        public AuthenticationMethodJsonWebTokenAppSettings JsonWebToken { get; set; }
     }
 
 

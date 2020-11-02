@@ -89,7 +89,7 @@ namespace TTWeb.Web.Api
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationAppSettings.Methods.JWT.Secret)),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationAppSettings.Methods.JsonWebToken.Secret)),
                 ClockSkew = TimeSpan.Zero
             };
         }

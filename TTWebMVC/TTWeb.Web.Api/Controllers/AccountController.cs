@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -44,29 +47,55 @@ namespace TTWeb.Web.Api.Controllers
         {
             if (!await _externalAuthService.IsTokenValidAsync(loginModel)) throw new InvalidTokenException();
 
-            LoginUserModel loginUserModel = _mapper.Map<LoginUserModel>(loginModel);
+            var loginUserModel = _mapper.Map<LoginUserModel>(loginModel);
             loginUserModel = await _loginUserService.GetUserByEmailAsync(loginUserModel.Email);
-
             loginUserModel ??= await _loginUserService.CreateUserAsync(loginUserModel);
-
-            loginUserModel.Token = GenerateToken();
-
-            return Ok(loginUserModel);
+            
+            var loginTokenModel = CreateLoginTokenModel(loginUserModel);
+            return Ok(loginTokenModel);
         }
 
-        private string GenerateToken()
+        private LoginTokenModel CreateLoginTokenModel(LoginUserModel user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationAppSettings.Methods.JWT.Secret));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            if (user == null) throw new ArgumentNullException(nameof(user));
 
-            var token = new JwtSecurityToken(
-                _authenticationAppSettings.Methods.JWT.Issuer,
-                null,
-                null,
-                expires: DateTime.Now.AddMinutes(120),
-                signingCredentials: credentials);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var loginTokenModel = new LoginTokenModel();
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var accessToken = CreateSecurityToken(
+                _authenticationAppSettings.Methods.JsonWebToken.Secret,
+                DateTime.UtcNow.AddMinutes(_authenticationAppSettings.Methods.JsonWebToken.AccessTokenDurationMinutes), tokenHandler, new ClaimsIdentity(GetUserClaims(user)));
+            loginTokenModel.AccessToken.Token = tokenHandler.WriteToken(accessToken);
+            loginTokenModel.AccessToken.ExpirationDateUtc = accessToken.ValidTo;
+
+            var refreshToken = CreateSecurityToken(
+                _authenticationAppSettings.Methods.JsonWebToken.Secret,
+                DateTime.UtcNow.AddMinutes(_authenticationAppSettings.Methods.JsonWebToken.RefreshTokenDurationDays), tokenHandler);
+            loginTokenModel.RefreshToken.Token = tokenHandler.WriteToken(refreshToken);
+            loginTokenModel.RefreshToken.ExpirationDateUtc = refreshToken.ValidTo;
+
+            return loginTokenModel;
+        }
+
+        private JwtSecurityToken CreateSecurityToken(string secretKey, DateTime expirationDateUtc, JwtSecurityTokenHandler tokenHandler, ClaimsIdentity subject = null)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+
+            return tokenHandler.CreateJwtSecurityToken(issuer: _authenticationAppSettings.Methods.JsonWebToken.Issuer, subject: subject, expires: expirationDateUtc, signingCredentials: signingCredentials);
+        }
+
+        private IEnumerable<Claim> GetUserClaims(LoginUserModel user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.GivenName, user.FirstName),
+                new Claim(ClaimTypes.Surname, user.LastName)
+            };
+            claims.AddRange(user.UserPermissions.Select(p => new Claim(ClaimTypes.Role, p.ToString())));
+
+            return claims;
         }
     }
 }

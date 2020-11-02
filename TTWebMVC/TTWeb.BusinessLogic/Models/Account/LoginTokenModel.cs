@@ -4,9 +4,13 @@ namespace TTWeb.BusinessLogic.Models.Account
 {
     public class LoginTokenModel
     {
+        public TokenModel AccessToken { get; set; } = new TokenModel();
+        public TokenModel RefreshToken { get; set; } = new TokenModel();
+    }
+
+    public class TokenModel
+    {
         public string Token { get; set; }
-        public DateTime TokenExpirationDateUtc { get; set; }
-        public string RefreshToken { get; set; }
-        public DateTime RefreshTokenExpirationDateUtc { get; set; }
+        public DateTime ExpirationDateUtc { get; set; }
     }
 }
