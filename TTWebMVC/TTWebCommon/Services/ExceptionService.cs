@@ -8,11 +8,12 @@ namespace TTWebCommon.Services
     {
         Exception HandleMySqlException(MySqlException mySqlException);
     }
+
     public class ExceptionService : IExceptionService
     {
         public Exception HandleMySqlException(MySqlException ex)
         {
-            var errorCode = (MySqlErrorCode)ex.Number;
+            var errorCode = (MySqlErrorCode) ex.Number;
             switch (errorCode)
             {
                 case MySqlErrorCode.DuplicateKeyEntry:

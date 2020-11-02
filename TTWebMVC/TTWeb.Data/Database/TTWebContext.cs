@@ -8,7 +8,6 @@ namespace TTWeb.Data.Database
     {
         public TTWebContext(DbContextOptions<TTWebContext> options) : base(options)
         {
-
         }
 
         public DbSet<LoginUser> LoginUsers { get; set; }
@@ -37,6 +36,5 @@ namespace TTWeb.Data.Database
                 .SeedScheduleJob()
                 .SeedScheduleJobResult();
         }
-
     }
 }

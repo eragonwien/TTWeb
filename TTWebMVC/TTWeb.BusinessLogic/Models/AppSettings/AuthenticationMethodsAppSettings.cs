@@ -4,6 +4,4 @@
     {
         public AuthenticationMethodJsonWebTokenAppSettings JsonWebToken { get; set; }
     }
-
-
 }

@@ -16,10 +16,7 @@ namespace TTWeb.Data.Migrations
                     Username = table.Column<string>(maxLength: 64, nullable: false),
                     Password = table.Column<string>(maxLength: 64, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FacebookUser", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_FacebookUser", x => x.Id); });
 
             migrationBuilder.CreateTable(
                 name: "LoginUser",
@@ -31,10 +28,7 @@ namespace TTWeb.Data.Migrations
                     FirstName = table.Column<string>(maxLength: 128, nullable: false),
                     LastName = table.Column<string>(maxLength: 128, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LoginUser", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_LoginUser", x => x.Id); });
 
             migrationBuilder.CreateTable(
                 name: "Schedule",
@@ -66,7 +60,7 @@ namespace TTWeb.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LoginUserPermissionMapping", x => new { x.LoginUserId, x.UserPermissionId });
+                    table.PrimaryKey("PK_LoginUserPermissionMapping", x => new {x.LoginUserId, x.UserPermissionId});
                     table.ForeignKey(
                         name: "FK_LoginUserPermissionMapping_LoginUser_LoginUserId",
                         column: x => x.LoginUserId,
@@ -103,7 +97,7 @@ namespace TTWeb.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScheduleReceiverMapping", x => new { x.ScheduleId, x.ReceiverId });
+                    table.PrimaryKey("PK_ScheduleReceiverMapping", x => new {x.ScheduleId, x.ReceiverId});
                     table.ForeignKey(
                         name: "FK_ScheduleReceiverMapping_FacebookUser_ReceiverId",
                         column: x => x.ReceiverId,
@@ -148,7 +142,7 @@ namespace TTWeb.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScheduleWeekdayMapping", x => new { x.ScheduleId, x.Weekday });
+                    table.PrimaryKey("PK_ScheduleWeekdayMapping", x => new {x.ScheduleId, x.Weekday});
                     table.ForeignKey(
                         name: "FK_ScheduleWeekdayMapping_Schedule_ScheduleId",
                         column: x => x.ScheduleId,
@@ -178,53 +172,53 @@ namespace TTWeb.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "FacebookUser",
-                columns: new[] { "Id", "Password", "Username" },
-                values: new object[] { 1, "1234", "eragonwien@gmail.com" });
+                columns: new[] {"Id", "Password", "Username"},
+                values: new object[] {1, "1234", "eragonwien@gmail.com"});
 
             migrationBuilder.InsertData(
                 table: "LoginUser",
-                columns: new[] { "Id", "Email", "FirstName", "LastName" },
-                values: new object[] { 1, "test@test.com", "test", "dev" });
+                columns: new[] {"Id", "Email", "FirstName", "LastName"},
+                values: new object[] {1, "test@test.com", "test", "dev"});
 
             migrationBuilder.InsertData(
                 table: "LoginUserPermissionMapping",
-                columns: new[] { "LoginUserId", "UserPermissionId" },
-                values: new object[] { 1, 1 });
+                columns: new[] {"LoginUserId", "UserPermissionId"},
+                values: new object[] {1, 1});
 
             migrationBuilder.InsertData(
                 table: "Schedule",
-                columns: new[] { "Id", "Action", "IntervalType", "SenderId" },
-                values: new object[] { 1, "LIKE", "Daily", 1 });
+                columns: new[] {"Id", "Action", "IntervalType", "SenderId"},
+                values: new object[] {1, "LIKE", "Daily", 1});
 
             migrationBuilder.InsertData(
                 table: "ScheduleJob",
-                columns: new[] { "Id", "ScheduleId" },
-                values: new object[] { 1, 1 });
+                columns: new[] {"Id", "ScheduleId"},
+                values: new object[] {1, 1});
 
             migrationBuilder.InsertData(
                 table: "ScheduleReceiverMapping",
-                columns: new[] { "ScheduleId", "ReceiverId" },
-                values: new object[] { 1, 1 });
+                columns: new[] {"ScheduleId", "ReceiverId"},
+                values: new object[] {1, 1});
 
             migrationBuilder.InsertData(
                 table: "ScheduleTimeFrame",
-                columns: new[] { "Id", "From", "ScheduleId", "To" },
-                values: new object[] { 1, new TimeSpan(0, 9, 0, 0, 0), 1, new TimeSpan(0, 14, 0, 0, 0) });
+                columns: new[] {"Id", "From", "ScheduleId", "To"},
+                values: new object[] {1, new TimeSpan(0, 9, 0, 0, 0), 1, new TimeSpan(0, 14, 0, 0, 0)});
 
             migrationBuilder.InsertData(
                 table: "ScheduleWeekdayMapping",
-                columns: new[] { "ScheduleId", "Weekday" },
+                columns: new[] {"ScheduleId", "Weekday"},
                 values: new object[,]
                 {
-                    { 1, "Monday" },
-                    { 1, "Wednesday" },
-                    { 1, "Friday" }
+                    {1, "Monday"},
+                    {1, "Wednesday"},
+                    {1, "Friday"}
                 });
 
             migrationBuilder.InsertData(
                 table: "ScheduleJobResult",
-                columns: new[] { "Id", "ScheduleJobId" },
-                values: new object[] { 1, 1 });
+                columns: new[] {"Id", "ScheduleJobId"},
+                values: new object[] {1, 1});
 
             migrationBuilder.CreateIndex(
                 name: "IX_FacebookUser_Username",

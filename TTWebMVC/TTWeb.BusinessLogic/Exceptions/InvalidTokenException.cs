@@ -8,19 +8,16 @@ namespace TTWeb.BusinessLogic.Exceptions
         public InvalidTokenException()
             : base("Token is invalid")
         {
-
         }
 
         public InvalidTokenException(string message)
             : base(message)
         {
-
         }
 
         public InvalidTokenException(string message, Exception innerException)
             : base(message, innerException)
         {
-
         }
     }
 }

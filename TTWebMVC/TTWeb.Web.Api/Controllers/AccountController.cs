@@ -22,10 +22,10 @@ namespace TTWeb.Web.Api.Controllers
     [ApiController]
     public class AccountController : BaseController
     {
+        private readonly AuthenticationAppSettings _authenticationAppSettings;
         private readonly IAuthenticationHelperService _authHelperService;
         private readonly ILoginUserService _loginUserService;
         private readonly IMapper _mapper;
-        private readonly AuthenticationAppSettings _authenticationAppSettings;
 
         public AccountController(IAuthenticationHelperService authHelperService,
             ILoginUserService loginUserService,
@@ -43,13 +43,13 @@ namespace TTWeb.Web.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] ExternalLoginModel loginModel)
         {
-            if (!ModelState.IsValid) throw new InvalidInputException(ModelState); 
+            if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
             if (!await _authHelperService.IsTokenValidAsync(loginModel)) throw new InvalidTokenException();
 
             var loginUserModel = _mapper.Map<LoginUserModel>(loginModel);
             loginUserModel = await _loginUserService.GetUserByEmailAsync(loginUserModel.Email);
             loginUserModel ??= await _loginUserService.CreateUserAsync(loginUserModel);
-            
+
             var loginTokenModel = CreateLoginTokenModel(loginUserModel);
             return Ok(loginTokenModel);
         }
@@ -63,13 +63,15 @@ namespace TTWeb.Web.Api.Controllers
 
             var accessToken = CreateSecurityToken(
                 _authenticationAppSettings.Methods.JsonWebToken.Secret,
-                DateTime.UtcNow.AddMinutes(_authenticationAppSettings.Methods.JsonWebToken.AccessTokenDurationMinutes), tokenHandler, new ClaimsIdentity(GetUserClaims(user)));
+                DateTime.UtcNow.AddMinutes(_authenticationAppSettings.Methods.JsonWebToken.AccessTokenDurationMinutes),
+                tokenHandler, new ClaimsIdentity(GetUserClaims(user)));
             loginTokenModel.AccessToken.Token = tokenHandler.WriteToken(accessToken);
             loginTokenModel.AccessToken.ExpirationDateUtc = accessToken.ValidTo;
 
             var refreshToken = CreateSecurityToken(
                 _authenticationAppSettings.Methods.JsonWebToken.Secret,
-                DateTime.UtcNow.AddMinutes(_authenticationAppSettings.Methods.JsonWebToken.RefreshTokenDurationDays), tokenHandler);
+                DateTime.UtcNow.AddMinutes(_authenticationAppSettings.Methods.JsonWebToken.RefreshTokenDurationDays),
+                tokenHandler);
             loginTokenModel.RefreshToken.Token = tokenHandler.WriteToken(refreshToken);
             loginTokenModel.RefreshToken.ExpirationDateUtc = refreshToken.ValidTo;
 
@@ -84,7 +86,8 @@ namespace TTWeb.Web.Api.Controllers
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
 
-            return tokenHandler.CreateJwtSecurityToken(issuer: _authenticationAppSettings.Methods.JsonWebToken.Issuer, subject: subject, expires: expirationDateUtc, signingCredentials: signingCredentials);
+            return tokenHandler.CreateJwtSecurityToken(issuer: _authenticationAppSettings.Methods.JsonWebToken.Issuer,
+                subject: subject, expires: expirationDateUtc, signingCredentials: signingCredentials);
         }
 
         private IEnumerable<Claim> GetUserClaims(LoginUserModel user)

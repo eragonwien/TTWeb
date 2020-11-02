@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using TTWeb.Data.Models;
 
 namespace TTWeb.Data.Extensions
@@ -9,6 +8,18 @@ namespace TTWeb.Data.Extensions
     {
         private const int _maxLengthMediumString = 64;
         private const int _maxLengthLongtring = 128;
+
+        #region Configurations
+
+        public static ModelBuilder RemovePluralizingTableNameConvention(this ModelBuilder modelBuilder)
+        {
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+                entity.SetTableName(entity.DisplayName());
+
+            return modelBuilder;
+        }
+
+        #endregion
 
         #region Models
 
@@ -46,13 +57,13 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureLoginUserPermissionMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginUserPermissionMapping>()
-                  .HasKey(m => new { m.LoginUserId, m.UserPermission });
+                .HasKey(m => new {m.LoginUserId, m.UserPermission});
 
             modelBuilder.Entity<LoginUserPermissionMapping>()
-               .HasOne(m => m.LoginUser)
-               .WithMany(u => u.LoginUserPermissionMappings)
-               .HasForeignKey(m => m.LoginUserId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(m => m.LoginUser)
+                .WithMany(u => u.LoginUserPermissionMappings)
+                .HasForeignKey(m => m.LoginUserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<LoginUserPermissionMapping>()
                 .Property(m => m.UserPermission)
@@ -91,19 +102,19 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureFacebookUserReceiverMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleReceiverMapping>()
-                  .HasKey(m => new { m.ScheduleId, m.ReceiverId });
+                .HasKey(m => new {m.ScheduleId, m.ReceiverId});
 
             modelBuilder.Entity<ScheduleReceiverMapping>()
-               .HasOne(m => m.Schedule)
-               .WithMany(u => u.ScheduleReceiverMappings)
-               .HasForeignKey(m => m.ScheduleId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(m => m.Schedule)
+                .WithMany(u => u.ScheduleReceiverMappings)
+                .HasForeignKey(m => m.ScheduleId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ScheduleReceiverMapping>()
-               .HasOne(m => m.Receiver)
-               .WithMany(p => p.ScheduleReceiverMappings)
-               .HasForeignKey(m => m.ReceiverId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(m => m.Receiver)
+                .WithMany(p => p.ScheduleReceiverMappings)
+                .HasForeignKey(m => m.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             return modelBuilder;
         }
@@ -111,18 +122,18 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureScheduleWeekdayMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleWeekdayMapping>()
-                  .HasKey(m => new { m.ScheduleId, m.Weekday });
+                .HasKey(m => new {m.ScheduleId, m.Weekday});
 
             modelBuilder.Entity<ScheduleWeekdayMapping>()
-               .HasOne(m => m.Schedule)
-               .WithMany(u => u.ScheduleWeekdayMappings)
-               .HasForeignKey(m => m.ScheduleId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(m => m.Schedule)
+                .WithMany(u => u.ScheduleWeekdayMappings)
+                .HasForeignKey(m => m.ScheduleId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ScheduleWeekdayMapping>()
-               .Property(m => m.Weekday)
-               .HasMaxLength(_maxLengthMediumString)
-               .HasConversion<string>();
+                .Property(m => m.Weekday)
+                .HasMaxLength(_maxLengthMediumString)
+                .HasConversion<string>();
 
             return modelBuilder;
         }
@@ -137,10 +148,10 @@ namespace TTWeb.Data.Extensions
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<ScheduleTimeFrame>()
-               .HasOne(m => m.Schedule)
-               .WithMany(u => u.TimeFrames)
-               .HasForeignKey(m => m.ScheduleId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(m => m.Schedule)
+                .WithMany(u => u.TimeFrames)
+                .HasForeignKey(m => m.ScheduleId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             return modelBuilder;
         }
@@ -167,10 +178,10 @@ namespace TTWeb.Data.Extensions
                 .HasConversion<string>();
 
             modelBuilder.Entity<Schedule>()
-               .HasOne(m => m.Sender)
-               .WithMany(u => u.SendSchedule)
-               .HasForeignKey(m => m.SenderId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(m => m.Sender)
+                .WithMany(u => u.SendSchedule)
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             return modelBuilder;
         }
@@ -185,10 +196,10 @@ namespace TTWeb.Data.Extensions
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<ScheduleJob>()
-               .HasOne(m => m.Schedule)
-               .WithMany(u => u.ScheduleJobs)
-               .HasForeignKey(m => m.ScheduleId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(m => m.Schedule)
+                .WithMany(u => u.ScheduleJobs)
+                .HasForeignKey(m => m.ScheduleId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             return modelBuilder;
         }
@@ -203,10 +214,10 @@ namespace TTWeb.Data.Extensions
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<ScheduleJobResult>()
-               .HasOne(m => m.ScheduleJob)
-               .WithMany(u => u.Results)
-               .HasForeignKey(m => m.ScheduleJobId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(m => m.ScheduleJob)
+                .WithMany(u => u.Results)
+                .HasForeignKey(m => m.ScheduleJobId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             return modelBuilder;
         }
@@ -218,7 +229,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedLoginUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginUser>()
-                .HasData(new LoginUser { Id = 1, Email = "test@test.com", FirstName = "test", LastName = "dev" });
+                .HasData(new LoginUser {Id = 1, Email = "test@test.com", FirstName = "test", LastName = "dev"});
 
             return modelBuilder;
         }
@@ -226,7 +237,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedLoginUserPermissionMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginUserPermissionMapping>()
-                .HasData(new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.Default });
+                .HasData(new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.Default});
 
             return modelBuilder;
         }
@@ -234,7 +245,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedFacebookUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FacebookUser>()
-                .HasData(new FacebookUser { Id = 1, Username = "eragonwien@gmail.com", Password = "1234" });
+                .HasData(new FacebookUser {Id = 1, Username = "eragonwien@gmail.com", Password = "1234"});
 
             return modelBuilder;
         }
@@ -256,7 +267,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedFacebookUserReceiverMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleReceiverMapping>()
-                .HasData(new ScheduleReceiverMapping { ReceiverId = 1, ScheduleId = 1 });
+                .HasData(new ScheduleReceiverMapping {ReceiverId = 1, ScheduleId = 1});
 
             return modelBuilder;
         }
@@ -265,9 +276,9 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<ScheduleWeekdayMapping>()
                 .HasData(
-                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Monday },
-                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Wednesday },
-                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Friday });
+                    new ScheduleWeekdayMapping {ScheduleId = 1, Weekday = DayOfWeek.Monday},
+                    new ScheduleWeekdayMapping {ScheduleId = 1, Weekday = DayOfWeek.Wednesday},
+                    new ScheduleWeekdayMapping {ScheduleId = 1, Weekday = DayOfWeek.Friday});
 
             return modelBuilder;
         }
@@ -275,7 +286,8 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedTimeFrame(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleTimeFrame>()
-                .HasData(new ScheduleTimeFrame { Id = 1, ScheduleId = 1, From = TimeSpan.FromHours(9), To = TimeSpan.FromHours(14) });
+                .HasData(new ScheduleTimeFrame
+                    {Id = 1, ScheduleId = 1, From = TimeSpan.FromHours(9), To = TimeSpan.FromHours(14)});
 
             return modelBuilder;
         }
@@ -283,7 +295,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedScheduleJob(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleJob>()
-                .HasData(new ScheduleJob { Id = 1, ScheduleId = 1 });
+                .HasData(new ScheduleJob {Id = 1, ScheduleId = 1});
 
             return modelBuilder;
         }
@@ -291,19 +303,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedScheduleJobResult(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleJobResult>()
-                .HasData(new ScheduleJobResult { Id = 1, ScheduleJobId = 1 });
-
-            return modelBuilder;
-        }
-
-        #endregion
-
-        #region Configurations
-
-        public static ModelBuilder RemovePluralizingTableNameConvention(this ModelBuilder modelBuilder)
-        {
-            foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
-                entity.SetTableName(entity.DisplayName());
+                .HasData(new ScheduleJobResult {Id = 1, ScheduleJobId = 1});
 
             return modelBuilder;
         }

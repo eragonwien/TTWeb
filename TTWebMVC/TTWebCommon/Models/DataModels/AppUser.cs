@@ -5,6 +5,8 @@ namespace TTWebCommon.Models.DataModels
 {
     public class AppUser
     {
+        public static AppUser Empty = new AppUser();
+
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public int Id { get; set; } = 0;
 
@@ -34,7 +36,5 @@ namespace TTWebCommon.Models.DataModels
 
         [JsonProperty("role", NullValueHandling = NullValueHandling.Ignore)]
         public UserRole Role { get; set; } = UserRole.Standard;
-
-        public static AppUser Empty = new AppUser();
     }
 }

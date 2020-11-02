@@ -7,12 +7,10 @@ namespace TTWebCommon.Models.Common.Exceptions
     {
         public WebApiBadRequestException()
         {
-
         }
 
         public WebApiBadRequestException(string message, params object[] args) : base(string.Format(message, args))
         {
-
         }
     }
 }

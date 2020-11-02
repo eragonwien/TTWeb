@@ -15,10 +15,7 @@ namespace TTWeb.BusinessLogic.Extensions
     {
         public static IServiceCollection RegisterAutoMapper(this IServiceCollection services)
         {
-            var mapperConfig = new MapperConfiguration(c =>
-            {
-                c.AddProfile<LoginUserProfile>();
-            });
+            var mapperConfig = new MapperConfiguration(c => { c.AddProfile<LoginUserProfile>(); });
 
             services.AddSingleton(s => mapperConfig.CreateMapper());
 
@@ -49,13 +46,15 @@ namespace TTWeb.BusinessLogic.Extensions
             return services;
         }
 
-        public static IServiceCollection RegisterDbContext(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection RegisterDbContext(this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.AddDbContext<TTWebContext>(o => o.UseSqlServer(configuration.GetConnectionString("TTWeb")));
             return services;
         }
 
-        public static IServiceCollection RegisterConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection RegisterConfigurationOptions(this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.Configure<AuthenticationAppSettings>(configuration.GetSection(AuthenticationAppSettings.Section));
             return services;
@@ -63,10 +62,7 @@ namespace TTWeb.BusinessLogic.Extensions
 
         public static IServiceCollection RegisterSwagger(this IServiceCollection services)
         {
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TTWeb API", Version = "V1" });
-            });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "TTWeb API", Version = "V1"}); });
 
             return services;
         }

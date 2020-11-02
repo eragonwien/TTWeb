@@ -30,11 +30,14 @@ namespace TTWebCommon.Services
         Task DeleteFacebookFriendByUserIdAsync(string id, int userId);
         Task<List<FacebookFriend>> GetFacebookFriendsByUserIdAsync(int userId);
     }
+
     public class AppUserService : IAppUserService
     {
+        private const string GetUserBaseCmdString =
+            "SELECT appuser_id, email, title, firstname, lastname, disabled, active, role_id, role_name, fb_credential_id, fb_username, fb_password FROM v_appuser";
+
         private readonly TTWebDbContext db;
         private readonly IPasswordHelperService pwd;
-        private const string GetUserBaseCmdString = "SELECT appuser_id, email, title, firstname, lastname, disabled, active, role_id, role_name, fb_credential_id, fb_username, fb_password FROM v_appuser";
 
         public AppUserService(TTWebDbContext db, IPasswordHelperService pwd)
         {
@@ -45,41 +48,36 @@ namespace TTWebCommon.Services
         public async Task<AppUser> GetUserByIdAsync(int id)
         {
             AppUser appUser = null;
-            string cmdStr = GetUserBaseCmdString + " WHERE appuser_id=@appuser_id";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr = GetUserBaseCmdString + " WHERE appuser_id=@appuser_id";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("appuser_id", id));
-            using MySqlDataReader odr = await cmd.ExecuteMySqlReaderAsync();
-            while (await odr.ReadAsync())
-            {
-                appUser = await ReadAppUserDataReaderAsync(odr, appUser);
-            }
+            using var odr = await cmd.ExecuteMySqlReaderAsync();
+            while (await odr.ReadAsync()) appUser = await ReadAppUserDataReaderAsync(odr, appUser);
             return appUser;
         }
 
         public async Task<AppUser> GetUserByEmailAsync(string email)
         {
             AppUser appUser = null;
-            string cmdStr = GetUserBaseCmdString + " WHERE email=@email";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr = GetUserBaseCmdString + " WHERE email=@email";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("email", email));
-            using MySqlDataReader odr = await cmd.ExecuteMySqlReaderAsync();
-            while (await odr.ReadAsync())
-            {
-                appUser = await ReadAppUserDataReaderAsync(odr, appUser);
-            }
+            using var odr = await cmd.ExecuteMySqlReaderAsync();
+            while (await odr.ReadAsync()) appUser = await ReadAppUserDataReaderAsync(odr, appUser);
             return appUser;
         }
 
         public async Task CreateUserAsync(AppUser user)
         {
-            string cmdStr = "INSERT INTO appuser(email, title, firstname, lastname, active, role_id) VALUES(@email, @title, @firstname, @lastname, @active, @role_id)";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr =
+                "INSERT INTO appuser(email, title, firstname, lastname, active, role_id) VALUES(@email, @title, @firstname, @lastname, @active, @role_id)";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("email", user.Email));
             cmd.Parameters.Add(new MySqlParameter("title", user.Title));
             cmd.Parameters.Add(new MySqlParameter("firstname", user.Firstname));
             cmd.Parameters.Add(new MySqlParameter("lastname", user.Lastname));
             cmd.Parameters.Add(new MySqlParameter("active", false));
-            cmd.Parameters.Add(new MySqlParameter("role_id", (int)UserRole.Standard));
+            cmd.Parameters.Add(new MySqlParameter("role_id", (int) UserRole.Standard));
             await cmd.ExecuteNonQueryAsync();
             // return ID hier
             user = await GetUserByEmailAsync(user.Email);
@@ -92,51 +90,39 @@ namespace TTWebCommon.Services
 
         public async Task DeleteUserAsync(int id)
         {
-            string cmdStr = "DELETE FROM appuser WHERE id=@id";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr = "DELETE FROM appuser WHERE id=@id";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("id", id));
             await cmd.ExecuteNonQueryAsync();
         }
 
         public async Task<bool> IsUserExistAsync(int id)
         {
-            string cmdStr = "SELECT CASE WHEN EXISTS(SELECT id FROM appuser WHERE id=:id) THEN 1 ELSE 0 FROM DUAL";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr = "SELECT CASE WHEN EXISTS(SELECT id FROM appuser WHERE id=:id) THEN 1 ELSE 0 FROM DUAL";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("id", id));
             return await cmd.ReadMySqlScalarBoolean();
         }
 
         public async Task<bool> IsUserEmailAvailableAsync(string email, int id)
         {
-            string cmdStr = "SELECT CASE WHEN EXISTS(SELECT id FROM appuser WHERE email=:email AND id!=:id) THEN 1 ELSE 0 FROM DUAL";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr =
+                "SELECT CASE WHEN EXISTS(SELECT id FROM appuser WHERE email=:email AND id!=:id) THEN 1 ELSE 0 FROM DUAL";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("email", email));
             cmd.Parameters.Add(new MySqlParameter("id", id));
             return await cmd.ReadMySqlScalarBoolean();
-        }
-
-        private async Task UpdateUserProfileAsync(AppUser appUser)
-        {
-            string cmdStr = "UPDATE appuser SET title=@title, firstname=@firstname, lastname=@lastname WHERE id=@id and email=@email";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
-            cmd.Parameters.Add(new MySqlParameter("title", appUser.Title));
-            cmd.Parameters.Add(new MySqlParameter("firstname", appUser.Firstname));
-            cmd.Parameters.Add(new MySqlParameter("lastname", appUser.Lastname));
-            cmd.Parameters.Add(new MySqlParameter("id", appUser.Id));
-            cmd.Parameters.Add(new MySqlParameter("email", appUser.Email));
-            int count = await cmd.ExecuteNonQueryAsync();
-
-            if (count == 0)
-                throw new WebApiNotFoundException("Appuser email={0}, id={1} does not exist", appUser.Email, appUser.Id);
         }
 
         public AppUser LoadContextUser(ClaimsPrincipal contextUser)
         {
             var user = new AppUser
             {
-                Id = int.TryParse(contextUser.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId) ? userId : 0,
+                Id = int.TryParse(contextUser.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId) ? userId : 0,
                 Email = contextUser.FindFirst(ClaimTypes.Email)?.Value,
-                Role = Enum.TryParse(contextUser.FindFirst(ClaimTypes.Role)?.Value, out UserRole parsedRole) ? parsedRole : UserRole.Standard,
+                Role = Enum.TryParse(contextUser.FindFirst(ClaimTypes.Role)?.Value, out UserRole parsedRole)
+                    ? parsedRole
+                    : UserRole.Standard,
                 Firstname = contextUser.FindFirst(ClaimTypes.GivenName)?.Value,
                 Lastname = contextUser.FindFirst(ClaimTypes.Surname)?.Value,
             };
@@ -147,10 +133,7 @@ namespace TTWebCommon.Services
         {
             var claims = new List<Claim>();
 
-            if (appUser == null)
-            {
-                return claims;
-            }
+            if (appUser == null) return claims;
 
             claims.Add(new Claim(ClaimTypes.NameIdentifier.ToString(), appUser.Id.ToString()));
             claims.Add(new Claim(ClaimTypes.Email.ToString(), appUser.Email));
@@ -163,8 +146,8 @@ namespace TTWebCommon.Services
 
         public async Task DeleteFacebookCredentialAsync(string username, int userId)
         {
-            string cmdStr = "DELETE FROM facebookcredential WHERE fb_username=@fb_username AND appuser_id=@appuser_id";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr = "DELETE FROM facebookcredential WHERE fb_username=@fb_username AND appuser_id=@appuser_id";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("fb_username", username));
             cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
             await cmd.ExecuteNonQueryAsync();
@@ -172,11 +155,12 @@ namespace TTWebCommon.Services
 
         public async Task<List<FacebookCredential>> GetFacebookCredentialsByUserIdAsync(int userId)
         {
-            List<FacebookCredential> credentials = new List<FacebookCredential>();
-            string cmdStr = @"SELECT fb_credential_id, fb_username, fb_password FROM v_appuser_facebook WHERE appuser_id=@appuser_id order by fb_credential_id desc";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var credentials = new List<FacebookCredential>();
+            var cmdStr =
+                @"SELECT fb_credential_id, fb_username, fb_password FROM v_appuser_facebook WHERE appuser_id=@appuser_id order by fb_credential_id desc";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
-            using MySqlDataReader odr = await cmd.ExecuteMySqlReaderAsync();
+            using var odr = await cmd.ExecuteMySqlReaderAsync();
             while (await odr.ReadAsync())
             {
                 var credential = new FacebookCredential
@@ -185,11 +169,11 @@ namespace TTWebCommon.Services
                     Username = await odr.ReadMySqlStringAsync("fb_username"),
                     Password = pwd.SimpleDecrypt(await odr.ReadMySqlStringAsync("fb_password"))
                 };
-                if (credential.Id > 0 && !credentials.Any(c => c.Id == credential.Id && c.Username == credential.Username))
-                {
+                if (credential.Id > 0 &&
+                    !credentials.Any(c => c.Id == credential.Id && c.Username == credential.Username))
                     credentials.Add(credential);
-                }
             }
+
             return credentials;
         }
 
@@ -211,8 +195,8 @@ namespace TTWebCommon.Services
 
         public async Task DeleteFacebookFriendByUserIdAsync(string id, int userId)
         {
-            string cmdStr = "DELETE FROM friend WHERE id=@id AND appuser_id=@appuser_id";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr = "DELETE FROM friend WHERE id=@id AND appuser_id=@appuser_id";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("id", id));
             cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
             await cmd.ExecuteNonQueryAsync();
@@ -221,12 +205,11 @@ namespace TTWebCommon.Services
         public async Task<List<FacebookFriend>> GetFacebookFriendsByUserIdAsync(int userId)
         {
             var friends = new List<FacebookFriend>();
-            string cmdStr = @"SELECT id, name, profile_link, active, disabled FROM friend WHERE appuser_id=@appuser_id";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr = @"SELECT id, name, profile_link, active, disabled FROM friend WHERE appuser_id=@appuser_id";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
-            using MySqlDataReader odr = await cmd.ExecuteMySqlReaderAsync();
+            using var odr = await cmd.ExecuteMySqlReaderAsync();
             while (await odr.ReadAsync())
-            {
                 friends.Add(new FacebookFriend
                 {
                     Id = await odr.ReadMySqlIntegerAsync("id"),
@@ -235,8 +218,24 @@ namespace TTWebCommon.Services
                     Active = await odr.ReadMySqlBooleanAsync("active"),
                     Disabled = await odr.ReadMySqlBooleanAsync("disabled"),
                 });
-            }
             return friends;
+        }
+
+        private async Task UpdateUserProfileAsync(AppUser appUser)
+        {
+            var cmdStr =
+                "UPDATE appuser SET title=@title, firstname=@firstname, lastname=@lastname WHERE id=@id and email=@email";
+            await using var cmd = await db.CreateCommand(cmdStr);
+            cmd.Parameters.Add(new MySqlParameter("title", appUser.Title));
+            cmd.Parameters.Add(new MySqlParameter("firstname", appUser.Firstname));
+            cmd.Parameters.Add(new MySqlParameter("lastname", appUser.Lastname));
+            cmd.Parameters.Add(new MySqlParameter("id", appUser.Id));
+            cmd.Parameters.Add(new MySqlParameter("email", appUser.Email));
+            var count = await cmd.ExecuteNonQueryAsync();
+
+            if (count == 0)
+                throw new WebApiNotFoundException("Appuser email={0}, id={1} does not exist", appUser.Email,
+                    appUser.Id);
         }
 
         #region Privat Methods
@@ -244,7 +243,6 @@ namespace TTWebCommon.Services
         private async Task<AppUser> ReadAppUserDataReaderAsync(MySqlDataReader odr, AppUser appUser)
         {
             if (appUser == null)
-            {
                 appUser = new AppUser
                 {
                     Id = await odr.ReadMySqlIntegerAsync("appuser_id"),
@@ -257,9 +255,8 @@ namespace TTWebCommon.Services
                     RoleId = await odr.ReadMySqlIntegerAsync("role_id"),
                     Role = await odr.ReadMySqlEnumAsync<UserRole>("role_name")
                 };
-            }
 
-            int credentialId = await odr.ReadMySqlIntegerAsync("fb_credential_id");
+            var credentialId = await odr.ReadMySqlIntegerAsync("fb_credential_id");
 
             if (credentialId > 0)
             {
@@ -272,15 +269,16 @@ namespace TTWebCommon.Services
                 if (!appUser.FacebookCredentials.Any(c => c.Id == fbCredential.Id))
                     appUser.FacebookCredentials.Add(fbCredential);
             }
-            
+
 
             return appUser;
         }
 
         private async Task AddFacebookCredential(int userId, string username, string password)
         {
-            string cmdStr = "INSERT INTO facebookcredential(appuser_id, fb_username, fb_password) VALUES(@appuser_id, @fb_username, @fb_password)";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr =
+                "INSERT INTO facebookcredential(appuser_id, fb_username, fb_password) VALUES(@appuser_id, @fb_username, @fb_password)";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
             cmd.Parameters.Add(new MySqlParameter("fb_username", username));
             cmd.Parameters.Add(new MySqlParameter("fb_password", pwd.SimpleEncrypt(password)));
@@ -289,8 +287,9 @@ namespace TTWebCommon.Services
 
         private async Task UpdateFacebookCredential(int userId, int id, string username, string password)
         {
-            string cmdStr = "UPDATE facebookcredential SET fb_username=@fb_username, fb_password=@fb_password where id=@id AND appuser_id=@appuser_id";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr =
+                "UPDATE facebookcredential SET fb_username=@fb_username, fb_password=@fb_password where id=@id AND appuser_id=@appuser_id";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("fb_username", username));
             cmd.Parameters.Add(new MySqlParameter("fb_password", pwd.SimpleEncrypt(password)));
             cmd.Parameters.Add(new MySqlParameter("id", id));
@@ -300,8 +299,8 @@ namespace TTWebCommon.Services
 
         private async Task UpdateFacebookFriend(int id, string name, string profileLink)
         {
-            string cmdStr = "UPDATE friend SET name=@name, profile_link=@profile_link where id=@id";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr = "UPDATE friend SET name=@name, profile_link=@profile_link where id=@id";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("name", name));
             cmd.Parameters.Add(new MySqlParameter("profile_link", profileLink));
             cmd.Parameters.Add(new MySqlParameter("id", id));
@@ -310,8 +309,8 @@ namespace TTWebCommon.Services
 
         private async Task AddFacebookFriend(int userId, string name, string profileLink)
         {
-            string cmdStr = "INSERT INTO friend(appuser_id, name, profile_link) VALUES(@appuser_id, @name, @profile_link)";
-            await using MySqlCommand cmd = await db.CreateCommand(cmdStr);
+            var cmdStr = "INSERT INTO friend(appuser_id, name, profile_link) VALUES(@appuser_id, @name, @profile_link)";
+            await using var cmd = await db.CreateCommand(cmdStr);
             cmd.Parameters.Add(new MySqlParameter("appuser_id", userId));
             cmd.Parameters.Add(new MySqlParameter("name", name));
             cmd.Parameters.Add(new MySqlParameter("profile_link", profileLink));

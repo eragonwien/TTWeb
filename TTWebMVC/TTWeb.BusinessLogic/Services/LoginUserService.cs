@@ -10,7 +10,6 @@ using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Services
 {
-
     public class LoginUserService : ILoginUserService
     {
         private readonly TTWebContext _context;
@@ -25,7 +24,8 @@ namespace TTWeb.BusinessLogic.Services
         public async Task<LoginUserModel> CreateUserAsync(LoginUserModel loginUserModel)
         {
             if (loginUserModel is null) throw new ArgumentNullException(nameof(loginUserModel));
-            if (!IsValidEmailAddress(loginUserModel.Email)) throw new InvalidInputException(nameof(loginUserModel.Email));
+            if (!IsValidEmailAddress(loginUserModel.Email))
+                throw new InvalidInputException(nameof(loginUserModel.Email));
 
             var loginUser = new LoginUser
             {
@@ -58,8 +58,8 @@ namespace TTWeb.BusinessLogic.Services
 
             try
             {
-                return Regex.IsMatch(email, 
-                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$", 
+                return Regex.IsMatch(email,
+                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
                     RegexOptions.IgnoreCase,
                     TimeSpan.FromMilliseconds(250));
             }

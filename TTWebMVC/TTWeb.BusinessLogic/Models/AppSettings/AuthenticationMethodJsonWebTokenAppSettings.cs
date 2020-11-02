@@ -7,6 +7,4 @@
         public int AccessTokenDurationMinutes { get; set; }
         public int RefreshTokenDurationDays { get; set; }
     }
-
-
 }

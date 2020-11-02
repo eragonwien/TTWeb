@@ -2,10 +2,6 @@
 {
     public class ScheduleWeekDay
     {
-        public int Id { get; set; }
-        public WeekDayEnum Name { get; set; }
-        public string DisplayText { get; set; }
-
         public ScheduleWeekDay()
         {
         }
@@ -16,5 +12,9 @@
             Name = weekDay;
             DisplayText = displayText;
         }
+
+        public int Id { get; set; }
+        public WeekDayEnum Name { get; set; }
+        public string DisplayText { get; set; }
     }
 }

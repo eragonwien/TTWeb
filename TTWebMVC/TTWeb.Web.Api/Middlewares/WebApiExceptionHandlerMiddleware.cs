@@ -9,8 +9,8 @@ namespace TTWeb.Web.Api.Middlewares
 {
     public class WebApiExceptionHandlerMiddleware
     {
-        private readonly RequestDelegate _next;
         private readonly ILogger<WebApiExceptionHandlerMiddleware> _logger;
+        private readonly RequestDelegate _next;
 
         public WebApiExceptionHandlerMiddleware(RequestDelegate next, ILogger<WebApiExceptionHandlerMiddleware> logger)
         {
@@ -38,17 +38,17 @@ namespace TTWeb.Web.Api.Middlewares
 
             switch (ex)
             {
-                case InvalidInputException invalidInput :
-                case InvalidTokenException invalidToken :
-                case ResourceNotFoundException resourceNotFound :
-                case InsertOperationFailedException insertOperationFailed :
+                case InvalidInputException invalidInput:
+                case InvalidTokenException invalidToken:
+                case ResourceNotFoundException resourceNotFound:
+                case InsertOperationFailedException insertOperationFailed:
                     statusCode = HttpStatusCode.BadRequest;
                     break;
             }
-                    
+
 
             httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = (int)statusCode;
+            httpContext.Response.StatusCode = (int) statusCode;
             return httpContext.Response.WriteAsync(new
             {
                 httpContext.Response.StatusCode,

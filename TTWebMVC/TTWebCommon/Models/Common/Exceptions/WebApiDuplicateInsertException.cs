@@ -7,12 +7,10 @@ namespace TTWebCommon.Models.Common.Exceptions
     {
         public WebApiDuplicateInsertException()
         {
-
         }
 
         public WebApiDuplicateInsertException(string message, params object[] args) : base(string.Format(message, args))
         {
-
         }
     }
 }

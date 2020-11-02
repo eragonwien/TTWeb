@@ -7,12 +7,10 @@ namespace TTWebCommon.Models.Common.Exceptions
     {
         public WebApiUnauthorizedException()
         {
-
         }
 
         public WebApiUnauthorizedException(string message, params object[] args) : base(string.Format(message, args))
         {
-
         }
     }
 }

@@ -1,3 +1,5 @@
+using System;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -7,8 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Text;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.Web.Api.Middlewares;
@@ -26,9 +26,11 @@ namespace TTWeb.Web.Api
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
 
+        private AuthorizationPolicy DefaultAuthorizationPolicy =>
+            new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+
         public void ConfigureServices(IServiceCollection services)
         {
-
             services
                 .RegisterDbContext(Configuration)
                 .RegisterConfigurationOptions(Configuration)
@@ -47,23 +49,16 @@ namespace TTWeb.Web.Api
             services.AddControllers(o =>
             {
                 if (Environment.IsDevelopment())
-                {
                     o.Filters.Add<AllowAnonymousFilter>();
-                }
                 else
-                {
                     o.Filters.Add(new AuthorizeFilter(DefaultAuthorizationPolicy));
-                }
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseHttpsRedirection();
 
@@ -73,15 +68,11 @@ namespace TTWeb.Web.Api
 
             app.UseRouting();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
-        private AuthorizationPolicy DefaultAuthorizationPolicy => new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-
-        private void ConfigureJwtBearerOptions(JwtBearerOptions options, AuthenticationAppSettings authenticationAppSettings)
+        private void ConfigureJwtBearerOptions(JwtBearerOptions options,
+            AuthenticationAppSettings authenticationAppSettings)
         {
             options.TokenValidationParameters = new TokenValidationParameters
             {
@@ -89,7 +80,9 @@ namespace TTWeb.Web.Api
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationAppSettings.Methods.JsonWebToken.Secret)),
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(authenticationAppSettings.Methods.JsonWebToken.Secret)),
                 ClockSkew = TimeSpan.Zero
             };
         }
