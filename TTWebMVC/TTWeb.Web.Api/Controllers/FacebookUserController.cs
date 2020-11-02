@@ -36,7 +36,7 @@ namespace TTWeb.Web.Api.Controllers
             // TODO: moves this block inside updateAsync
             var facebookUser = await _facebookUserService.GetByIdAsync(id);
             if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), id.ToString());
-            if (facebookUser.LoginUserId != LoginUserId) throw new ResourceAccessDeniedException();
+            ThrowExceptionOnUnauthorizedAccess(facebookUser.LoginUserId);
 
             facebookUser = await _facebookUserService.UpdateAsync(updateModel, facebookUser);
 
@@ -51,7 +51,7 @@ namespace TTWeb.Web.Api.Controllers
             // TODO: moves this block inside deleteAsync
             var facebookUser = await _facebookUserService.GetByIdAsync(id);
             if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), id.ToString());
-            if (facebookUser.LoginUserId != LoginUserId) throw new ResourceAccessDeniedException();
+            ThrowExceptionOnUnauthorizedAccess(facebookUser.LoginUserId);
 
             await _facebookUserService.DeleteAsync(id);
 
@@ -62,7 +62,7 @@ namespace TTWeb.Web.Api.Controllers
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             var facebookUser = await _facebookUserService.GetByIdAsync(id);
-            if (facebookUser != null && facebookUser.LoginUserId != LoginUserId) throw new ResourceAccessDeniedException();
+            ThrowExceptionOnUnauthorizedAccess(facebookUser?.LoginUserId);
             return Ok(facebookUser);
         }
     }
