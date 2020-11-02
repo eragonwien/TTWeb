@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using TTWeb.BusinessLogic.Exceptions;
 
 namespace TTWeb.Web.Api.Middlewares
 {
@@ -32,13 +33,26 @@ namespace TTWeb.Web.Api.Middlewares
 
         private Task HandleExceptionAsync(HttpContext httpContext, Exception ex)
         {
-            // TODO: return status code base on exception type
+            var statusCode = HttpStatusCode.InternalServerError;
+            var errorMessage = ex.Message;
+
+            switch (ex)
+            {
+                case InvalidInputException invalidInput :
+                case InvalidTokenException invalidToken :
+                case ResourceNotFoundException resourceNotFound :
+                case InsertOperationFailedException insertOperationFailed :
+                    statusCode = HttpStatusCode.BadRequest;
+                    break;
+            }
+                    
+
             httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            httpContext.Response.StatusCode = (int)statusCode;
             return httpContext.Response.WriteAsync(new
             {
                 httpContext.Response.StatusCode,
-                Message = "Internal Server Error"
+                Message = errorMessage
             }.ToString());
         }
     }

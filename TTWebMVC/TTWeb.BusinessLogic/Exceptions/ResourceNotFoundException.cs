@@ -3,7 +3,7 @@
 namespace TTWeb.BusinessLogic.Exceptions
 {
     [Serializable]
-    public class ResourceNotFoundException<T> : Exception
+    public class ResourceNotFoundException : Exception
     {
         public ResourceNotFoundException()
         {
@@ -22,14 +22,14 @@ namespace TTWeb.BusinessLogic.Exceptions
 
         }
 
-        public ResourceNotFoundException(T resource, string id)
-            : base(BuildMessage(resource, id))
+        public ResourceNotFoundException(string resourceName, string id)
+            : base(BuildMessage(resourceName, id))
         {
         }
 
-        private static string BuildMessage(T resource, string id)
+        private static string BuildMessage(string resourceName, string id)
         {
-            return $"{nameof(resource)} '{id}' not found";
+            return $"{resourceName} '{id}' not found";
         }
     }
 }
