@@ -6,8 +6,8 @@ namespace TTWeb.Data.Extensions
 {
     public static class ModelBuilderExtensions
     {
-        private const int _maxLengthMediumString = 64;
-        private const int _maxLengthLongtring = 128;
+        private const int MaxLengthMediumString = 64;
+        private const int MaxLengthLongtring = 128;
 
         #region Configurations
 
@@ -38,17 +38,17 @@ namespace TTWeb.Data.Extensions
 
             modelBuilder.Entity<LoginUser>()
                 .Property(e => e.Email)
-                .HasMaxLength(_maxLengthLongtring)
+                .HasMaxLength(MaxLengthLongtring)
                 .IsRequired();
 
             modelBuilder.Entity<LoginUser>()
                 .Property(e => e.FirstName)
-                .HasMaxLength(_maxLengthLongtring)
+                .HasMaxLength(MaxLengthLongtring)
                 .IsRequired();
 
             modelBuilder.Entity<LoginUser>()
                 .Property(e => e.LastName)
-                .HasMaxLength(_maxLengthLongtring)
+                .HasMaxLength(MaxLengthLongtring)
                 .IsRequired();
 
             return modelBuilder;
@@ -88,12 +88,12 @@ namespace TTWeb.Data.Extensions
 
             modelBuilder.Entity<FacebookUser>()
                 .Property(u => u.Username)
-                .HasMaxLength(_maxLengthMediumString)
+                .HasMaxLength(MaxLengthMediumString)
                 .IsRequired();
 
             modelBuilder.Entity<FacebookUser>()
                 .Property(u => u.Password)
-                .HasMaxLength(_maxLengthMediumString)
+                .HasMaxLength(MaxLengthMediumString)
                 .IsRequired();
 
             return modelBuilder;
@@ -132,7 +132,7 @@ namespace TTWeb.Data.Extensions
 
             modelBuilder.Entity<ScheduleWeekdayMapping>()
                 .Property(m => m.Weekday)
-                .HasMaxLength(_maxLengthMediumString)
+                .HasMaxLength(MaxLengthMediumString)
                 .HasConversion<string>();
 
             return modelBuilder;
@@ -168,13 +168,13 @@ namespace TTWeb.Data.Extensions
             modelBuilder.Entity<Schedule>()
                 .Property(e => e.Action)
                 .IsRequired()
-                .HasMaxLength(_maxLengthMediumString)
+                .HasMaxLength(MaxLengthMediumString)
                 .HasConversion<string>();
 
             modelBuilder.Entity<Schedule>()
                 .Property(e => e.IntervalType)
                 .IsRequired()
-                .HasMaxLength(_maxLengthMediumString)
+                .HasMaxLength(MaxLengthMediumString)
                 .HasConversion<string>();
 
             modelBuilder.Entity<Schedule>()
