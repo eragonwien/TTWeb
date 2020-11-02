@@ -28,7 +28,7 @@ namespace TTWeb.Web.Api.Controllers
             return Ok(facebookUser);
         }
 
-        [HttpPatch("{:id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] FacebookUserModel updateModel)
         {
             if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
@@ -43,7 +43,7 @@ namespace TTWeb.Web.Api.Controllers
             return Ok(facebookUser);
         }
 
-        [HttpDelete("{:id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
@@ -58,6 +58,12 @@ namespace TTWeb.Web.Api.Controllers
             return NoContent();
         }
 
-        // TODO: gets facebook users of login user
+        [HttpGet("{:id}")]
+        public async Task<IActionResult> Get([FromRoute] int id)
+        {
+            var facebookUser = await _facebookUserService.GetByIdAsync(id);
+            if (facebookUser != null && facebookUser.LoginUserId != LoginUserId) throw new ResourceAccessDeniedException();
+            return Ok(facebookUser);
+        }
     }
 }
