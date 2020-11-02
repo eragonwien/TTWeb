@@ -2,6 +2,6 @@
 {
     public enum UserPermission
     {
-        GUEST = 1
+        Default = 1
     }
 }

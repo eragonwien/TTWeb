@@ -38,7 +38,6 @@ namespace TTWeb.Web.Api.Controllers
             _authenticationAppSettings = authenticationAppSettings.Value;
         }
 
-
         // POST api/<AccountController>
         [HttpPost("login")]
         [AllowAnonymous]
