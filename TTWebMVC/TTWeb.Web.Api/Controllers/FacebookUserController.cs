@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities.FacebookUser;
@@ -18,25 +20,20 @@ namespace TTWeb.Web.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] FacebookUserModel facebookUser)
+        public async Task<FacebookUserModel> Add([FromBody] FacebookUserModel facebookUser)
         {
             if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
-
-            facebookUser = await _facebookUserService.AddAsync(facebookUser);
-
-            return Ok(facebookUser);
+            return await _facebookUserService.AddAsync(facebookUser);
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] FacebookUserModel updateModel)
+        public async Task<FacebookUserModel> Update([FromRoute] int id, [FromBody] FacebookUserModel updateModel)
         {
             if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
             if (id != updateModel.Id) throw new InvalidInputException(nameof(updateModel.Id));
-            ThrowExceptionOnUnauthorizedAccess(updateModel.LoginUserId);
+            ThrowExceptionOnUnauthorizedAccess(updateModel.OwnerId);
 
-            var facebookUser = await _facebookUserService.UpdateAsync(updateModel);
-
-            return Ok(facebookUser);
+            return await _facebookUserService.UpdateAsync(updateModel);
         }
 
         [HttpDelete("{id}")]
@@ -45,16 +42,22 @@ namespace TTWeb.Web.Api.Controllers
             if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
 
             await _facebookUserService.DeleteAsync(id, LoginUserId);
-
             return NoContent();
         }
 
         [HttpGet("{:id}")]
-        public async Task<IActionResult> Get([FromRoute] int id)
+        public async Task<FacebookUserModel> GetOne([FromRoute] int id)
         {
             var facebookUser = await _facebookUserService.GetByIdAsync(id);
-            ThrowExceptionOnUnauthorizedAccess(facebookUser?.LoginUserId);
-            return Ok(facebookUser);
+            ThrowExceptionOnUnauthorizedAccess(facebookUser?.OwnerId);
+            return facebookUser;
+        }
+
+        [HttpGet("")]
+        public async Task<IEnumerable<FacebookUserModel>> GetAll([FromQuery] int ownerId)
+        {
+            ThrowExceptionOnUnauthorizedAccess(ownerId);
+            return await _facebookUserService.GetByOwnerAsync(ownerId);
         }
     }
 }

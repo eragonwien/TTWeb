@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -57,7 +58,7 @@ namespace TTWeb.BusinessLogic.Services.Facebook
         {
             var existingUserModel = await GetByIdAsync(id);
             if (existingUserModel == null) throw new ResourceNotFoundException(nameof(existingUserModel), id.ToString());
-            if (existingUserModel.LoginUserId != loginUserId) throw new ResourceAccessDeniedException();
+            if (existingUserModel.OwnerId != loginUserId) throw new ResourceAccessDeniedException();
 
             var facebookUser = new FacebookUser{ Id = id };
             _context.FacebookUsers.Attach(facebookUser);
@@ -67,13 +68,21 @@ namespace TTWeb.BusinessLogic.Services.Facebook
 
         public async Task<FacebookUserModel> GetByIdAsync(int id)
         {
-            var facebookUser = await _context.FacebookUsers.AsNoTracking().SingleOrDefaultAsync(u => u.Id == id);
+            var facebookUser = await _context.FacebookUsers
+                .Include(u => u.Owner)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(u => u.Id == id);
             return _mapper.Map<FacebookUserModel>(facebookUser);
         }
 
-        public Task<IEnumerable<FacebookUserModel>> GetByLoginUserAsync(int loginUserId)
+        public async Task<IEnumerable<FacebookUserModel>> GetByOwnerAsync(int ownerId)
         {
-            throw new System.NotImplementedException();
+            return await _context.FacebookUsers
+                .Include(u => u.Owner)
+                .AsNoTracking()
+                .Where(u => u.OwnerId == ownerId)
+                .Select(u => _mapper.Map<FacebookUserModel>(u))
+                .ToArrayAsync();
         }
     }
 }
