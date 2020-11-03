@@ -2,7 +2,7 @@
 {
     public interface IEncryptionHelper
     {
-        string Encrypt(string plainText, string passPhrase);
-        string Decrypt(string encryptedText, string passPhrase);
+        string Encrypt(string plainText);
+        string Decrypt(string encryptedText);
     }
 }

@@ -30,7 +30,7 @@ namespace TTWeb.BusinessLogic.Services.Facebook
             if (model == null) throw new ArgumentNullException(nameof(model));
 
             var facebookUser = _mapper.Map<FacebookUser>(model);
-            facebookUser.Password = _encryptionHelper.Encrypt(facebookUser.Password, null);
+            facebookUser.Password = _encryptionHelper.Encrypt(facebookUser.Password);
 
             await _context.FacebookUsers.AddAsync(facebookUser);
             await _context.SaveChangesAsync();
@@ -47,6 +47,8 @@ namespace TTWeb.BusinessLogic.Services.Facebook
 
             existingUserModel = _mapper.Map(model, existingUserModel);
             var facebookUser = _mapper.Map<FacebookUser>(existingUserModel);
+            facebookUser.Password = _encryptionHelper.Encrypt(facebookUser.Password);
+
             _context.FacebookUsers.Attach(facebookUser);
             await _context.SaveChangesAsync();
 
@@ -72,17 +74,24 @@ namespace TTWeb.BusinessLogic.Services.Facebook
                 .Include(u => u.Owner)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(u => u.Id == id);
+
+            facebookUser.Password = _encryptionHelper.Decrypt(facebookUser.Password);
+
             return _mapper.Map<FacebookUserModel>(facebookUser);
         }
 
         public async Task<IEnumerable<FacebookUserModel>> GetByOwnerAsync(int ownerId)
         {
-            return await _context.FacebookUsers
+            var facebookUsers = await _context.FacebookUsers
                 .Include(u => u.Owner)
                 .AsNoTracking()
                 .Where(u => u.OwnerId == ownerId)
                 .Select(u => _mapper.Map<FacebookUserModel>(u))
-                .ToArrayAsync();
+                .ToListAsync();
+            
+            facebookUsers.ForEach(u => u.Password = _encryptionHelper.Decrypt(u.Password));
+            
+            return facebookUsers;
         }
     }
 }
