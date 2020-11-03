@@ -37,7 +37,7 @@ namespace TTWeb.BusinessLogic.Services.Encryption
                 var keyBytes = password.GetBytes(KeySize / 8);
                 using (var symmetricKey = new RijndaelManaged())
                 {
-                    symmetricKey.BlockSize = 256;
+                    symmetricKey.BlockSize = 128;
                     symmetricKey.Mode = CipherMode.CBC;
                     symmetricKey.Padding = PaddingMode.PKCS7;
                     using (var encryptor = symmetricKey.CreateEncryptor(keyBytes, ivStringBytes))
@@ -102,7 +102,7 @@ namespace TTWeb.BusinessLogic.Services.Encryption
 
         private static byte[] Generate256BitsOfRandomEntropy()
         {
-            var randomBytes = new byte[32]; // 32 Bytes will give us 256 bits.
+            var randomBytes = new byte[16]; // 32 Bytes will give us 256 bits.
             using (var rngCsp = new RNGCryptoServiceProvider())
             {
                 // Fill the array with cryptographically secure random bytes.

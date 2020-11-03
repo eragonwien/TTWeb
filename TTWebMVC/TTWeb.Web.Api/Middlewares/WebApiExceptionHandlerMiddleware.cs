@@ -2,6 +2,8 @@
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TTWeb.BusinessLogic.Exceptions;
 
@@ -11,11 +13,15 @@ namespace TTWeb.Web.Api.Middlewares
     {
         private readonly ILogger<WebApiExceptionHandlerMiddleware> _logger;
         private readonly RequestDelegate _next;
+        private readonly IHostEnvironment _env;
 
-        public WebApiExceptionHandlerMiddleware(RequestDelegate next, ILogger<WebApiExceptionHandlerMiddleware> logger)
+        public WebApiExceptionHandlerMiddleware(RequestDelegate next, 
+            ILogger<WebApiExceptionHandlerMiddleware> logger, 
+            IHostEnvironment env)
         {
             _next = next;
             _logger = logger;
+            _env = env;
         }
 
         public async Task InvokeAsync(HttpContext httpContext)
@@ -26,15 +32,16 @@ namespace TTWeb.Web.Api.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unhandled exception occurred");
                 await HandleExceptionAsync(httpContext, ex);
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext httpContext, Exception ex)
+        private async Task HandleExceptionAsync(HttpContext httpContext, Exception ex)
         {
+            HandleInnerException();
             var statusCode = HttpStatusCode.InternalServerError;
-            var errorMessage = ex.Message;
+            var message = ex.Message;
+            var stackTrace = _env.IsDevelopment() ? ex.StackTrace : null;
 
             switch (ex)
             {
@@ -44,16 +51,40 @@ namespace TTWeb.Web.Api.Middlewares
                 case ResourceAccessDeniedException resourceAccessDenied:
                     statusCode = HttpStatusCode.BadRequest;
                     break;
+                case SqlException sqlException:
+                    HandleSqlException(sqlException);
+                    break;
             }
 
 
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = (int) statusCode;
-            return httpContext.Response.WriteAsync(new
+            await httpContext.Response.WriteAsync(new
             {
                 httpContext.Response.StatusCode,
-                Message = errorMessage
+                message,
+                stackTrace
             }.ToString());
+
+            void HandleInnerException()
+            {
+                if (ex?.InnerException == null) return;
+
+                if (ex.InnerException is SqlException)
+                    ex = ex.InnerException;
+            }
+
+            void HandleSqlException(SqlException sqlException)
+            {
+                switch (sqlException.Number)
+                {
+                    case 2601:
+                        statusCode = HttpStatusCode.BadRequest;
+                        message = "Duplicate insert error";
+                        stackTrace = null;
+                        break;
+                }
+            }
         }
     }
 }

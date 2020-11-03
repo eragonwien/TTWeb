@@ -48,18 +48,13 @@ namespace TTWeb.Web.Api
 
             services.AddControllers(o =>
             {
-                if (Environment.IsDevelopment())
-                    o.Filters.Add<AllowAnonymousFilter>();
-                else
-                    o.Filters.Add(new AuthorizeFilter(DefaultAuthorizationPolicy));
+                o.Filters.Add(new AuthorizeFilter(DefaultAuthorizationPolicy));
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
-
             app.UseHttpsRedirection();
 
             app.UseMiddleware<WebApiExceptionHandlerMiddleware>();
