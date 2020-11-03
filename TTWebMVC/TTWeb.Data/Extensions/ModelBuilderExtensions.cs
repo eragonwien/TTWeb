@@ -193,6 +193,16 @@ namespace TTWeb.Data.Extensions
                 .HasForeignKey(m => m.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Schedule>()
+                .HasOne(e => e.Owner)
+                .WithMany(e => e.OwnedSchedules)
+                .HasForeignKey(e => e.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Schedule>()
+                .Property(e => e.OwnerId)
+                .IsRequired();
+
             return modelBuilder;
         }
 
@@ -268,7 +278,8 @@ namespace TTWeb.Data.Extensions
                     Id = 1,
                     Action = ScheduleAction.LIKE,
                     IntervalType = ScheduleIntervalType.Daily,
-                    SenderId = 1
+                    SenderId = 1,
+                    OwnerId = 1,
                 });
 
             return modelBuilder;

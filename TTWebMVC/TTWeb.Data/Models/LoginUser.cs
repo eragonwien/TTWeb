@@ -15,5 +15,6 @@ namespace TTWeb.Data.Models
         public string LastName { get; set; }
         public ICollection<LoginUserPermissionMapping> LoginUserPermissionMappings { get; set; }
         public ICollection<FacebookUser> OwnedFacebookUsers { get; set; }
+        public ICollection<Schedule> OwnedSchedules { get; set; }
     }
 }

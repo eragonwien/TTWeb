@@ -13,5 +13,7 @@ namespace TTWeb.Data.Models
         public ICollection<ScheduleWeekdayMapping> ScheduleWeekdayMappings { get; set; }
         public ICollection<ScheduleTimeFrame> TimeFrames { get; set; }
         public ICollection<ScheduleJob> ScheduleJobs { get; set; }
+        public int OwnerId { get; set; }
+        public LoginUser Owner { get; set; }
     }
 }
