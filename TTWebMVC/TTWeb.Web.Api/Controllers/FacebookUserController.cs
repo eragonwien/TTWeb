@@ -44,7 +44,7 @@ namespace TTWeb.Web.Api.Controllers
             return NoContent();
         }
 
-        [HttpGet("{:id}")]
+        [HttpGet("{id}")]
         public async Task<FacebookUserModel> GetOne([FromRoute] int id)
         {
             var facebookUser = await _facebookUserService.GetByIdAsync(id);

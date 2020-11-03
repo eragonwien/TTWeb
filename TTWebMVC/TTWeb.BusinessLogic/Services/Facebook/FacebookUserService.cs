@@ -35,24 +35,29 @@ namespace TTWeb.BusinessLogic.Services.Facebook
             await _context.FacebookUsers.AddAsync(facebookUser);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<FacebookUserModel>(facebookUser).ClearPassword();
+            model = _mapper.Map<FacebookUserModel>(facebookUser);
+            model.Password = _encryptionHelper.Decrypt(model.Password);
+            return model;
         }
 
         public async Task<FacebookUserModel> UpdateAsync(FacebookUserModel model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            var existingUserModel = await GetByIdAsync(model.Id);
-            if (existingUserModel == null) throw new ResourceNotFoundException(nameof(existingUserModel), model.Id.ToString());
+            var facebookUser = await _context.FacebookUsers
+                .AsNoTracking()
+                .SingleOrDefaultAsync(u => u.Id == model.Id);
 
-            existingUserModel = _mapper.Map(model, existingUserModel);
-            var facebookUser = _mapper.Map<FacebookUser>(existingUserModel);
-            facebookUser.Password = _encryptionHelper.Encrypt(facebookUser.Password);
+            if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), model.Id.ToString());
 
             _context.FacebookUsers.Attach(facebookUser);
+            facebookUser = _mapper.Map(model, facebookUser);
+            facebookUser.Password = _encryptionHelper.Encrypt(facebookUser.Password);
+
             await _context.SaveChangesAsync();
 
             model = _mapper.Map<FacebookUserModel>(facebookUser);
+            model.Password = _encryptionHelper.Decrypt(model.Password);
             return model;
         }
 
