@@ -10,7 +10,7 @@ using TTWeb.Data.Database;
 namespace TTWeb.Data.Migrations
 {
     [DbContext(typeof(TTWebContext))]
-    [Migration("20201031061835_Initial")]
+    [Migration("20201103080211_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,6 +28,9 @@ namespace TTWeb.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(64)")
@@ -40,6 +43,8 @@ namespace TTWeb.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OwnerId");
+
                     b.HasIndex("Username")
                         .IsUnique();
 
@@ -49,6 +54,7 @@ namespace TTWeb.Data.Migrations
                         new
                         {
                             Id = 1,
+                            OwnerId = 1,
                             Password = "1234",
                             Username = "eragonwien@gmail.com"
                         });
@@ -281,6 +287,15 @@ namespace TTWeb.Data.Migrations
                             ScheduleId = 1,
                             Weekday = "Friday"
                         });
+                });
+
+            modelBuilder.Entity("TTWeb.Data.Models.FacebookUser", b =>
+                {
+                    b.HasOne("TTWeb.Data.Models.LoginUser", "Owner")
+                        .WithMany("OwnedFacebookUsers")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TTWeb.Data.Models.LoginUserPermissionMapping", b =>

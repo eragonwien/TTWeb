@@ -7,7 +7,7 @@ namespace TTWeb.Data.Extensions
     public static class ModelBuilderExtensions
     {
         private const int MaxLengthMediumString = 64;
-        private const int MaxLengthLongtring = 128;
+        private const int MaxLengthLongString = 128;
 
         #region Configurations
 
@@ -38,17 +38,17 @@ namespace TTWeb.Data.Extensions
 
             modelBuilder.Entity<LoginUser>()
                 .Property(e => e.Email)
-                .HasMaxLength(MaxLengthLongtring)
+                .HasMaxLength(MaxLengthLongString)
                 .IsRequired();
 
             modelBuilder.Entity<LoginUser>()
                 .Property(e => e.FirstName)
-                .HasMaxLength(MaxLengthLongtring)
+                .HasMaxLength(MaxLengthLongString)
                 .IsRequired();
 
             modelBuilder.Entity<LoginUser>()
                 .Property(e => e.LastName)
-                .HasMaxLength(MaxLengthLongtring)
+                .HasMaxLength(MaxLengthLongString)
                 .IsRequired();
 
             return modelBuilder;
@@ -94,6 +94,16 @@ namespace TTWeb.Data.Extensions
             modelBuilder.Entity<FacebookUser>()
                 .Property(u => u.Password)
                 .HasMaxLength(MaxLengthMediumString)
+                .IsRequired();
+
+            modelBuilder.Entity<FacebookUser>()
+                .HasOne(e => e.Owner)
+                .WithMany(e => e.OwnedFacebookUsers)
+                .HasForeignKey(e => e.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<FacebookUser>()
+                .Property(e => e.OwnerId)
                 .IsRequired();
 
             return modelBuilder;
@@ -245,7 +255,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedFacebookUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FacebookUser>()
-                .HasData(new FacebookUser {Id = 1, Username = "eragonwien@gmail.com", Password = "1234"});
+                .HasData(new FacebookUser {Id = 1, Username = "eragonwien@gmail.com", Password = "1234", OwnerId = 1});
 
             return modelBuilder;
         }

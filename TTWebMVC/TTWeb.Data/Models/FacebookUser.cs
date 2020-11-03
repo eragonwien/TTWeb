@@ -9,5 +9,7 @@ namespace TTWeb.Data.Models
         public string Password { get; set; }
         public ICollection<Schedule> SendSchedule { get; set; }
         public ICollection<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
+        public int OwnerId { get; set; }
+        public LoginUser Owner { get; set; }
     }
 }
