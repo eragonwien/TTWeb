@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Models.AppSettings;
 
 namespace TTWeb.BusinessLogic.Services.Encryption
@@ -19,9 +20,9 @@ namespace TTWeb.BusinessLogic.Services.Encryption
         // This constant determines the number of iterations for the password bytes generation function.
         private const int DerivationIterations = 1000;
 
-        public EncryptionHelper(EncryptionAppSettings encryptionAppSettings)
+        public EncryptionHelper(IOptions<EncryptionAppSettings> encryptionAppSettings)
         {
-            _encryptionAppSettings = encryptionAppSettings;
+            _encryptionAppSettings = encryptionAppSettings.Value;
         }
 
         public string Encrypt(string plainText)
