@@ -21,14 +21,12 @@ namespace TTWeb.Web.Api.Controllers
         [HttpPost]
         public async Task<FacebookUserModel> Add([FromBody] FacebookUserModel facebookUser)
         {
-            if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
             return await _facebookUserService.AddAsync(facebookUser);
         }
 
         [HttpPatch("{id}")]
         public async Task<FacebookUserModel> Update([FromRoute] int id, [FromBody] FacebookUserModel updateModel)
         {
-            if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
             if (id != updateModel.Id) throw new InvalidInputException(nameof(updateModel.Id));
 
             return await _facebookUserService.UpdateAsync(updateModel);
@@ -37,8 +35,6 @@ namespace TTWeb.Web.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
-
             await _facebookUserService.DeleteAsync(id, LoginUserId);
             return NoContent();
         }

@@ -44,7 +44,6 @@ namespace TTWeb.Web.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] ExternalLoginModel loginModel)
         {
-            if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
             if (!await _authHelperService.IsTokenValidAsync(loginModel)) throw new InvalidTokenException();
 
             var loginUserModel = _mapper.Map<LoginUserModel>(loginModel);
