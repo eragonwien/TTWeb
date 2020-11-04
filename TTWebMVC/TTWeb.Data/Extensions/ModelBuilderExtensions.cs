@@ -257,7 +257,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedLoginUserPermissionMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginUserPermissionMapping>()
-                .HasData(new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.AccessOwnResource});
+                .HasData(new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.AccessOwnResources});
 
             return modelBuilder;
         }

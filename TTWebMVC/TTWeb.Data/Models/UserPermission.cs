@@ -2,6 +2,7 @@
 {
     public enum UserPermission
     {
-        AccessOwnResource = 1
+        AccessOwnResources = 1,
+        AccessAllResources = 2
     }
 }

@@ -2,15 +2,16 @@ using System;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.Web.Api.Components.Attributes;
 using TTWeb.Web.Api.Middlewares;
 
 namespace TTWeb.Web.Api
@@ -25,9 +26,6 @@ namespace TTWeb.Web.Api
 
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
-
-        private AuthorizationPolicy DefaultAuthorizationPolicy =>
-            new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -46,9 +44,9 @@ namespace TTWeb.Web.Api
 
             services.AddAuthorization();
 
-            services.AddControllers(o =>
+            services.AddControllers(options =>
             {
-                o.Filters.Add(new AuthorizeFilter(DefaultAuthorizationPolicy));
+                options.Filters.Add(new AccessOwnResourceFilterAttribute());
             });
         }
 
@@ -64,7 +62,10 @@ namespace TTWeb.Web.Api
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers().RequireAuthorization(); 
+            });
         }
 
         private void ConfigureJwtBearerOptions(JwtBearerOptions options,

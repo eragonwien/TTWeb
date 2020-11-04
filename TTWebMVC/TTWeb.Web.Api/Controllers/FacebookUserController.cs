@@ -30,7 +30,6 @@ namespace TTWeb.Web.Api.Controllers
         {
             if (!ModelState.IsValid) throw new InvalidInputException(ModelState);
             if (id != updateModel.Id) throw new InvalidInputException(nameof(updateModel.Id));
-            ThrowExceptionOnUnauthorizedAccess(updateModel.OwnerId);
 
             return await _facebookUserService.UpdateAsync(updateModel);
         }
@@ -55,7 +54,6 @@ namespace TTWeb.Web.Api.Controllers
         [HttpGet("")]
         public async Task<IEnumerable<FacebookUserModel>> GetAll([FromQuery] int ownerId)
         {
-            ThrowExceptionOnUnauthorizedAccess(ownerId);
             return await _facebookUserService.GetByOwnerAsync(ownerId);
         }
     }

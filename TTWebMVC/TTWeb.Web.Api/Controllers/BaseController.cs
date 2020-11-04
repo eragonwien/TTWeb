@@ -20,9 +20,10 @@ namespace TTWeb.Web.Api.Controllers
 
         protected void ThrowExceptionOnUnauthorizedAccess(int? loginUserId)
         {
-            if (loginUserId.HasValue 
-                && loginUserId != LoginUserId
-                && !LoginUserPermissions.Contains(UserPermission.AccessAllResources)) 
+            if (LoginUserPermissions.Contains(UserPermission.AccessAllResources)) return;
+            if (!LoginUserPermissions.Contains(UserPermission.AccessOwnResources)) return;
+
+            if (loginUserId.HasValue && loginUserId != LoginUserId) 
                 throw new ResourceAccessDeniedException();
         }
     }
