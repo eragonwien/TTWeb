@@ -77,7 +77,7 @@ namespace TTWeb.Web.Api
             });
         }
 
-        private void ConfigureJwtBearerOptions(JwtBearerOptions options,
+        private static void ConfigureJwtBearerOptions(JwtBearerOptions options,
             AuthenticationAppSettings authenticationAppSettings)
         {
             options.TokenValidationParameters = new TokenValidationParameters
