@@ -38,7 +38,7 @@ namespace TTWeb.Web.Api.Controllers
         [Authorize(Policy = Startup.RequireAccessAllResourcesPermissionPolicy)]
         public async Task<IEnumerable<ScheduleModel>> Read()
         {
-            return await _scheduleService.Read();
+            return await _scheduleService.ReadAsync();
         }
 
         [HttpPatch("{id}")]

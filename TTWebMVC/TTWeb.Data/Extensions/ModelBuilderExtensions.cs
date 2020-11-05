@@ -260,7 +260,7 @@ namespace TTWeb.Data.Extensions
                 .HasData(
                     new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.AccessOwnResources},
                     new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.AccessAllResources},
-                    new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.ManageUserPermission},
+                    new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.ManageUsers},
                     new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.ManageDeployment});
 
             return modelBuilder;
