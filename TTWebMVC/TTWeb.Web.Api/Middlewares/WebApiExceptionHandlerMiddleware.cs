@@ -75,6 +75,10 @@ namespace TTWeb.Web.Api.Middlewares
             {
                 switch (sqlException.Number)
                 {
+                    case 547:
+                        message = "Invalid reference Id of input";
+                        stackTrace = null;
+                        break;
                     case 2601:
                         statusCode = HttpStatusCode.BadRequest;
                         message = "Duplicate insert error";

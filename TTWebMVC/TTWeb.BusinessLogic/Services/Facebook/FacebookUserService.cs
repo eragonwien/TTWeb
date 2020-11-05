@@ -78,8 +78,9 @@ namespace TTWeb.BusinessLogic.Services.Facebook
                 .Include(u => u.Owner)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(u => u.Id == id && u.OwnerId == ownerId);
-
-            facebookUser.Password = _encryptionHelper.Decrypt(facebookUser.Password);
+            
+            if (facebookUser != null)
+                facebookUser.Password = _encryptionHelper.Decrypt(facebookUser.Password);
 
             return _mapper.Map<FacebookUserModel>(facebookUser);
         }
