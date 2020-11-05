@@ -40,9 +40,9 @@ namespace TTWeb.Web.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<FacebookUserModel> GetOne([FromRoute] int id)
+        public async Task<FacebookUserModel> GetOne([FromRoute] int id, [FromQuery] int ownerId)
         {
-            var facebookUser = await _facebookUserService.GetByIdAsync(id);
+            var facebookUser = await _facebookUserService.GetByIdAsync(id, ownerId);
             ThrowExceptionOnUnauthorizedAccess(facebookUser?.OwnerId);
             return facebookUser;
         }

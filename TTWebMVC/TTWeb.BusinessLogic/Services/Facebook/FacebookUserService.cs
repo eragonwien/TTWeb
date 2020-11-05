@@ -73,12 +73,12 @@ namespace TTWeb.BusinessLogic.Services.Facebook
             await _context.SaveChangesAsync();
         }
 
-        public async Task<FacebookUserModel> GetByIdAsync(int id)
+        public async Task<FacebookUserModel> GetByIdAsync(int id, int ownerId)
         {
             var facebookUser = await _context.FacebookUsers
                 .Include(u => u.Owner)
                 .AsNoTracking()
-                .SingleOrDefaultAsync(u => u.Id == id);
+                .SingleOrDefaultAsync(u => u.Id == id && u.OwnerId == ownerId);
 
             facebookUser.Password = _encryptionHelper.Decrypt(facebookUser.Password);
 
