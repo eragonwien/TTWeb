@@ -27,8 +27,8 @@ namespace TTWeb.Web.Api
         public IWebHostEnvironment Environment { get; }
 
         private const string AllowSpecificOriginsPolicy = "AllowSpecificOrigins";
-        public const string RequireManageUserPermissionRoleRolePolicy = "RequireManageUserPermissionRole";
         public const string RequireManageDeploymentRolePolicy = "RequireManageDeploymentRole";
+        public const string RequireManageUsersRolePolicy = "RequireManageUsersRole";
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -47,8 +47,8 @@ namespace TTWeb.Web.Api
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(RequireManageUserPermissionRoleRolePolicy, p => p.RequireRole(UserPermission.ManageUserPermission));
                 options.AddPolicy(RequireManageDeploymentRolePolicy, p => p.RequireRole(UserPermission.ManageDeployment));
+                options.AddPolicy(RequireManageUsersRolePolicy, p => p.RequireRole(UserPermission.ManageUsers));
             });
 
             var securityAppSettings = Configuration.GetSection(SecurityAppSettings.Section).Get<SecurityAppSettings>();

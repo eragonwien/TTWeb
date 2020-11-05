@@ -4,7 +4,7 @@
     {
         AccessOwnResources = 1,
         AccessAllResources = 2,
-        ManageUserPermission = 3,
+        ManageUsers = 3,
         ManageDeployment = 4,
     }
 }
