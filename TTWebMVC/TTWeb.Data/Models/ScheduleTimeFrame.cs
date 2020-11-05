@@ -2,7 +2,7 @@
 
 namespace TTWeb.Data.Models
 {
-    public class ScheduleTimeFrame
+    public class ScheduleTimeFrame : IHasIdEntity
     {
         public int Id { get; set; }
         public int ScheduleId { get; set; }

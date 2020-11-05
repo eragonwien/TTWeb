@@ -2,7 +2,7 @@
 
 namespace TTWeb.Data.Models
 {
-    public class FacebookUser
+    public class FacebookUser : IUserOwnedEntity, IHasIdEntity
     {
         public int Id { get; set; }
         public string Username { get; set; }

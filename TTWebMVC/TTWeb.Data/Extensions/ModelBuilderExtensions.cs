@@ -280,7 +280,7 @@ namespace TTWeb.Data.Extensions
                 .HasData(new Schedule
                 {
                     Id = 1,
-                    Action = ScheduleAction.LIKE,
+                    Action = ScheduleAction.Like,
                     IntervalType = ScheduleIntervalType.Daily,
                     SenderId = 1,
                     OwnerId = 1,

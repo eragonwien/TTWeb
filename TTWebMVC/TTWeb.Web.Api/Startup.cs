@@ -40,7 +40,7 @@ namespace TTWeb.Web.Api
                 .RegisterEntityServices()
                 .RegisterSwagger();
 
-            var authenticationAppSettings = Configuration.GetSection(AuthenticationAppSettings.Section).Get<AuthenticationAppSettings>();
+            var authenticationAppSettings = Configuration.GetSectionValue<AuthenticationAppSettings>(AuthenticationAppSettings.Section);
 
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -53,7 +53,7 @@ namespace TTWeb.Web.Api
                 options.AddPolicy(RequireAccessAllResourcesPermissionPolicy, p => p.RequireRole(UserPermission.AccessAllResources));
             });
 
-            var securityAppSettings = Configuration.GetSection(SecurityAppSettings.Section).Get<SecurityAppSettings>();
+            var securityAppSettings = Configuration.GetSectionValue<SecurityAppSettings>(SecurityAppSettings.Section);
             services.AddCors(options =>
             {
                 options.AddPolicy(AllowSpecificOriginsPolicy, b =>

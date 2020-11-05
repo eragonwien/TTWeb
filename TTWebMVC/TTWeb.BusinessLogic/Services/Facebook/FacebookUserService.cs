@@ -8,6 +8,7 @@ using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Encryption;
 using TTWeb.Data.Database;
+using TTWeb.Data.Extensions;
 using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Services.Facebook
@@ -17,6 +18,9 @@ namespace TTWeb.BusinessLogic.Services.Facebook
         private readonly TTWebContext _context;
         private readonly IMapper _mapper;
         private readonly IEncryptionHelper _encryptionHelper;
+        
+        private IQueryable<FacebookUser> BaseQuery =>
+            _context.FacebookUsers.Include(u => u.Owner).AsNoTracking();
 
         public FacebookUserService(TTWebContext context, IMapper mapper, IEncryptionHelper encryptionHelper)
         {
@@ -44,13 +48,10 @@ namespace TTWeb.BusinessLogic.Services.Facebook
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            var facebookUser = await _context.FacebookUsers
-                .AsNoTracking()
-                .SingleOrDefaultAsync(u => u.Id == model.Id);
+            var facebookUser = await BaseQuery.FilterById(model.Id).SingleOrDefaultAsync();
 
             if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), model.Id.ToString());
 
-            _context.FacebookUsers.Attach(facebookUser);
             facebookUser = _mapper.Map(model, facebookUser);
             facebookUser.Password = _encryptionHelper.Encrypt(facebookUser.Password);
 
@@ -74,11 +75,8 @@ namespace TTWeb.BusinessLogic.Services.Facebook
 
         public async Task<FacebookUserModel> ReadByIdAsync(int id, int ownerId)
         {
-            var facebookUser = await _context.FacebookUsers
-                .Include(u => u.Owner)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(u => u.Id == id && u.OwnerId == ownerId);
-            
+            var facebookUser = await BaseQuery.FilterById(id).FilterByOwnerId(ownerId).SingleOrDefaultAsync();
+
             if (facebookUser != null)
                 facebookUser.Password = _encryptionHelper.Decrypt(facebookUser.Password);
 
@@ -87,14 +85,12 @@ namespace TTWeb.BusinessLogic.Services.Facebook
 
         public async Task<IEnumerable<FacebookUserModel>> Read()
         {
-            var facebookUsers = await _context.FacebookUsers
-                .Include(u => u.Owner)
-                .AsNoTracking()
+            var facebookUsers = await BaseQuery
                 .Select(u => _mapper.Map<FacebookUserModel>(u))
                 .ToListAsync();
             
             facebookUsers.ForEach(u => u.Password = _encryptionHelper.Decrypt(u.Password));
-            
+
             return facebookUsers;
         }
     }

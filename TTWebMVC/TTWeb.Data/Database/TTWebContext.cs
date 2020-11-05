@@ -12,6 +12,7 @@ namespace TTWeb.Data.Database
 
         public DbSet<LoginUser> LoginUsers { get; set; }
         public DbSet<FacebookUser> FacebookUsers { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

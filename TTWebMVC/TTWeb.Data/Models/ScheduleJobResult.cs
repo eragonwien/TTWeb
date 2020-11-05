@@ -1,6 +1,6 @@
 ﻿namespace TTWeb.Data.Models
 {
-    public class ScheduleJobResult
+    public class ScheduleJobResult : IHasIdEntity
     {
         public int Id { get; set; }
         public int ScheduleJobId { get; set; }

@@ -2,7 +2,7 @@
 
 namespace TTWeb.Data.Models
 {
-    public class Schedule
+    public class Schedule : IUserOwnedEntity, IHasIdEntity
     {
         public int Id { get; set; }
         public ScheduleAction Action { get; set; }
