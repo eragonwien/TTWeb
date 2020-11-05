@@ -12,12 +12,12 @@ namespace TTWeb.Web.Api.Controllers
     public class BaseController : ControllerBase
     {
         private int LoginUserId => int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
-        protected int? OwnerId => !User.IsInRole(UserPermission.ManageUsers) ? LoginUserId : OwnerId;
+        protected int? OwnerId => !User.IsInRole(UserPermission.ManageUsers) ? LoginUserId : (int?)null;
 
         protected IEnumerable<UserPermission> LoginUserPermissions =>
             User.FindAll(ClaimTypes.Role)
                 .Where(c => Enum.TryParse(c.Value, out UserPermission parsedValue))
-                .Select(c => (UserPermission) Enum.Parse(typeof(UserPermission), c.Value))
+                .Select(c => (UserPermission)Enum.Parse(typeof(UserPermission), c.Value))
                 .AsEnumerable();
 
         protected void ThrowExceptionOnUnauthorizedAccess(int? loginUserId)
@@ -25,7 +25,7 @@ namespace TTWeb.Web.Api.Controllers
             if (LoginUserPermissions.Contains(UserPermission.AccessAllResources)) return;
             if (!LoginUserPermissions.Contains(UserPermission.AccessOwnResources)) return;
 
-            if (loginUserId.HasValue && loginUserId != LoginUserId) 
+            if (loginUserId.HasValue && loginUserId != LoginUserId)
                 throw new ResourceAccessDeniedException();
         }
     }
