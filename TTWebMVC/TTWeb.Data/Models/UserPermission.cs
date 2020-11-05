@@ -3,6 +3,8 @@
     public enum UserPermission
     {
         AccessOwnResources = 1,
-        AccessAllResources = 2
+        AccessAllResources = 2,
+        ManageUserPermission = 3,
+        ManageDeployment = 4,
     }
 }

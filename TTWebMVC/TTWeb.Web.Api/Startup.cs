@@ -8,8 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.Data.Models;
 using TTWeb.Web.Api.Components.Attributes;
 using TTWeb.Web.Api.Middlewares;
+using TTWeb.Web.Api.Extensions;
 
 namespace TTWeb.Web.Api
 {
@@ -25,6 +27,8 @@ namespace TTWeb.Web.Api
         public IWebHostEnvironment Environment { get; }
 
         private const string AllowSpecificOriginsPolicy = "AllowSpecificOrigins";
+        public const string RequireManageUserPermissionRoleRolePolicy = "RequireManageUserPermissionRole";
+        public const string RequireManageDeploymentRolePolicy = "RequireManageDeploymentRole";
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -41,7 +45,11 @@ namespace TTWeb.Web.Api
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(o => ConfigureJwtBearerOptions(o, authenticationAppSettings));
 
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(RequireManageUserPermissionRoleRolePolicy, p => p.RequireRole(UserPermission.ManageUserPermission));
+                options.AddPolicy(RequireManageDeploymentRolePolicy, p => p.RequireRole(UserPermission.ManageDeployment));
+            });
 
             var securityAppSettings = Configuration.GetSection(SecurityAppSettings.Section).Get<SecurityAppSettings>();
             services.AddCors(options =>

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TTWeb.BusinessLogic.Models.AppSettings
+﻿namespace TTWeb.BusinessLogic.Models.AppSettings
 {
     public class SecurityAppSettings
     {
@@ -22,6 +20,6 @@ namespace TTWeb.BusinessLogic.Models.AppSettings
     {
         public const string Section = "Cors";
 
-        public string[] Origins { get; set; }
+        public string[] Origins { get; set; } = new string[0];
     }
 }
