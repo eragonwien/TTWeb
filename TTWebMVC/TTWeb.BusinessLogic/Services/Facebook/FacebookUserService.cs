@@ -25,7 +25,7 @@ namespace TTWeb.BusinessLogic.Services.Facebook
             _encryptionHelper = encryptionHelper;
         }
 
-        public async Task<FacebookUserModel> AddAsync(FacebookUserModel model)
+        public async Task<FacebookUserModel> CreateAsync(FacebookUserModel model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
@@ -63,7 +63,7 @@ namespace TTWeb.BusinessLogic.Services.Facebook
 
         public async Task DeleteAsync(int id, int ownerId)
         {
-            var existingUserModel = await GetByIdAsync(id, ownerId);
+            var existingUserModel = await ReadByIdAsync(id, ownerId);
             if (existingUserModel == null) return;
 
             var facebookUser = new FacebookUser{ Id = id };
@@ -72,7 +72,7 @@ namespace TTWeb.BusinessLogic.Services.Facebook
             await _context.SaveChangesAsync();
         }
 
-        public async Task<FacebookUserModel> GetByIdAsync(int id, int ownerId)
+        public async Task<FacebookUserModel> ReadByIdAsync(int id, int ownerId)
         {
             var facebookUser = await _context.FacebookUsers
                 .Include(u => u.Owner)
@@ -85,7 +85,7 @@ namespace TTWeb.BusinessLogic.Services.Facebook
             return _mapper.Map<FacebookUserModel>(facebookUser);
         }
 
-        public async Task<IEnumerable<FacebookUserModel>> GetByOwnerAsync(int ownerId)
+        public async Task<IEnumerable<FacebookUserModel>> ReadByOwnerAsync(int ownerId)
         {
             var facebookUsers = await _context.FacebookUsers
                 .Include(u => u.Owner)
