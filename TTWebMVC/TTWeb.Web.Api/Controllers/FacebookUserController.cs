@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities;
@@ -33,9 +34,10 @@ namespace TTWeb.Web.Api.Controllers
         }
 
         [HttpGet("")]
+        [Authorize(Policy = Startup.RequireAccessAllResourcesPermissionPolicy)]
         public async Task<IEnumerable<FacebookUserModel>> Read()
         {
-            return await _facebookUserService.ReadByOwnerAsync(LoginUserId);
+            return await _facebookUserService.Read();
         }
 
         [HttpPatch("{id}")]
@@ -47,10 +49,9 @@ namespace TTWeb.Web.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        public async Task Delete([FromRoute] int id)
         {
             await _facebookUserService.DeleteAsync(id, LoginUserId);
-            return NoContent();
         }
     }
 }

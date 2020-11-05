@@ -85,12 +85,11 @@ namespace TTWeb.BusinessLogic.Services.Facebook
             return _mapper.Map<FacebookUserModel>(facebookUser);
         }
 
-        public async Task<IEnumerable<FacebookUserModel>> ReadByOwnerAsync(int ownerId)
+        public async Task<IEnumerable<FacebookUserModel>> Read()
         {
             var facebookUsers = await _context.FacebookUsers
                 .Include(u => u.Owner)
                 .AsNoTracking()
-                .Where(u => u.OwnerId == ownerId)
                 .Select(u => _mapper.Map<FacebookUserModel>(u))
                 .ToListAsync();
             

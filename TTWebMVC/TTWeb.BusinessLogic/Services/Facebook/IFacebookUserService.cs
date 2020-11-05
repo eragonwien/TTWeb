@@ -10,6 +10,6 @@ namespace TTWeb.BusinessLogic.Services.Facebook
         Task<FacebookUserModel> UpdateAsync(FacebookUserModel model);
         Task DeleteAsync(int id, int ownerId);
         Task<FacebookUserModel> ReadByIdAsync(int id, int ownerId);
-        Task<IEnumerable<FacebookUserModel>> ReadByOwnerAsync(int ownerId);
+        Task<IEnumerable<FacebookUserModel>> Read();
     }
 }
