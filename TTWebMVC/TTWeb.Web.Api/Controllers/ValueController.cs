@@ -10,7 +10,7 @@ namespace TTWeb.Web.Api.Controllers
     public class ValueController : BaseController
     {
         [HttpGet("aes")]
-        [Authorize(Policy = Startup.RequireManageDeploymentRolePolicy)]
+        [Authorize(Policy = Startup.RequireManageDeploymentPermissionPolicy)]
         public EncryptionKeyModel GetEncryptionKeyModel()
         {
             var aes = EncryptProvider.CreateAesKey();

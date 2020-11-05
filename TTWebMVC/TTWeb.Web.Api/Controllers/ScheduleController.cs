@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Services.Schedule;
 
 namespace TTWeb.Web.Api.Controllers
 {
@@ -10,34 +13,46 @@ namespace TTWeb.Web.Api.Controllers
     [ApiController]
     public class ScheduleController : BaseController
     {
+        private readonly IScheduleService _scheduleService;
+
+        public ScheduleController(IScheduleService scheduleService)
+        {
+            _scheduleService = scheduleService;
+        }
+
         [HttpPost]
         public async Task<ScheduleModel> Create([FromBody] ScheduleModel model)
         {
-            throw new NotImplementedException();
+            return await _scheduleService.CreateAsync(model);
         }
 
         [HttpGet("{id}")]
-        public async Task<IEnumerable<ScheduleModel>> Read()
+        public async Task<ScheduleModel> ReadOne([FromRoute] int id)
         {
-            throw new NotImplementedException();
+            var schedule = await _scheduleService.ReadByIdAsync(id, LoginUserId);
+            ThrowExceptionOnUnauthorizedAccess(schedule?.OwnerId);
+            return schedule;
         }
 
         [HttpGet]
-        public async Task<ScheduleModel> ReadOne([FromRoute] int id)
+        [Authorize(Policy = Startup.RequireAccessAllResourcesPermissionPolicy)]
+        public async Task<IEnumerable<ScheduleModel>> Read()
         {
-            throw new NotImplementedException();
+            return await _scheduleService.Read();
         }
 
         [HttpPatch("{id}")]
         public async Task<ScheduleModel> Update([FromRoute] int id, [FromBody] ScheduleModel model)
         {
-            throw new NotImplementedException();
+            if (id != model.Id) throw new InvalidInputException(nameof(model.Id));
+
+            return await _scheduleService.UpdateAsync(model);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ScheduleModel> Delete([FromRoute] int id)
+        public async Task Delete([FromRoute] int id)
         {
-            throw new NotImplementedException();
+            await _scheduleService.DeleteAsync(id, LoginUserId);
         }
     }
 }
