@@ -61,11 +61,10 @@ namespace TTWeb.BusinessLogic.Services.Facebook
             return model;
         }
 
-        public async Task DeleteAsync(int id, int loginUserId)
+        public async Task DeleteAsync(int id, int ownerId)
         {
-            var existingUserModel = await GetByIdAsync(id);
-            if (existingUserModel == null) throw new ResourceNotFoundException(nameof(existingUserModel), id.ToString());
-            if (existingUserModel.OwnerId != loginUserId) throw new ResourceAccessDeniedException();
+            var existingUserModel = await GetByIdAsync(id, ownerId);
+            if (existingUserModel == null) return;
 
             var facebookUser = new FacebookUser{ Id = id };
             _context.FacebookUsers.Attach(facebookUser);

@@ -45,10 +45,7 @@ namespace TTWeb.Web.Api.Middlewares
 
             switch (ex)
             {
-                case InvalidInputException invalidInput:
-                case InvalidTokenException invalidToken:
-                case ResourceNotFoundException resourceNotFound:
-                case ResourceAccessDeniedException resourceAccessDenied:
+                case IBadRequestException badRequestException:
                     statusCode = HttpStatusCode.BadRequest;
                     break;
                 case SqlException sqlException:

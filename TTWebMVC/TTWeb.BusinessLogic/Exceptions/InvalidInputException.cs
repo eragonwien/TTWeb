@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace TTWeb.BusinessLogic.Exceptions
 {
     [Serializable]
-    public class InvalidInputException : Exception
+    public class InvalidInputException : Exception, IBadRequestException
     {
         public InvalidInputException()
         {
@@ -16,8 +16,8 @@ namespace TTWeb.BusinessLogic.Exceptions
         {
         }
 
-        public InvalidInputException(string message, Exception innerException)
-            : base(message, innerException)
+        public InvalidInputException(string input, Exception innerException)
+            : base(input, innerException)
         {
         }
 
@@ -32,7 +32,7 @@ namespace TTWeb.BusinessLogic.Exceptions
             return $"Property '{error.Key}' has invalid value";
         }
 
-        private static string BuildErrorMessage(string propertyName)
+        protected static string BuildErrorMessage(string propertyName)
         {
             return $"Property '{propertyName}' has invalid value";
         }

@@ -3,20 +3,20 @@
 namespace TTWeb.BusinessLogic.Exceptions
 {
     [Serializable]
-    public class ResourceAccessDeniedException : Exception
+    public class ResourceAccessDeniedException : Exception, IBadRequestException
     {
         public ResourceAccessDeniedException()
             : base(DefaultMessage)
         {
         }
 
-        public ResourceAccessDeniedException(string message)
-            : base(message)
+        public ResourceAccessDeniedException(string input)
+            : base(input)
         {
         }
 
-        public ResourceAccessDeniedException(string message, Exception innerException)
-            : base(message, innerException)
+        public ResourceAccessDeniedException(string input, Exception innerException)
+            : base(input, innerException)
         {
         }
 

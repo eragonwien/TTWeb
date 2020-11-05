@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Data;
 
 namespace TTWeb.BusinessLogic.Exceptions
 {
     [Serializable]
-    public class ResourceNotFoundException : Exception
+    public class ResourceNotFoundException : Exception, IBadRequestException
     {
         public ResourceNotFoundException()
         {
         }
 
-        public ResourceNotFoundException(string message)
-            : base(message)
+        public ResourceNotFoundException(string input)
+            : base(input)
         {
         }
 
-        public ResourceNotFoundException(string message, Exception innerException)
-            : base(message, innerException)
+        public ResourceNotFoundException(string input, Exception innerException)
+            : base(input, innerException)
         {
         }
 

@@ -3,20 +3,20 @@
 namespace TTWeb.BusinessLogic.Exceptions
 {
     [Serializable]
-    public class InvalidTokenException : Exception
+    public class InvalidTokenException : Exception, IBadRequestException
     {
         public InvalidTokenException()
             : base("Token is invalid")
         {
         }
 
-        public InvalidTokenException(string message)
-            : base(message)
+        public InvalidTokenException(string input)
+            : base(input)
         {
         }
 
-        public InvalidTokenException(string message, Exception innerException)
-            : base(message, innerException)
+        public InvalidTokenException(string input, Exception innerException)
+            : base(input, innerException)
         {
         }
     }
