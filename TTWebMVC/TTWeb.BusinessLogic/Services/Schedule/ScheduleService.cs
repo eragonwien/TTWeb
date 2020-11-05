@@ -51,12 +51,13 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
         public async Task DeleteAsync(int id, int? ownerId)
         {
-            var existingUserModel = await ReadByIdAsync(id, ownerId);
-            if (existingUserModel == null) return;
-
             var schedule = new Data.Models.Schedule { Id = id };
+            if (ownerId.HasValue)
+                schedule.OwnerId = ownerId.Value;
+
             _context.Schedules.Attach(schedule);
             _context.Schedules.Remove(schedule);
+
             await _context.SaveChangesAsync();
         }
 

@@ -49,9 +49,7 @@ namespace TTWeb.BusinessLogic.Services.Facebook
             if (model == null) throw new ArgumentNullException(nameof(model));
 
             var facebookUser = await BaseQuery.FilterById(model.Id).SingleOrDefaultAsync();
-
             if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), model.Id.ToString());
-
             facebookUser = _mapper.Map(model, facebookUser);
             facebookUser.Password = _encryptionHelper.Encrypt(facebookUser.Password);
 
@@ -62,18 +60,19 @@ namespace TTWeb.BusinessLogic.Services.Facebook
             return model;
         }
 
-        public async Task DeleteAsync(int id, int ownerId)
+        public async Task DeleteAsync(int id, int? ownerId)
         {
-            var existingUserModel = await ReadByIdAsync(id, ownerId);
-            if (existingUserModel == null) return;
-
             var facebookUser = new FacebookUser{ Id = id };
+            if (ownerId.HasValue)
+                facebookUser.OwnerId = ownerId.Value;
+
             _context.FacebookUsers.Attach(facebookUser);
             _context.FacebookUsers.Remove(facebookUser);
+
             await _context.SaveChangesAsync();
         }
 
-        public async Task<FacebookUserModel> ReadByIdAsync(int id, int ownerId)
+        public async Task<FacebookUserModel> ReadByIdAsync(int id, int? ownerId)
         {
             var facebookUser = await BaseQuery.FilterById(id).FilterByOwnerId(ownerId).SingleOrDefaultAsync();
 

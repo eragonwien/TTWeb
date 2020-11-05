@@ -29,7 +29,7 @@ namespace TTWeb.Web.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ScheduleModel> ReadOne([FromRoute] int id)
         {
-            var schedule = await _scheduleService.ReadByIdAsync(id, LoginUserId);
+            var schedule = await _scheduleService.ReadByIdAsync(id, OwnerId);
             ThrowExceptionOnUnauthorizedAccess(schedule?.OwnerId);
             return schedule;
         }
@@ -52,7 +52,7 @@ namespace TTWeb.Web.Api.Controllers
         [HttpDelete("{id}")]
         public async Task Delete([FromRoute] int id)
         {
-            await _scheduleService.DeleteAsync(id, LoginUserId);
+            await _scheduleService.DeleteAsync(id, OwnerId);
         }
     }
 }

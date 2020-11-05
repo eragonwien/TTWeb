@@ -5,12 +5,14 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.Data.Models;
+using TTWeb.Web.Api.Extensions;
 
 namespace TTWeb.Web.Api.Controllers
 {
     public class BaseController : ControllerBase
     {
-        protected int LoginUserId => int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
+        private int LoginUserId => int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
+        protected int? OwnerId => !User.IsInRole(UserPermission.ManageUsers) ? LoginUserId : OwnerId;
 
         protected IEnumerable<UserPermission> LoginUserPermissions =>
             User.FindAll(ClaimTypes.Role)

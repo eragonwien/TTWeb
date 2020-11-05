@@ -28,7 +28,7 @@ namespace TTWeb.Web.Api.Controllers
         [HttpGet("{id}")]
         public async Task<FacebookUserModel> ReadOne([FromRoute] int id)
         {
-            var facebookUser = await _facebookUserService.ReadByIdAsync(id, LoginUserId);
+            var facebookUser = await _facebookUserService.ReadByIdAsync(id, OwnerId);
             ThrowExceptionOnUnauthorizedAccess(facebookUser?.OwnerId);
             return facebookUser;
         }
@@ -51,7 +51,7 @@ namespace TTWeb.Web.Api.Controllers
         [HttpDelete("{id}")]
         public async Task Delete([FromRoute] int id)
         {
-            await _facebookUserService.DeleteAsync(id, LoginUserId);
+            await _facebookUserService.DeleteAsync(id, OwnerId);
         }
     }
 }
