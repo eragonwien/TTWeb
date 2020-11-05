@@ -7,11 +7,11 @@ namespace TTWeb.BusinessLogic.Services.Encryption
 {
     public class EncryptionHelper : IEncryptionHelper
     {
-        private readonly EncryptionAppSettings _encryptionAppSettings;
+        private readonly SecurityEncryptionAppSettings _encryptionAppSettings;
 
-        public EncryptionHelper(IOptions<EncryptionAppSettings> encryptionAppSettings)
+        public EncryptionHelper(IOptions<SecurityAppSettings> securityAppSettings)
         {
-            _encryptionAppSettings = encryptionAppSettings.Value;
+            _encryptionAppSettings = securityAppSettings.Value.Encryption;
         }
 
         public string Encrypt(string plainText)

@@ -24,6 +24,8 @@ namespace TTWeb.Web.Api
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
 
+        private const string AllowSpecificOriginsPolicy = "AllowSpecificOrigins";
+
         public void ConfigureServices(IServiceCollection services)
         {
             services
@@ -33,13 +35,22 @@ namespace TTWeb.Web.Api
                 .RegisterEntityServices()
                 .RegisterSwagger();
 
-            var authenticationAppSettings = Configuration.GetSection("Authentication").Get<AuthenticationAppSettings>();
+            var authenticationAppSettings = Configuration.GetSection(AuthenticationAppSettings.Section).Get<AuthenticationAppSettings>();
 
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(o => ConfigureJwtBearerOptions(o, authenticationAppSettings));
 
             services.AddAuthorization();
+
+            var securityAppSettings = Configuration.GetSection(SecurityAppSettings.Section).Get<SecurityAppSettings>();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(AllowSpecificOriginsPolicy, b =>
+                {
+                    b.WithOrigins(securityAppSettings.Cors.Origins);
+                });
+            });
 
             services.AddControllers(options =>
             {
@@ -58,6 +69,7 @@ namespace TTWeb.Web.Api
 
             app.UseAuthentication();
             app.UseRouting();
+            app.UseCors(AllowSpecificOriginsPolicy);
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
