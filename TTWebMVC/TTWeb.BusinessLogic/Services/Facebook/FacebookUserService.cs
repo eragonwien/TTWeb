@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TTWeb.BusinessLogic.Exceptions;
-using TTWeb.BusinessLogic.Models.Entities.FacebookUser;
+using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Encryption;
 using TTWeb.Data.Database;
 using TTWeb.Data.Models;

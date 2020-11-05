@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TTWeb.BusinessLogic.Exceptions;
-using TTWeb.BusinessLogic.Models.Entities.LoginUser;
+using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Data.Database;
 
 namespace TTWeb.BusinessLogic.Services.LoginUser

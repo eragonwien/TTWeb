@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using TTWeb.BusinessLogic.Models.Entities.LoginUser;
+using TTWeb.BusinessLogic.Models.Entities;
 
 namespace TTWeb.BusinessLogic.Services.LoginUser
 {

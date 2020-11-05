@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TTWeb.BusinessLogic.Models.Entities.FacebookUser
+namespace TTWeb.BusinessLogic.Models.Entities
 {
     public class FacebookUserModel
     {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Exceptions;
-using TTWeb.BusinessLogic.Models.Entities.FacebookUser;
+using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Facebook;
 
 namespace TTWeb.Web.Api.Controllers
@@ -19,9 +19,23 @@ namespace TTWeb.Web.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<FacebookUserModel> Add([FromBody] FacebookUserModel facebookUser)
+        public async Task<FacebookUserModel> Create([FromBody] FacebookUserModel facebookUser)
         {
             return await _facebookUserService.AddAsync(facebookUser);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<FacebookUserModel> ReadOne([FromRoute] int id)
+        {
+            var facebookUser = await _facebookUserService.GetByIdAsync(id, LoginUserId);
+            ThrowExceptionOnUnauthorizedAccess(facebookUser?.OwnerId);
+            return facebookUser;
+        }
+
+        [HttpGet("")]
+        public async Task<IEnumerable<FacebookUserModel>> Read()
+        {
+            return await _facebookUserService.GetByOwnerAsync(LoginUserId);
         }
 
         [HttpPatch("{id}")]
@@ -37,20 +51,6 @@ namespace TTWeb.Web.Api.Controllers
         {
             await _facebookUserService.DeleteAsync(id, LoginUserId);
             return NoContent();
-        }
-
-        [HttpGet("{id}")]
-        public async Task<FacebookUserModel> GetOne([FromRoute] int id)
-        {
-            var facebookUser = await _facebookUserService.GetByIdAsync(id, LoginUserId);
-            ThrowExceptionOnUnauthorizedAccess(facebookUser?.OwnerId);
-            return facebookUser;
-        }
-
-        [HttpGet("")]
-        public async Task<IEnumerable<FacebookUserModel>> GetAll()
-        {
-            return await _facebookUserService.GetByOwnerAsync(LoginUserId);
         }
     }
 }

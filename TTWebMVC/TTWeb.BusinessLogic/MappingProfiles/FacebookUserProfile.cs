@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using TTWeb.BusinessLogic.Models.Entities.FacebookUser;
+using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.MappingProfiles

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TTWeb.BusinessLogic.Models.Entities.FacebookUser;
+using TTWeb.BusinessLogic.Models.Entities;
 
 namespace TTWeb.BusinessLogic.Services.Facebook
 {

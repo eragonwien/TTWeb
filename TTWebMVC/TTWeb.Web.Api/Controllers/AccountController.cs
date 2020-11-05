@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
-using TTWeb.BusinessLogic.Models.Entities.LoginUser;
+using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Authentication;
 using TTWeb.BusinessLogic.Services.LoginUser;
 

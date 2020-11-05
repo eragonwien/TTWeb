@@ -1,4 +1,4 @@
-﻿namespace TTWeb.BusinessLogic.Models.Entities.Encryption
+﻿namespace TTWeb.BusinessLogic.Models.Entities
 {
     public class EncryptionKeyModel
     {

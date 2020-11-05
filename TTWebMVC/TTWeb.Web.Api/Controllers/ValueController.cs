@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NETCore.Encrypt;
-using TTWeb.BusinessLogic.Models.Entities.Encryption;
+using TTWeb.BusinessLogic.Models.Entities;
 
 namespace TTWeb.Web.Api.Controllers
 {
