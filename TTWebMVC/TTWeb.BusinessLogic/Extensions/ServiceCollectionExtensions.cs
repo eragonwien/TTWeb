@@ -33,7 +33,7 @@ namespace TTWeb.BusinessLogic.Extensions
         {
             services.AddScoped<IEncryptionHelper, EncryptionHelper>();
             services.AddScoped<ILoginUserService, LoginUserService>();
-            services.AddScoped<IAuthenticationHelperService, AuthenticationHelperService>();
+            services.AddScoped<IExternalProviderService, ExternalProviderService>();
             services.AddScoped<IFacebookUserService, FacebookUserService>();
             services.AddScoped<IScheduleService, ScheduleService>();
             return services;

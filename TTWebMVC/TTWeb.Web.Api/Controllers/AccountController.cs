@@ -24,11 +24,11 @@ namespace TTWeb.Web.Api.Controllers
     public class AccountController : BaseController
     {
         private readonly AuthenticationAppSettings _authenticationAppSettings;
-        private readonly IAuthenticationHelperService _authHelperService;
+        private readonly IExternalProviderService _authHelperService;
         private readonly ILoginUserService _loginUserService;
         private readonly IMapper _mapper;
 
-        public AccountController(IAuthenticationHelperService authHelperService,
+        public AccountController(IExternalProviderService authHelperService,
             ILoginUserService loginUserService,
             IMapper mapper,
             IOptions<AuthenticationAppSettings> authenticationAppSettings)

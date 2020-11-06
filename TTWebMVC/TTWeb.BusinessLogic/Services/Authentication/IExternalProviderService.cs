@@ -3,7 +3,7 @@ using TTWeb.BusinessLogic.Models.Account;
 
 namespace TTWeb.BusinessLogic.Services.Authentication
 {
-    public interface IAuthenticationHelperService
+    public interface IExternalProviderService
     {
         Task<bool> IsTokenValidAsync(ExternalLoginModel loginModel);
     }
