@@ -21,12 +21,12 @@ namespace TTWeb.Web.Api.Services.Account
     public class AccountService : IAccountService
     {
         private readonly AuthenticationAppSettings _authenticationAppSettings;
-        private readonly IExternalProviderService _authHelperService;
+        private readonly IAuthenticationHelperService _authHelperService;
         private readonly ILoginUserService _loginUserService;
         private readonly IMapper _mapper;
 
         public AccountService(IOptions<AuthenticationAppSettings> authenticationAppSettings,
-            IExternalProviderService authHelperService,
+            IAuthenticationHelperService authHelperService,
             ILoginUserService loginUserService,
             IMapper mapper)
         {

@@ -18,7 +18,6 @@ namespace TTWeb.Web.Api.Controllers
             _accountService = accountService;
         }
 
-        // POST api/<AccountController>
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<LoginTokenModel> Login([FromBody] ExternalLoginModel loginModel)
@@ -27,6 +26,12 @@ namespace TTWeb.Web.Api.Controllers
 
             if (!authenticationResult.Succeed) throw new UnauthorizedAccessException($"Authentication failed due to {authenticationResult.Reason}");
             return _accountService.GenerateLoginToken(authenticationResult.Result);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<LoginTokenModel> RefreshToken([FromBody] LoginTokenModel loginTokenModel)
+        {
+            return loginTokenModel;
         }
     }
 }

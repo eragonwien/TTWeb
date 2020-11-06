@@ -4,11 +4,11 @@ using TTWeb.BusinessLogic.Models.Account;
 
 namespace TTWeb.BusinessLogic.Services.Authentication
 {
-    public class ExternalProviderService : IExternalProviderService
+    public class AuthenticationHelperService : IAuthenticationHelperService
     {
         private readonly IHostEnvironment _env;
 
-        public ExternalProviderService(IHostEnvironment env)
+        public AuthenticationHelperService(IHostEnvironment env)
         {
             _env = env;
         }
