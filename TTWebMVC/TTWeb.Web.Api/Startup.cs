@@ -62,10 +62,12 @@ namespace TTWeb.Web.Api
                 });
             });
 
-            services.AddControllers(options =>
-            {
-                options.Filters.Add(new AccessOwnResourceFilterAttribute());
-            });
+            services
+                .AddControllers(options =>
+                {
+                    options.Filters.Add(new AccessOwnResourceFilterAttribute());
+                })
+                .AddNewtonsoftJson();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,7 +85,7 @@ namespace TTWeb.Web.Api
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers().RequireAuthorization(); 
+                endpoints.MapControllers().RequireAuthorization();
             });
         }
 

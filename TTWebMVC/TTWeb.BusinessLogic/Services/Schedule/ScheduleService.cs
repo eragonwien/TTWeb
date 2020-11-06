@@ -16,7 +16,12 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         private readonly IMapper _mapper;
 
         private IQueryable<Data.Models.Schedule> BaseQuery =>
-            _context.Schedules.Include(s => s.Owner).AsNoTracking();
+            _context.Schedules
+            .Include(s => s.Owner)
+            .Include(s => s.ScheduleReceiverMappings)
+            .Include(s => s.ScheduleWeekdayMappings)
+            .Include(s => s.TimeFrames)
+            .AsNoTracking();
 
         public ScheduleService(TTWebContext context, IMapper mapper)
         {
@@ -30,6 +35,10 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
             var schedule = _mapper.Map<Data.Models.Schedule>(model);
 
+            // TODO: Adds everything in one transaction
+            // TODO: Adds/Updates receiver mappings
+            // TODO: Adds/Updates weekday mappings
+            // TODO: Adds/Updates time frames mappings
             await _context.Schedules.AddAsync(schedule);
             await _context.SaveChangesAsync();
 
@@ -43,6 +52,11 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             var schedule = await BaseQuery.FilterById(model.Id).SingleOrDefaultAsync();
             if (schedule == null) throw new ArgumentNullException(nameof(schedule));
 
+            // TODO: Updates everything in one transaction
+            // TODO: Updates receiver mappings
+            // TODO: Updates weekday mappings
+            // TODO: Updates time frames mappings
+            _context.Schedules.Attach(schedule);
             schedule = _mapper.Map(model, schedule);
             await _context.SaveChangesAsync();
 
@@ -55,6 +69,10 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             if (ownerId.HasValue)
                 schedule.OwnerId = ownerId.Value;
 
+            // TODO: Updates everything in one transaction
+            // TODO: Updates receiver mappings
+            // TODO: Updates weekday mappings
+            // TODO: Updates time frames mappings
             _context.Schedules.Attach(schedule);
             _context.Schedules.Remove(schedule);
 

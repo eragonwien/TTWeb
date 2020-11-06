@@ -22,6 +22,7 @@ namespace TTWeb.BusinessLogic.Extensions
             {
                 c.AddProfile<LoginUserProfile>();
                 c.AddProfile<FacebookUserProfile>();
+                c.AddProfile<ScheduleProfile>();
             });
 
             services.AddSingleton(s => mapperConfig.CreateMapper());
@@ -56,7 +57,7 @@ namespace TTWeb.BusinessLogic.Extensions
 
         public static IServiceCollection RegisterSwagger(this IServiceCollection services)
         {
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "TTWeb API", Version = "V1"}); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "TTWeb API", Version = "V1" }); });
 
             return services;
         }
