@@ -13,6 +13,11 @@ namespace TTWeb.Data.Database
         public DbSet<LoginUser> LoginUsers { get; set; }
         public DbSet<FacebookUser> FacebookUsers { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
+        public DbSet<ScheduleWeekdayMapping> ScheduleWeekdayMappings { get; set; }
+        public DbSet<ScheduleTimeFrame> ScheduleTimeFrames { get; set; }
+        public DbSet<ScheduleJob> ScheduleJobs { get; set; }
+        public DbSet<ScheduleJobResult> ScheduleJobsResults { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
