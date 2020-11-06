@@ -1,11 +1,8 @@
-using System;
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.Data.Models;
@@ -93,17 +90,7 @@ namespace TTWeb.Web.Api
         private static void ConfigureJwtBearerOptions(JwtBearerOptions options,
             AuthenticationAppSettings authenticationAppSettings)
         {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey =
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(authenticationAppSettings.Methods.JsonWebToken.Secret)),
-                ClockSkew = TimeSpan.Zero
-            };
+            options.TokenValidationParameters = authenticationAppSettings.Methods.JsonWebToken.AccessTokenParameters;
         }
     }
 }

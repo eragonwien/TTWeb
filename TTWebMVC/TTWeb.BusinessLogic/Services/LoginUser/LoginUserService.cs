@@ -40,6 +40,15 @@ namespace TTWeb.BusinessLogic.Services.LoginUser
             return loginUserModel;
         }
 
+        public async Task<LoginUserModel> GetByIdAsync(int id)
+        {
+            var loginUser = await _context.LoginUsers
+                .Include(u => u.LoginUserPermissionMappings)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            return _mapper.Map<LoginUserModel>(loginUser);
+        }
+
         public async Task<LoginUserModel> GetByEmailAsync(string email)
         {
             if (!IsValidEmailAddress(email)) throw new InvalidInputException(nameof(email));

@@ -25,13 +25,14 @@ namespace TTWeb.Web.Api.Controllers
             var authenticationResult = await _accountService.AuthenticateExternalAsync(loginModel);
 
             if (!authenticationResult.Succeed) throw new UnauthorizedAccessException($"Authentication failed due to {authenticationResult.Reason}");
-            return _accountService.GenerateLoginToken(authenticationResult.Result);
+            return _accountService.GenerateAccessToken(authenticationResult.Result);
         }
 
         [HttpPost("refresh-token")]
+        [AllowAnonymous]
         public async Task<LoginTokenModel> RefreshToken([FromBody] LoginTokenModel loginTokenModel)
         {
-            return loginTokenModel;
+            return await _accountService.RefreshAccessToken(loginTokenModel);
         }
     }
 }
