@@ -18,9 +18,10 @@ namespace TTWeb.BusinessLogic.Services.Facebook
         private readonly TTWebContext _context;
         private readonly IMapper _mapper;
         private readonly IEncryptionHelper _encryptionHelper;
-        
+
         private IQueryable<FacebookUser> BaseQuery =>
-            _context.FacebookUsers.Include(u => u.Owner).AsNoTracking();
+            _context.FacebookUsers
+            .Include(u => u.Owner);
 
         public FacebookUserService(TTWebContext context, IMapper mapper, IEncryptionHelper encryptionHelper)
         {
@@ -50,6 +51,7 @@ namespace TTWeb.BusinessLogic.Services.Facebook
 
             var facebookUser = await BaseQuery.FilterById(model.Id).SingleOrDefaultAsync();
             if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), model.Id.ToString());
+
             facebookUser = _mapper.Map(model, facebookUser);
             facebookUser.Password = _encryptionHelper.Encrypt(facebookUser.Password);
 
@@ -62,7 +64,7 @@ namespace TTWeb.BusinessLogic.Services.Facebook
 
         public async Task DeleteAsync(int id, int? ownerId)
         {
-            var facebookUser = new FacebookUser{ Id = id };
+            var facebookUser = new FacebookUser { Id = id };
             if (ownerId.HasValue)
                 facebookUser.OwnerId = ownerId.Value;
 
@@ -74,7 +76,11 @@ namespace TTWeb.BusinessLogic.Services.Facebook
 
         public async Task<FacebookUserModel> ReadByIdAsync(int id, int? ownerId)
         {
-            var facebookUser = await BaseQuery.FilterById(id).FilterByOwnerId(ownerId).SingleOrDefaultAsync();
+            var facebookUser = await BaseQuery
+                .AsNoTracking()
+                .FilterById(id)
+                .FilterByOwnerId(ownerId)
+                .SingleOrDefaultAsync();
 
             if (facebookUser != null)
                 facebookUser.Password = _encryptionHelper.Decrypt(facebookUser.Password);
@@ -85,9 +91,10 @@ namespace TTWeb.BusinessLogic.Services.Facebook
         public async Task<IEnumerable<FacebookUserModel>> Read()
         {
             var facebookUsers = await BaseQuery
+                .AsNoTracking()
                 .Select(u => _mapper.Map<FacebookUserModel>(u))
                 .ToListAsync();
-            
+
             facebookUsers.ForEach(u => u.Password = _encryptionHelper.Decrypt(u.Password));
 
             return facebookUsers;

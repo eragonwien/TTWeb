@@ -29,7 +29,6 @@ namespace TTWeb.Web.Api.Controllers
         public async Task<FacebookUserModel> ReadOne([FromRoute] int id)
         {
             var facebookUser = await _facebookUserService.ReadByIdAsync(id, OwnerId);
-            ThrowExceptionOnUnauthorizedAccess(facebookUser?.OwnerId);
             return facebookUser;
         }
 

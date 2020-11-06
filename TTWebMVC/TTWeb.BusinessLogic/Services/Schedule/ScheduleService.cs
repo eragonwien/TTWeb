@@ -24,8 +24,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .Include(s => s.ScheduleWeekdayMappings)
                 .Include(s => s.TimeFrames)
                 .Include(s => s.ScheduleJobs)
-                    .ThenInclude(j => j.Results)
-                .AsNoTracking();
+                    .ThenInclude(j => j.Results);
 
         public ScheduleService(TTWebContext context, IMapper mapper)
         {
@@ -50,7 +49,10 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            var schedule = await BaseQuery.FilterById(model.Id).SingleOrDefaultAsync();
+            var schedule = await BaseQuery
+                .FilterById(model.Id)
+                .SingleOrDefaultAsync();
+
             if (schedule == null) throw new ResourceNotFoundException(nameof(Data.Models.Schedule), model.Id);
 
             using (var trans = await _context.Database.BeginTransactionAsync())
@@ -87,7 +89,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
                 await trans.CommitAsync();
             }
-            
+
             return _mapper.Map(schedule, model);
         }
 
@@ -112,6 +114,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         public async Task<ScheduleModel> ReadByIdAsync(int id, int? ownerId)
         {
             var schedule = await BaseQuery
+                .AsNoTracking()
                 .FilterById(id)
                 .FilterByOwnerId(ownerId)
                 .SingleOrDefaultAsync();
@@ -122,6 +125,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         public async Task<IEnumerable<ScheduleModel>> ReadAsync()
         {
             return await BaseQuery
+                .AsNoTracking()
                 .Select(s => _mapper.Map<ScheduleModel>(s))
                 .ToListAsync();
         }
