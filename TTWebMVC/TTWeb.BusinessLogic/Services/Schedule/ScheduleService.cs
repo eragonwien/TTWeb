@@ -41,6 +41,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             await _context.ScheduleReceiverMappings.AddRangeAsync(schedule.ScheduleReceiverMappings);
             await _context.ScheduleWeekdayMappings.AddRangeAsync(schedule.ScheduleWeekdayMappings);
             await _context.ScheduleTimeFrames.AddRangeAsync(schedule.TimeFrames);
+            await _context.SaveChangesAsync();
 
             return _mapper.Map(schedule, model);
         }

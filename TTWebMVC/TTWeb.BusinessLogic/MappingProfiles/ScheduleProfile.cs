@@ -12,7 +12,7 @@ namespace TTWeb.BusinessLogic.MappingProfiles
             CreateMap<Schedule, ScheduleModel>()
                 .ForMember(m => m.Receivers,
                     o => o.MapFrom(e => e.ScheduleReceiverMappings
-                        .Select(rm => new ScheduleReceiverModel { Id = rm.Receiver.Id, Username = rm.Receiver.Username })))
+                        .Select(rm => new ScheduleReceiverModel { Id = rm.ReceiverId })))
                 .ForMember(m => m.Weekdays,
                     o => o.MapFrom(e => e.ScheduleWeekdayMappings.Select(wm => wm.Weekday)))
                 .ForMember(m => m.TimeFrames,

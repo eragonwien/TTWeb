@@ -2,6 +2,5 @@
 {
     public class ScheduleReceiverModel : BaseEntityModel
     {
-        public string Username { get; set; }
     }
 }
