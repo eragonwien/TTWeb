@@ -12,6 +12,7 @@ using TTWeb.Data.Models;
 using TTWeb.Web.Api.Components.Attributes;
 using TTWeb.Web.Api.Middlewares;
 using TTWeb.Web.Api.Extensions;
+using TTWeb.Web.Api.Services.Account;
 
 namespace TTWeb.Web.Api
 {
@@ -39,6 +40,8 @@ namespace TTWeb.Web.Api
                 .RegisterAutoMapper()
                 .RegisterEntityServices()
                 .RegisterSwagger();
+
+            services.AddScoped<IAccountService, AccountService>();
 
             var authenticationAppSettings = Configuration.GetSectionValue<AuthenticationAppSettings>(AuthenticationAppSettings.Section);
 

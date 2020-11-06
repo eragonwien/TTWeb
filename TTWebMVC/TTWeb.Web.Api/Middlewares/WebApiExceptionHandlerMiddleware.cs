@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Exceptions;
+using TTWeb.BusinessLogic.Models.Helpers;
 
 namespace TTWeb.Web.Api.Middlewares
 {
@@ -48,20 +50,22 @@ namespace TTWeb.Web.Api.Middlewares
                 case IBadRequestException badRequestException:
                     statusCode = HttpStatusCode.BadRequest;
                     break;
+                case UnauthorizedAccessException unauthorizedAccessException:
+                    statusCode = HttpStatusCode.Unauthorized;
+                    break;
                 case SqlException sqlException:
                     HandleSqlException(sqlException);
                     break;
             }
 
+            await WriteResponseAsync();
 
-            httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = (int) statusCode;
-            await httpContext.Response.WriteAsync(new
+            async Task WriteResponseAsync()
             {
-                httpContext.Response.StatusCode,
-                message,
-                stackTrace
-            }.ToString());
+                httpContext.Response.ContentType = "application/json; charset=utf-8";
+                httpContext.Response.StatusCode = (int) statusCode;
+                await httpContext.Response.WriteAsync(new ErrorResponseModel(statusCode, message, stackTrace).ToJsonString());
+            }
 
             void HandleInnerException()
             {
