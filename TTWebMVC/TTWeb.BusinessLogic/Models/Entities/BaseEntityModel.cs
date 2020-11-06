@@ -1,4 +1,7 @@
-﻿namespace TTWeb.BusinessLogic.Models.Entities
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace TTWeb.BusinessLogic.Models.Entities
 {
     public class BaseEntityModel
     {
