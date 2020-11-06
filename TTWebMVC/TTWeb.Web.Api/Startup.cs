@@ -10,6 +10,8 @@ using TTWeb.Web.Api.Components.Attributes;
 using TTWeb.Web.Api.Middlewares;
 using TTWeb.Web.Api.Extensions;
 using TTWeb.Web.Api.Services.Account;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace TTWeb.Web.Api
 {
@@ -92,7 +94,14 @@ namespace TTWeb.Web.Api
         private static void ConfigureJwtBearerOptions(JwtBearerOptions options,
             AuthenticationAppSettings authenticationAppSettings)
         {
-            options.TokenValidationParameters = authenticationAppSettings.Methods.JsonWebToken.AccessTokenParameters;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidIssuer = authenticationAppSettings.JsonWebToken.Issuer,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationAppSettings.JsonWebToken.AccessToken.Key))
+            };
         }
     }
 }

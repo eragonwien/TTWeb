@@ -12,21 +12,21 @@ namespace TTWeb.Web.Api.Extensions
     public static class JwtSecurityTokenHandlerExtensions
     {
         public static JwtSecurityToken CreateAccessToken(this JwtSecurityTokenHandler tokenHandler,
-            AuthenticationAppSettings settings,
+            AuthenticationJsonWebTokenAppSettings settings,
             IEnumerable<Claim> claims)
         {
-            return tokenHandler.CreateSecurityToken(settings.Methods.JsonWebToken.AccessTokenSecret,
-                settings.Methods.JsonWebToken.Issuer,
-                DateTime.UtcNow.AddMinutes(settings.Methods.JsonWebToken.AccessTokenDurationMinutes),
+            return tokenHandler.CreateSecurityToken(settings.AccessToken.Key,
+                settings.Issuer,
+                DateTime.UtcNow.Add(settings.AccessToken.Duration),
                 new ClaimsIdentity(claims));
         }
 
         public static JwtSecurityToken CreateRefreshToken(this JwtSecurityTokenHandler tokenHandler,
-            AuthenticationAppSettings settings)
+            AuthenticationJsonWebTokenAppSettings settings)
         {
-            return tokenHandler.CreateSecurityToken(settings.Methods.JsonWebToken.RefreshTokenSecret,
-                settings.Methods.JsonWebToken.Issuer,
-                DateTime.UtcNow.AddDays(settings.Methods.JsonWebToken.RefreshTokenDurationDays));
+            return tokenHandler.CreateSecurityToken(settings.RefreshToken.Key,
+                settings.Issuer,
+                DateTime.UtcNow.Add(settings.RefreshToken.Duration));
         }
 
         public static LoginTokenValidationResult ValidateToken(this JwtSecurityTokenHandler tokenHandler,

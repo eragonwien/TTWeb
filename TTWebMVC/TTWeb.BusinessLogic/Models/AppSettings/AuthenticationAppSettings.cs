@@ -8,7 +8,7 @@ namespace TTWeb.BusinessLogic.Models.AppSettings
     {
         public const string Section = "Authentication";
 
-        public AuthenticationMethodsAppSettings Methods { get; set; }
+        public AuthenticationJsonWebTokenAppSettings JsonWebToken { get; set; }
         public AuthenticationProvidersAppSettings Providers { get; set; }
     }
 }

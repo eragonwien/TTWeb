@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
 namespace TTWeb.BusinessLogic.Extensions
@@ -10,6 +11,15 @@ namespace TTWeb.BusinessLogic.Extensions
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
             parameters.ValidateLifetime = validate;
+            return parameters;
+        }
+
+        public static TokenValidationParameters WithKey(this TokenValidationParameters parameters,
+            string key)
+        {
+            if (key is null) throw new ArgumentNullException(nameof(key));
+
+            parameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             return parameters;
         }
     }

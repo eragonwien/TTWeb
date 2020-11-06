@@ -54,11 +54,11 @@ namespace TTWeb.Web.Api.Services.Account
 
             var loginTokenModel = new LoginTokenModel();
 
-            var accessToken = _tokenHandler.CreateAccessToken(_authSettings, user.GenerateClaims());
+            var accessToken = _tokenHandler.CreateAccessToken(_authSettings.JsonWebToken, user.GenerateClaims());
             loginTokenModel.AccessToken.Token = _tokenHandler.WriteToken(accessToken);
             loginTokenModel.AccessToken.ExpirationDateUtc = accessToken.ValidTo;
 
-            var refreshToken = _tokenHandler.CreateRefreshToken(_authSettings);
+            var refreshToken = _tokenHandler.CreateRefreshToken(_authSettings.JsonWebToken);
             loginTokenModel.RefreshToken.Token = _tokenHandler.WriteToken(refreshToken);
             loginTokenModel.RefreshToken.ExpirationDateUtc = refreshToken.ValidTo;
 
@@ -68,25 +68,25 @@ namespace TTWeb.Web.Api.Services.Account
         public async Task<LoginTokenModel> RefreshAccessToken(LoginTokenModel loginTokenModel)
         {
             var accessTokenValidation = _tokenHandler.ValidateToken(loginTokenModel.AccessToken,
-                _authSettings.Methods.JsonWebToken.AccessTokenParameters.ValidateLifeTime(false));
+                _authSettings.JsonWebToken.TokenValidationDefaultParameters.WithKey(_authSettings.JsonWebToken.AccessToken.Key).ValidateLifeTime(false));
 
             if (!accessTokenValidation.Succeed) throw new UnauthorizedAccessException();
 
             var refreshTokenValidation = _tokenHandler.ValidateToken(loginTokenModel.RefreshToken,
-                _authSettings.Methods.JsonWebToken.RefreshTokenParameters);
+                _authSettings.JsonWebToken.TokenValidationDefaultParameters.WithKey(_authSettings.JsonWebToken.RefreshToken.Key));
 
             if (!refreshTokenValidation.Succeed) throw new UnauthorizedAccessException();
 
             var loginUser = await _loginUserService.GetByIdAsync(accessTokenValidation.TokenUser.FindFirstValue<int>(ClaimTypes.NameIdentifier));
             if (loginUser == null) throw new UnauthorizedAccessException();
 
-            var accessToken = _tokenHandler.CreateAccessToken(_authSettings, accessTokenValidation.TokenUser.Claims);
+            var accessToken = _tokenHandler.CreateAccessToken(_authSettings.JsonWebToken, accessTokenValidation.TokenUser.Claims);
             loginTokenModel.AccessToken.Token = _tokenHandler.WriteToken(accessToken);
             loginTokenModel.AccessToken.ExpirationDateUtc = accessToken.ValidTo;
 
-            if (refreshTokenValidation.Token.IsAlmostExpired(TimeSpan.FromDays(_authSettings.Methods.JsonWebToken.RefreshTokenDurationDays)))
+            if (refreshTokenValidation.Token.IsAlmostExpired(_authSettings.JsonWebToken.RefreshToken.Duration))
             {
-                var refreshToken = _tokenHandler.CreateRefreshToken(_authSettings);
+                var refreshToken = _tokenHandler.CreateRefreshToken(_authSettings.JsonWebToken);
                 loginTokenModel.RefreshToken.Token = _tokenHandler.WriteToken(refreshToken);
                 loginTokenModel.RefreshToken.ExpirationDateUtc = refreshToken.ValidTo;
             }
