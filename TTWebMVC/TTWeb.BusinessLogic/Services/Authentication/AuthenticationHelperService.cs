@@ -13,8 +13,8 @@ namespace TTWeb.BusinessLogic.Services.Authentication
             _env = env;
         }
 
-#pragma warning disable CS1998 // TODO: Adds facebook validation
-        public async Task<bool> IsTokenValidAsync(ExternalLoginModel loginModel)
+#pragma warning disable CS1998 // TODO: Adds external provider access token validation
+        public async Task<bool> IsExternalAccessTokenValidAsync(ExternalLoginModel loginModel)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (loginModel is null) throw new System.ArgumentNullException(nameof(loginModel));

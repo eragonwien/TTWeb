@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Data.Database;
 using TTWeb.Data.Extensions;
+using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Services.Schedule
 {
@@ -17,11 +19,13 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
         private IQueryable<Data.Models.Schedule> BaseQuery =>
             _context.Schedules
-            .Include(s => s.Owner)
-            .Include(s => s.ScheduleReceiverMappings)
-            .Include(s => s.ScheduleWeekdayMappings)
-            .Include(s => s.TimeFrames)
-            .AsNoTracking();
+                .Include(s => s.Owner)
+                .Include(s => s.ScheduleReceiverMappings)
+                .Include(s => s.ScheduleWeekdayMappings)
+                .Include(s => s.TimeFrames)
+                .Include(s => s.ScheduleJobs)
+                    .ThenInclude(j => j.Results)
+                .AsNoTracking();
 
         public ScheduleService(TTWebContext context, IMapper mapper)
         {
@@ -34,13 +38,10 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             if (model == null) throw new ArgumentNullException(nameof(model));
 
             var schedule = _mapper.Map<Data.Models.Schedule>(model);
-
-            // TODO: Adds everything in one transaction
-            // TODO: Adds/Updates receiver mappings
-            // TODO: Adds/Updates weekday mappings
-            // TODO: Adds/Updates time frames mappings
             await _context.Schedules.AddAsync(schedule);
-            await _context.SaveChangesAsync();
+            await _context.ScheduleReceiverMappings.AddRangeAsync(schedule.ScheduleReceiverMappings);
+            await _context.ScheduleWeekdayMappings.AddRangeAsync(schedule.ScheduleWeekdayMappings);
+            await _context.ScheduleTimeFrames.AddRangeAsync(schedule.TimeFrames);
 
             return _mapper.Map(schedule, model);
         }
@@ -50,31 +51,60 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             if (model == null) throw new ArgumentNullException(nameof(model));
 
             var schedule = await BaseQuery.FilterById(model.Id).SingleOrDefaultAsync();
-            if (schedule == null) throw new ArgumentNullException(nameof(schedule));
+            if (schedule == null) throw new ResourceNotFoundException(nameof(Data.Models.Schedule), model.Id);
 
-            // TODO: Updates everything in one transaction
-            // TODO: Updates receiver mappings
-            // TODO: Updates weekday mappings
-            // TODO: Updates time frames mappings
-            _context.Schedules.Attach(schedule);
-            schedule = _mapper.Map(model, schedule);
-            await _context.SaveChangesAsync();
+            using (var trans = await _context.Database.BeginTransactionAsync())
+            {
+                schedule = _mapper.Map(model, schedule);
+                await _context.SaveChangesAsync();
 
+                await _context.ScheduleReceiverMappings.AddRangeAsync(model.Receivers
+                    .Except(schedule.ScheduleReceiverMappings.Select(rm => _mapper.Map<ScheduleReceiverModel>(rm)))
+                    .Select(receiver => new ScheduleReceiverMapping
+                    {
+                        ReceiverId = receiver.Id,
+                        ScheduleId = model.Id
+                    }));
+
+                await _context.ScheduleWeekdayMappings.AddRangeAsync(model.Weekdays
+                    .Except(schedule.ScheduleWeekdayMappings.Select(dm => _mapper.Map<DayOfWeek>(dm)))
+                    .Select(weekday => new ScheduleWeekdayMapping
+                    {
+                        Weekday = weekday,
+                        ScheduleId = model.Id
+                    }));
+
+                await _context.ScheduleTimeFrames.AddRangeAsync(model.TimeFrames
+                    .Except(schedule.TimeFrames.Select(tf => _mapper.Map<ScheduleTimeFrameModel>(tf)))
+                    .Select(timeFrame => new ScheduleTimeFrame
+                    {
+                        From = timeFrame.From,
+                        To = timeFrame.To,
+                        ScheduleId = model.Id
+                    }));
+
+                await _context.SaveChangesAsync();
+
+                await trans.CommitAsync();
+            }
+            
             return _mapper.Map(schedule, model);
         }
 
         public async Task DeleteAsync(int id, int? ownerId)
         {
-            var schedule = new Data.Models.Schedule { Id = id };
-            if (ownerId.HasValue)
-                schedule.OwnerId = ownerId.Value;
+            var schedule = await BaseQuery
+                .FilterById(id)
+                .FilterByOwnerId(ownerId)
+                .SingleOrDefaultAsync();
 
-            // TODO: Updates everything in one transaction
-            // TODO: Updates receiver mappings
-            // TODO: Updates weekday mappings
-            // TODO: Updates time frames mappings
-            _context.Schedules.Attach(schedule);
-            _context.Schedules.Remove(schedule);
+            if (schedule == null) return;
+
+            _context.ScheduleJobsResults.RemoveRange(schedule.ScheduleJobs.SelectMany(j => j.Results));
+            _context.ScheduleJobs.RemoveRange(schedule.ScheduleJobs);
+            _context.ScheduleReceiverMappings.RemoveRange(schedule.ScheduleReceiverMappings);
+            _context.ScheduleWeekdayMappings.RemoveRange(schedule.ScheduleWeekdayMappings);
+            _context.ScheduleTimeFrames.RemoveRange(schedule.TimeFrames);
 
             await _context.SaveChangesAsync();
         }

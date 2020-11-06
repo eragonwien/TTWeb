@@ -24,6 +24,11 @@ namespace TTWeb.BusinessLogic.Exceptions
         {
         }
 
+        public ResourceNotFoundException(string resourceName, int id)
+            : base(BuildMessage(resourceName, id.ToString()))
+        {
+        }
+
         private static string BuildMessage(string resourceName, string id)
         {
             return $"Resource {resourceName} of ID '{id}' not found";

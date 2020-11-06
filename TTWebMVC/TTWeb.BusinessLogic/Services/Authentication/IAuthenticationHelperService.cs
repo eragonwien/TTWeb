@@ -5,6 +5,6 @@ namespace TTWeb.BusinessLogic.Services.Authentication
 {
     public interface IAuthenticationHelperService
     {
-        Task<bool> IsTokenValidAsync(ExternalLoginModel loginModel);
+        Task<bool> IsExternalAccessTokenValidAsync(ExternalLoginModel loginModel);
     }
 }
