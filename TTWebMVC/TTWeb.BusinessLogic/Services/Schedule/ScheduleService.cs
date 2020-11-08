@@ -68,12 +68,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
             if (schedule == null) return;
 
-            _context.ScheduleJobsResults.RemoveRange(schedule.ScheduleJobs.SelectMany(j => j.Results));
-            _context.ScheduleJobs.RemoveRange(schedule.ScheduleJobs);
-            _context.ScheduleReceiverMappings.RemoveRange(schedule.ScheduleReceiverMappings);
-            _context.ScheduleWeekdayMappings.RemoveRange(schedule.ScheduleWeekdayMappings);
-            _context.ScheduleTimeFrames.RemoveRange(schedule.TimeFrames);
-
+            _context.Schedules.Remove(schedule);
             await _context.SaveChangesAsync();
         }
 

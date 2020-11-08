@@ -7,7 +7,7 @@ namespace TTWeb.Data.Models
         public int Id { get; set; }
         public ScheduleAction Action { get; set; }
         public ScheduleIntervalType IntervalType { get; set; }
-        public int SenderId { get; set; }
+        public int? SenderId { get; set; }
         public FacebookUser Sender { get; set; }
         public ICollection<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
         public ICollection<ScheduleWeekdayMapping> ScheduleWeekdayMappings { get; set; }

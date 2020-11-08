@@ -63,7 +63,7 @@ namespace TTWeb.Data.Extensions
                 .HasOne(m => m.LoginUser)
                 .WithMany(u => u.LoginUserPermissionMappings)
                 .HasForeignKey(m => m.LoginUserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<LoginUserPermissionMapping>()
                 .Property(m => m.UserPermission)
@@ -118,13 +118,13 @@ namespace TTWeb.Data.Extensions
                 .HasOne(m => m.Schedule)
                 .WithMany(u => u.ScheduleReceiverMappings)
                 .HasForeignKey(m => m.ScheduleId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ScheduleReceiverMapping>()
                 .HasOne(m => m.Receiver)
                 .WithMany(p => p.ScheduleReceiverMappings)
                 .HasForeignKey(m => m.ReceiverId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             return modelBuilder;
         }
@@ -138,7 +138,7 @@ namespace TTWeb.Data.Extensions
                 .HasOne(m => m.Schedule)
                 .WithMany(u => u.ScheduleWeekdayMappings)
                 .HasForeignKey(m => m.ScheduleId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ScheduleWeekdayMapping>()
                 .Property(m => m.Weekday)
@@ -185,13 +185,13 @@ namespace TTWeb.Data.Extensions
                 .HasOne(m => m.Sender)
                 .WithMany(u => u.SendSchedule)
                 .HasForeignKey(m => m.SenderId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             modelBuilder.Entity<Schedule>()
                 .HasOne(e => e.Owner)
                 .WithMany(e => e.OwnedSchedules)
                 .HasForeignKey(e => e.OwnerId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Schedule>()
                 .HasMany(m => m.TimeFrames)
@@ -219,7 +219,7 @@ namespace TTWeb.Data.Extensions
                 .HasOne(m => m.Schedule)
                 .WithMany(u => u.ScheduleJobs)
                 .HasForeignKey(m => m.ScheduleId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             return modelBuilder;
         }
@@ -237,7 +237,7 @@ namespace TTWeb.Data.Extensions
                 .HasOne(m => m.ScheduleJob)
                 .WithMany(u => u.Results)
                 .HasForeignKey(m => m.ScheduleJobId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             return modelBuilder;
         }
