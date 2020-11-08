@@ -57,7 +57,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureLoginUserPermissionMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginUserPermissionMapping>()
-                .HasKey(m => new {m.LoginUserId, m.UserPermission});
+                .HasKey(m => new { m.LoginUserId, m.UserPermission });
 
             modelBuilder.Entity<LoginUserPermissionMapping>()
                 .HasOne(m => m.LoginUser)
@@ -112,7 +112,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureFacebookUserReceiverMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleReceiverMapping>()
-                .HasKey(m => new {m.ScheduleId, m.ReceiverId});
+                .HasKey(m => new { m.ScheduleId, m.ReceiverId });
 
             modelBuilder.Entity<ScheduleReceiverMapping>()
                 .HasOne(m => m.Schedule)
@@ -132,7 +132,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureScheduleWeekdayMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleWeekdayMapping>()
-                .HasKey(m => new {m.ScheduleId, m.Weekday});
+                .HasKey(m => new { m.ScheduleId, m.Weekday });
 
             modelBuilder.Entity<ScheduleWeekdayMapping>()
                 .HasOne(m => m.Schedule)
@@ -156,12 +156,6 @@ namespace TTWeb.Data.Extensions
             modelBuilder.Entity<ScheduleTimeFrame>()
                 .Property(m => m.Id)
                 .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<ScheduleTimeFrame>()
-                .HasOne(m => m.Schedule)
-                .WithMany(u => u.TimeFrames)
-                .HasForeignKey(m => m.ScheduleId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             return modelBuilder;
         }
@@ -198,6 +192,12 @@ namespace TTWeb.Data.Extensions
                 .WithMany(e => e.OwnedSchedules)
                 .HasForeignKey(e => e.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Schedule>()
+                .HasMany(m => m.TimeFrames)
+                .WithOne(tf => tf.Schedule)
+                .HasForeignKey(tf => tf.ScheduleId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Schedule>()
                 .Property(e => e.OwnerId)
@@ -249,7 +249,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedLoginUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginUser>()
-                .HasData(new LoginUser {Id = 1, Email = "test@test.com", FirstName = "test", LastName = "dev"});
+                .HasData(new LoginUser { Id = 1, Email = "test@test.com", FirstName = "test", LastName = "dev" });
 
             return modelBuilder;
         }
@@ -258,10 +258,10 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<LoginUserPermissionMapping>()
                 .HasData(
-                    new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.AccessOwnResources},
-                    new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.AccessAllResources},
-                    new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.ManageUsers},
-                    new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.ManageDeployment});
+                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.AccessOwnResources },
+                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.AccessAllResources },
+                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageUsers },
+                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageDeployment });
 
             return modelBuilder;
         }
@@ -269,7 +269,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedFacebookUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FacebookUser>()
-                .HasData(new FacebookUser {Id = 1, Username = "eragonwien@gmail.com", Password = "1234", OwnerId = 1});
+                .HasData(new FacebookUser { Id = 1, Username = "eragonwien@gmail.com", Password = "1234", OwnerId = 1 });
 
             return modelBuilder;
         }
@@ -292,7 +292,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedFacebookUserReceiverMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleReceiverMapping>()
-                .HasData(new ScheduleReceiverMapping {ReceiverId = 1, ScheduleId = 1});
+                .HasData(new ScheduleReceiverMapping { ReceiverId = 1, ScheduleId = 1 });
 
             return modelBuilder;
         }
@@ -301,9 +301,9 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<ScheduleWeekdayMapping>()
                 .HasData(
-                    new ScheduleWeekdayMapping {ScheduleId = 1, Weekday = DayOfWeek.Monday},
-                    new ScheduleWeekdayMapping {ScheduleId = 1, Weekday = DayOfWeek.Wednesday},
-                    new ScheduleWeekdayMapping {ScheduleId = 1, Weekday = DayOfWeek.Friday});
+                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Monday },
+                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Wednesday },
+                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Friday });
 
             return modelBuilder;
         }
@@ -312,7 +312,7 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<ScheduleTimeFrame>()
                 .HasData(new ScheduleTimeFrame
-                    {Id = 1, ScheduleId = 1, From = TimeSpan.FromHours(9), To = TimeSpan.FromHours(14)});
+                { Id = 1, ScheduleId = 1, From = TimeSpan.FromHours(9), To = TimeSpan.FromHours(14) });
 
             return modelBuilder;
         }
@@ -320,7 +320,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedScheduleJob(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleJob>()
-                .HasData(new ScheduleJob {Id = 1, ScheduleId = 1});
+                .HasData(new ScheduleJob { Id = 1, ScheduleId = 1 });
 
             return modelBuilder;
         }
@@ -328,7 +328,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedScheduleJobResult(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleJobResult>()
-                .HasData(new ScheduleJobResult {Id = 1, ScheduleJobId = 1});
+                .HasData(new ScheduleJobResult { Id = 1, ScheduleJobId = 1 });
 
             return modelBuilder;
         }
