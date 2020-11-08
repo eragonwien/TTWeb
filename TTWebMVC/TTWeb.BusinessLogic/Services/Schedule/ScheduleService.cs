@@ -38,9 +38,6 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
             var schedule = _mapper.Map<Data.Models.Schedule>(model);
             await _context.Schedules.AddAsync(schedule);
-            await _context.ScheduleReceiverMappings.AddRangeAsync(schedule.ScheduleReceiverMappings);
-            await _context.ScheduleWeekdayMappings.AddRangeAsync(schedule.ScheduleWeekdayMappings);
-            await _context.ScheduleTimeFrames.AddRangeAsync(schedule.TimeFrames);
             await _context.SaveChangesAsync();
 
             return _mapper.Map(schedule, model);
@@ -56,40 +53,8 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
             if (schedule == null) throw new ResourceNotFoundException(nameof(Data.Models.Schedule), model.Id);
 
-            using (var trans = await _context.Database.BeginTransactionAsync())
-            {
-                schedule = _mapper.Map(model, schedule);
-                await _context.SaveChangesAsync();
-
-                //await _context.ScheduleReceiverMappings.AddRangeAsync(model.Receivers
-                //    .Except(schedule.ScheduleReceiverMappings.Select(rm => _mapper.Map<ScheduleReceiverModel>(rm)))
-                //    .Select(receiver => new ScheduleReceiverMapping
-                //    {
-                //        ReceiverId = receiver.Id,
-                //        ScheduleId = model.Id
-                //    }));
-
-                //await _context.ScheduleWeekdayMappings.AddRangeAsync(model.Weekdays
-                //    .Except(schedule.ScheduleWeekdayMappings.Select(dm => _mapper.Map<DayOfWeek>(dm)))
-                //    .Select(weekday => new ScheduleWeekdayMapping
-                //    {
-                //        Weekday = weekday,
-                //        ScheduleId = model.Id
-                //    }));
-
-                //await _context.ScheduleTimeFrames.AddRangeAsync(model.TimeFrames
-                //    .Except(schedule.TimeFrames.Select(tf => _mapper.Map<ScheduleTimeFrameModel>(tf)))
-                //    .Select(timeFrame => new ScheduleTimeFrame
-                //    {
-                //        From = timeFrame.From,
-                //        To = timeFrame.To,
-                //        ScheduleId = model.Id
-                //    }));
-
-                await _context.SaveChangesAsync();
-
-                await trans.CommitAsync();
-            }
+            schedule = _mapper.Map(model, schedule);
+            await _context.SaveChangesAsync();
 
             return _mapper.Map(schedule, model);
         }
