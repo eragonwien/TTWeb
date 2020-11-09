@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TTWeb.BusinessLogic.Services.Schedule;
 
 namespace TTWeb.Worker.CalculateSchedule
 {
@@ -20,6 +21,7 @@ namespace TTWeb.Worker.CalculateSchedule
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<Worker>();
+                    services.AddTransient<IScheduleService, ScheduleService>();
                 })
                 .ConfigureLogging(o =>
                 {

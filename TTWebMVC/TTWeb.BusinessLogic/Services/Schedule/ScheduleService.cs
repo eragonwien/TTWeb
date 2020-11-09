@@ -90,5 +90,15 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .Select(s => _mapper.Map<ScheduleModel>(s))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<ScheduleModel>> ReadOpen(int maxCount)
+        {
+            if (maxCount <= 0) throw new ArgumentException(nameof(maxCount));
+            return await BaseQuery
+                .AsNoTracking()
+                .Take(maxCount)
+                .Select(s => _mapper.Map<ScheduleModel>(s))
+                .ToListAsync();
+        }
     }
 }
