@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -99,15 +100,17 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
         public async Task<ScheduleModel> FetchOneAsync()
         {
+            var now = DateTime.UtcNow;
+
             var schedule = await BaseQuery
-                .AsNoTracking()
-                .Where(s => !s.LastFetchDate.HasValue) // TODO: filters/orders by today date
+                .Where(s => !s.LastFetchDate.HasValue)
+                .Union(BaseQuery.Where(s => s.LastFetchDate.HasValue && s.LastFetchDate < now.Date))
                 .Take(_schedulingAppSettings.Planning.CountPerRequest)
                 .FirstOrDefaultAsync();
 
             if (schedule == null) return null;
 
-            schedule.LastFetchDate = DateTime.UtcNow;
+            schedule.LastFetchDate = now;
             await _context.SaveChangesAsync();
 
             return _mapper.Map<ScheduleModel>(schedule);
