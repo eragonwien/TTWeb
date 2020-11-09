@@ -11,6 +11,6 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         Task DeleteAsync(int id, int? ownerId);
         Task<ScheduleModel> ReadByIdAsync(int id, int? ownerId);
         Task<IEnumerable<ScheduleModel>> ReadAsync();
-        Task<ScheduleModel> FetchOneAsync();
+        Task<IEnumerable<ScheduleModel>> FetchAsync();
     }
 }
