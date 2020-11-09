@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "TTWeb.Worker.CalculateSchedule": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
