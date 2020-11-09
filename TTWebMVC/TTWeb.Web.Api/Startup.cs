@@ -30,6 +30,7 @@ namespace TTWeb.Web.Api
         public const string RequireManageDeploymentPermissionPolicy = "RequireManageDeploymentPermission";
         public const string RequireManageUsersPermissionPolicy = "RequireManageUsersPermission";
         public const string RequireAccessAllResourcesPermissionPolicy = "RequireAccessAllResourcesPermission";
+        public const string RequireWorkerPermissionPolicy = "RequireIsWorkerPermission";
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -53,6 +54,7 @@ namespace TTWeb.Web.Api
                 options.AddPolicy(RequireManageDeploymentPermissionPolicy, p => p.RequireRole(UserPermission.ManageDeployment));
                 options.AddPolicy(RequireManageUsersPermissionPolicy, p => p.RequireRole(UserPermission.ManageUsers));
                 options.AddPolicy(RequireAccessAllResourcesPermissionPolicy, p => p.RequireRole(UserPermission.AccessAllResources));
+                options.AddPolicy(RequireWorkerPermissionPolicy, p => p.RequireRole(UserPermission.IsWorker, UserPermission.ManageWorker));
             });
 
             var securityAppSettings = Configuration.GetSectionValue<SecurityAppSettings>(SecurityAppSettings.Section);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,11 +33,18 @@ namespace TTWeb.Web.Api.Controllers
             return schedule;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         [Authorize(Policy = Startup.RequireAccessAllResourcesPermissionPolicy)]
         public async Task<IEnumerable<ScheduleModel>> Read()
         {
             return await _scheduleService.ReadAsync();
+        }
+
+        [HttpGet("")]
+        [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
+        public async Task<IEnumerable<ScheduleModel>> ReadOpen()
+        {
+            return await _scheduleService.ReadOpenAsync();
         }
 
         [HttpPatch("{id}")]

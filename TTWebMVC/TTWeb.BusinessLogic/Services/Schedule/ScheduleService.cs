@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Exceptions;
+using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Data.Database;
 using TTWeb.Data.Extensions;
@@ -16,6 +18,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
     {
         private readonly TTWebContext _context;
         private readonly IMapper _mapper;
+        private readonly SchedulingAppSettings _schedulingAppSettings;
 
         private IQueryable<Data.Models.Schedule> BaseQuery =>
             _context.Schedules
@@ -26,10 +29,13 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .Include(s => s.ScheduleJobs)
                     .ThenInclude(j => j.Results);
 
-        public ScheduleService(TTWebContext context, IMapper mapper)
+        public ScheduleService(TTWebContext context,
+            IMapper mapper,
+            IOptions<SchedulingAppSettings> schedulingAppSettings)
         {
             _context = context;
             _mapper = mapper;
+            _schedulingAppSettings = schedulingAppSettings.Value;
         }
 
         public async Task<ScheduleModel> CreateAsync(ScheduleModel model)
@@ -91,12 +97,12 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ScheduleModel>> ReadOpen(int maxCount)
+        public async Task<IEnumerable<ScheduleModel>> ReadOpenAsync()
         {
-            if (maxCount <= 0) throw new ArgumentException(nameof(maxCount));
             return await BaseQuery
                 .AsNoTracking()
-                .Take(maxCount)
+                .Where(s => !s.PlannedDate.HasValue)
+                .Take(_schedulingAppSettings.Planning.CountPerRequest)
                 .Select(s => _mapper.Map<ScheduleModel>(s))
                 .ToListAsync();
         }
