@@ -40,11 +40,11 @@ namespace TTWeb.Web.Api.Controllers
             return await _scheduleService.ReadAsync();
         }
 
-        [HttpGet("")]
+        [HttpPost("fetch")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
-        public async Task<IEnumerable<ScheduleModel>> ReadOpen()
+        public async Task<ScheduleModel> FetchOne()
         {
-            return await _scheduleService.ReadOpenAsync();
+            return await _scheduleService.FetchOneAsync();
         }
 
         [HttpPatch("{id}")]

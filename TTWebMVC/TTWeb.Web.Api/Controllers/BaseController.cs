@@ -11,7 +11,7 @@ namespace TTWeb.Web.Api.Controllers
 {
     public class BaseController : ControllerBase
     {
-        private int LoginUserId => int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
+        protected int LoginUserId => int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
         protected int? OwnerId => !User.IsInRole(UserPermission.ManageUsers) ? LoginUserId : (int?)null;
 
         protected IEnumerable<UserPermission> LoginUserPermissions =>

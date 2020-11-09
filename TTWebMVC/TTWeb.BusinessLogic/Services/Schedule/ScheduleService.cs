@@ -97,14 +97,20 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ScheduleModel>> ReadOpenAsync()
+        public async Task<ScheduleModel> FetchOneAsync()
         {
-            return await BaseQuery
+            var schedule = await BaseQuery
                 .AsNoTracking()
-                .Where(s => !s.PlannedDate.HasValue)
+                .Where(s => !s.LastFetchDate.HasValue) // TODO: filters/orders by today date
                 .Take(_schedulingAppSettings.Planning.CountPerRequest)
-                .Select(s => _mapper.Map<ScheduleModel>(s))
-                .ToListAsync();
+                .FirstOrDefaultAsync();
+
+            if (schedule == null) return null;
+
+            schedule.LastFetchDate = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<ScheduleModel>(schedule);
         }
     }
 }
