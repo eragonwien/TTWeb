@@ -39,5 +39,16 @@
 		<ProjectReference Include="..\TTWeb.BusinessLogic\TTWeb.BusinessLogic.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Content Update="appsettings.Development.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="appsettings.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="copy &quot;$(SolutionDir)\AppSettings\*.json&quot;  &quot;$(ProjectDir)&quot;" />
+	</Target>
 </Project>

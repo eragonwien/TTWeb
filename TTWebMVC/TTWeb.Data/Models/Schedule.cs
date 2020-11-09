@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TTWeb.Data.Models
 {
@@ -15,5 +16,6 @@ namespace TTWeb.Data.Models
         public ICollection<ScheduleJob> ScheduleJobs { get; set; }
         public int OwnerId { get; set; }
         public LoginUser Owner { get; set; }
+        public DateTime? PlannedDate { get; set; }
     }
 }
