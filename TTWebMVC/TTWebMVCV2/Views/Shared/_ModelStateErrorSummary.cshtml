@@ -1,7 +1,0 @@
-﻿@if (!ViewData.ModelState.IsValid && ViewData.ModelState.Any(e => string.IsNullOrEmpty(e.Key)))
-{
-    <div class="notification is-danger is-light">
-        <button class="delete"></button>
-        @Html.ValidationSummary(true)
-    </div>
-}

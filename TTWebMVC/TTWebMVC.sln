@@ -15,7 +15,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workers", "Workers", "{9710
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{86530B2C-DC41-45E0-AB90-C9CAF9EE0B4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTWeb.Worker.CalculateSchedule", "TTWeb.Worker.CalculateSchedule\TTWeb.Worker.CalculateSchedule.csproj", "{1FE9F5E1-44C6-43EA-B2F7-F983858AB8C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWeb.Worker.CalculateSchedule", "TTWeb.Worker.CalculateSchedule\TTWeb.Worker.CalculateSchedule.csproj", "{1FE9F5E1-44C6-43EA-B2F7-F983858AB8C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppSettings", "AppSettings", "{6750D716-E371-43D3-AC47-99C32F522492}"
+	ProjectSection(SolutionItems) = preProject
+		AppSettings\appsettings.Development.json = AppSettings\appsettings.Development.json
+		AppSettings\appsettings.json = AppSettings\appsettings.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +56,7 @@ Global
 		{971080B2-45F5-4B27-BA09-88931EE17B6E} = {595E26ED-F534-4A20-8DB6-922F2FA46215}
 		{86530B2C-DC41-45E0-AB90-C9CAF9EE0B4C} = {595E26ED-F534-4A20-8DB6-922F2FA46215}
 		{1FE9F5E1-44C6-43EA-B2F7-F983858AB8C0} = {971080B2-45F5-4B27-BA09-88931EE17B6E}
+		{6750D716-E371-43D3-AC47-99C32F522492} = {595E26ED-F534-4A20-8DB6-922F2FA46215}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68EA1773-2874-45DF-A8D8-2D1658CD5D8D}
