@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Services.Schedule
 {
@@ -11,6 +12,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         Task DeleteAsync(int id, int? ownerId);
         Task<ScheduleModel> ReadByIdAsync(int id, int? ownerId);
         Task<IEnumerable<ScheduleModel>> ReadAsync();
+        Task<IEnumerable<ScheduleModel>> PeekAsync(int count, ProcessingStatus status);
         Task<IEnumerable<ScheduleModel>> PeekLockAsync();
     }
 }

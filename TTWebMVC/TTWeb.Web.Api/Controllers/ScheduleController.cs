@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Schedule;
+using TTWeb.Data.Models;
 
 namespace TTWeb.Web.Api.Controllers
 {
@@ -54,7 +55,14 @@ namespace TTWeb.Web.Api.Controllers
             await _scheduleService.DeleteAsync(id, OwnerId);
         }
 
-        [HttpPost("fetch")]
+        [HttpGet("peek")]
+        [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
+        public async Task<IEnumerable<ScheduleModel>> Peek([FromQuery] int count, [FromQuery] ProcessingStatus status)
+        {
+            return await _scheduleService.PeekAsync(count, status);
+        }
+
+        [HttpPost("peek-lock")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
         public async Task<IEnumerable<ScheduleModel>> PeekLock()
         {

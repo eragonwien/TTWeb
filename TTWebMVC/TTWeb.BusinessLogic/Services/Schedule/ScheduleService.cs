@@ -19,7 +19,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
     {
         private readonly TTWebContext _context;
         private readonly IMapper _mapper;
-        private readonly SchedulingAppSettings _schedulingAppSettings;
+        private readonly SchedulingPlanningAppSettings _planningAppSettings;
 
         private IQueryable<Data.Models.Schedule> BaseQuery =>
             _context.Schedules
@@ -36,7 +36,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         {
             _context = context;
             _mapper = mapper;
-            _schedulingAppSettings = schedulingAppSettings.Value;
+            _planningAppSettings = schedulingAppSettings.Value.Planning;
         }
 
         public async Task<ScheduleModel> CreateAsync(ScheduleModel model)
@@ -98,19 +98,28 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<ScheduleModel>> PeekAsync(int count, ProcessingStatus status)
+        {
+            return await BaseQuery
+                .Where(s => s.PlanningStatus == status)
+                .Take(count > 0 ? count : _planningAppSettings.CountPerRequest)
+                .Select(s => _mapper.Map<ScheduleModel>(s))
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<ScheduleModel>> PeekLockAsync()
         {
             var now = DateTime.UtcNow;
 
             var schedules = await BaseQuery
-                .Where(s => !s.LockedUntil.HasValue)
-                .Union(BaseQuery.Where(s => s.LockedUntil.HasValue && s.LockedUntil < now.Date))
-                .Take(_schedulingAppSettings.Planning.CountPerRequest)
+                .Where(s => s.PlanningStatus == ProcessingStatus.New 
+                            || s.PlanningStatus == ProcessingStatus.Retry)
+                .Take(_planningAppSettings.CountPerRequest)
                 .ToListAsync();
 
             if (schedules.Count == 0) return null;
 
-            schedules.ForEach(s => s.LockedUntil = now);
+            schedules.ForEach(s => s.LockUntil(now.Add(_planningAppSettings.LockDuration)));
             await _context.SaveChangesAsync();
 
             return schedules.Select(s => _mapper.Map<ScheduleModel>(s));
