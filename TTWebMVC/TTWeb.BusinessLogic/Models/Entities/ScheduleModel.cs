@@ -27,6 +27,8 @@ namespace TTWeb.BusinessLogic.Models.Entities
 
         public ProcessingStatus PlanningStatus { get; set; }
 
+        public int? WorkerId { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext context)
         {
             yield break;

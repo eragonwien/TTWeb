@@ -18,6 +18,8 @@ namespace TTWeb.Data.Models
         public LoginUser Owner { get; set; }
         public ProcessingStatus PlanningStatus { get; set; }
         public DateTime? LockedUntil { get; set; }
+        public int? WorkerId { get; set; }
+        public LoginUser Worker { get; set; }
 
         public Schedule LockUntil(DateTime lockTime)
         {

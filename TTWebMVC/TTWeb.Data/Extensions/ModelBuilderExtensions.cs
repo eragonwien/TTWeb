@@ -210,6 +210,12 @@ namespace TTWeb.Data.Extensions
                 .IsRequired()
                 .HasDefaultValue(ProcessingStatus.New);
 
+            modelBuilder.Entity<Schedule>()
+                .HasOne(e => e.Worker)
+                .WithMany(e => e.WorkingSchedules)
+                .HasForeignKey(e => e.WorkerId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
             return modelBuilder;
         }
 
