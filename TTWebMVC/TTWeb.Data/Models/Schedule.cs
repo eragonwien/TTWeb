@@ -21,10 +21,15 @@ namespace TTWeb.Data.Models
         public int? WorkerId { get; set; }
         public LoginUser Worker { get; set; }
 
-        public Schedule LockUntil(DateTime lockTime)
+        public Schedule LockUntil(DateTime? lockTime)
         {
             LockedUntil = lockTime;
-            PlanningStatus = ProcessingStatus.InProgress;
+            return this;
+        }
+
+        public Schedule SetStatus(ProcessingStatus status)
+        {
+            PlanningStatus = status;
             return this;
         }
     }

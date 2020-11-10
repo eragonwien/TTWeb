@@ -9,10 +9,5 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         {
             throw new System.NotImplementedException();
         }
-
-        public Task<ScheduleJobModel> FetchOneAsync()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

@@ -6,6 +6,5 @@ namespace TTWeb.BusinessLogic.Services.Schedule
     public interface IScheduleJobService
     {
         Task CreateAsync(ScheduleJobModel model);
-        Task<ScheduleJobModel> FetchOneAsync();
     }
 }

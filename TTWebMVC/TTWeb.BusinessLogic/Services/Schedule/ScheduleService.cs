@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.Data.Database;
 using TTWeb.Data.Extensions;
 using TTWeb.Data.Models;
@@ -107,29 +109,57 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ScheduleModel>> PeekLockAsync()
+        public async Task PlanAsync()
         {
             var now = DateTime.UtcNow;
 
             var schedules = await BaseQuery
-                .Where(s => s.PlanningStatus == ProcessingStatus.New 
+                .Where(s => s.PlanningStatus == ProcessingStatus.New
                             || s.PlanningStatus == ProcessingStatus.Retry)
                 .Take(_planningAppSettings.CountPerRequest)
                 .ToListAsync();
 
-            if (schedules.Count == 0) return null;
+            if (schedules.Count == 0) return;
 
-            schedules.ForEach(s => s.LockUntil(now.Add(_planningAppSettings.LockDuration)));
+            schedules.ForEach(s => s.LockUntil(now.Add(_planningAppSettings.LockDuration)).SetStatus(ProcessingStatus.InProgress));
             await _context.SaveChangesAsync();
 
-            return schedules.Select(s => _mapper.Map<ScheduleModel>(s));
+            var plannedJobs = new List<ScheduleJob>();
+            await PlanJobs();
+            await UpdateStatus();
+
+            async Task PlanJobs()
+            {
+                var planResults = await PlanJobAsync(schedules.Select(s => _mapper.Map<ScheduleModel>(s)));
+                plannedJobs = planResults.Where(r => r.Succeed).Select(r => _mapper.Map<ScheduleJob>(r.Result)).ToList();
+                await _context.ScheduleJobs.AddRangeAsync(plannedJobs);
+                await _context.SaveChangesAsync();
+            }
+
+            async Task UpdateStatus()
+            {
+                _context.Schedules.AttachRange(plannedJobs.Select(j => new Data.Models.Schedule
+                {
+                    Id = j.ScheduleId,
+                    PlanningStatus = ProcessingStatus.Completed
+                }));
+
+                _context.Schedules.AttachRange(schedules.Select(s => s.Id)
+                    .Except(plannedJobs.Select(j => j.ScheduleId))
+                    .Select(id => new Data.Models.Schedule
+                    {
+                        Id = id,
+                        PlanningStatus = ProcessingStatus.Error
+                    }));
+
+                await _context.SaveChangesAsync();
+            }
         }
 
-        public async Task UpdateStatusAsync(ScheduleModel model)
+        private static Task<List<ProcessingResult<ScheduleJobModel>>> PlanJobAsync(IEnumerable<ScheduleModel> schedules)
         {
-            var schedule = new Data.Models.Schedule { Id = model.Id, PlanningStatus = model.PlanningStatus };
-            _context.Schedules.Attach(schedule);
-            await _context.SaveChangesAsync();
+            if (schedules == null) throw new ArgumentNullException(nameof(schedules));
+            throw new NotImplementedException();
         }
     }
 }
