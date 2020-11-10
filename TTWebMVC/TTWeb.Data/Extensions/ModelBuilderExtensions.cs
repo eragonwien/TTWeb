@@ -203,6 +203,13 @@ namespace TTWeb.Data.Extensions
                 .Property(e => e.OwnerId)
                 .IsRequired();
 
+            modelBuilder.Entity<Schedule>()
+                .Property(m => m.PlanningStatus)
+                .HasColumnName("PlanningStatusId")
+                .HasConversion<int>()
+                .IsRequired()
+                .HasDefaultValue(ProcessingStatus.New);
+
             return modelBuilder;
         }
 
@@ -284,6 +291,7 @@ namespace TTWeb.Data.Extensions
                     IntervalType = ScheduleIntervalType.Daily,
                     SenderId = 1,
                     OwnerId = 1,
+                    PlanningStatus = ProcessingStatus.New
                 });
 
             return modelBuilder;

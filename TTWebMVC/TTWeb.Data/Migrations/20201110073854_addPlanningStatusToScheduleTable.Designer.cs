@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TTWeb.Data.Database;
 
 namespace TTWeb.Data.Migrations
 {
     [DbContext(typeof(TTWebContext))]
-    partial class TTWebContextModelSnapshot : ModelSnapshot
+    [Migration("20201110073854_addPlanningStatusToScheduleTable")]
+    partial class addPlanningStatusToScheduleTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,10 +159,8 @@ namespace TTWeb.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("PlanningStatus")
-                        .ValueGeneratedOnAdd()
                         .HasColumnName("PlanningStatusId")
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
+                        .HasColumnType("int");
 
                     b.Property<int?>("SenderId")
                         .HasColumnType("int");

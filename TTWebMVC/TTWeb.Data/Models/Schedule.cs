@@ -16,6 +16,7 @@ namespace TTWeb.Data.Models
         public ICollection<ScheduleJob> ScheduleJobs { get; set; }
         public int OwnerId { get; set; }
         public LoginUser Owner { get; set; }
+        public ProcessingStatus PlanningStatus { get; set; }
         public DateTime? LockedUntil { get; set; }
     }
 }
