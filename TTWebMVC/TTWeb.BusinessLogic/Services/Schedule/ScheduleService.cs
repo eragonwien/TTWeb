@@ -124,5 +124,12 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
             return schedules.Select(s => _mapper.Map<ScheduleModel>(s));
         }
+
+        public async Task UpdateStatusAsync(ScheduleModel model)
+        {
+            var schedule = new Data.Models.Schedule { Id = model.Id, PlanningStatus = model.PlanningStatus };
+            _context.Schedules.Attach(schedule);
+            await _context.SaveChangesAsync();
+        }
     }
 }

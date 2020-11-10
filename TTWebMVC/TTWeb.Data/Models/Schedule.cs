@@ -24,6 +24,7 @@ namespace TTWeb.Data.Models
         public Schedule LockUntil(DateTime lockTime)
         {
             LockedUntil = lockTime;
+            PlanningStatus = ProcessingStatus.InProgress;
             return this;
         }
     }

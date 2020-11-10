@@ -6,6 +6,7 @@
         InProgress = 2,
         Retry = 3,
         Error = 4,
-        Paused = 5
+        Paused = 5,
+        Completed = 6
     }
 }

@@ -62,11 +62,19 @@ namespace TTWeb.Web.Api.Controllers
             return await _scheduleService.PeekAsync(count, status);
         }
 
-        [HttpPost("peek-lock")]
+        [HttpPost("{id}/peek-lock")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
         public async Task<IEnumerable<ScheduleModel>> PeekLock()
         {
             return await _scheduleService.PeekLockAsync();
+        }
+
+        [HttpPost("status")]
+        [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
+        public async Task UpdateStatus([FromRoute] int id, [FromBody] ScheduleModel model)
+        {
+            if (id != model.Id) throw new InvalidInputException(nameof(model.Id));
+            await _scheduleService.UpdateStatusAsync(model);
         }
     }
 }
