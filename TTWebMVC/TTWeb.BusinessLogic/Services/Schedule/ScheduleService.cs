@@ -22,6 +22,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         private readonly TTWebContext _context;
         private readonly IMapper _mapper;
         private readonly SchedulingPlanningAppSettings _planningAppSettings;
+        private readonly IScheduleJobService _scheduleJobService;
 
         private IQueryable<Data.Models.Schedule> BaseQuery =>
             _context.Schedules
@@ -34,10 +35,12 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
         public ScheduleService(TTWebContext context,
             IMapper mapper,
-            IOptions<SchedulingAppSettings> schedulingAppSettings)
+            IOptions<SchedulingAppSettings> schedulingAppSettings,
+            IScheduleJobService scheduleJobService)
         {
             _context = context;
             _mapper = mapper;
+            _scheduleJobService = scheduleJobService;
             _planningAppSettings = schedulingAppSettings.Value.Planning;
         }
 
@@ -124,28 +127,31 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             schedules.ForEach(s => s.LockUntil(now.Add(_planningAppSettings.LockDuration)).SetStatus(ProcessingStatus.InProgress));
             await _context.SaveChangesAsync();
 
-            var plannedJobs = new List<ScheduleJob>();
+            var successPlannedJobs = new List<ScheduleJob>();
             await PlanJobs();
-            await UpdateStatus();
+            await UpdateScheduleStatus();
 
             async Task PlanJobs()
             {
                 var planResults = await PlanJobAsync(schedules.Select(s => _mapper.Map<ScheduleModel>(s)));
-                plannedJobs = planResults.Where(r => r.Succeed).Select(r => _mapper.Map<ScheduleJob>(r.Result)).ToList();
-                await _context.ScheduleJobs.AddRangeAsync(plannedJobs);
+                successPlannedJobs = planResults.Where(r => r.Succeed).Select(r => _mapper.Map<ScheduleJob>(r.Result)).ToList();
+                await _context.ScheduleJobs.AddRangeAsync(successPlannedJobs);
                 await _context.SaveChangesAsync();
             }
 
-            async Task UpdateStatus()
+            async Task UpdateScheduleStatus()
             {
-                _context.Schedules.AttachRange(plannedJobs.Select(j => new Data.Models.Schedule
+                // Sets successfully planned schedules as completed
+                _context.Schedules.AttachRange(successPlannedJobs.Select(j => new Data.Models.Schedule
                 {
                     Id = j.ScheduleId,
                     PlanningStatus = ProcessingStatus.Completed
                 }));
 
+                // Sets unsuccessfully planned schedules as error
+                // TODO: logs planning error in (another?)table
                 _context.Schedules.AttachRange(schedules.Select(s => s.Id)
-                    .Except(plannedJobs.Select(j => j.ScheduleId))
+                    .Except(successPlannedJobs.Select(j => j.ScheduleId))
                     .Select(id => new Data.Models.Schedule
                     {
                         Id = id,
