@@ -9,20 +9,27 @@ namespace TTWeb.BusinessLogic.Models.Entities
     {
         [Required]
         public ScheduleAction Action { get; set; }
+
         [Required]
         public ScheduleIntervalType IntervalType { get; set; }
+
         [Required]
         public int SenderId { get; set; }
+
         [Required]
         public List<ScheduleReceiverModel> Receivers { get; set; }
+
         [Required]
         public List<DayOfWeek> Weekdays { get; set; }
+
         [Required]
         public List<ScheduleTimeFrameModel> TimeFrames { get; set; }
 
+        public ProcessingStatus PlanningStatus { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext context)
         {
-            if (context is null) yield break;
+            yield break;
         }
     }
 }
