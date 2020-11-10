@@ -62,14 +62,14 @@ namespace TTWeb.Web.Api.Controllers
             return await _scheduleService.PeekAsync(count, status);
         }
 
-        [HttpPost("{id}/peek-lock")]
+        [HttpPost("peek-lock")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
         public async Task<IEnumerable<ScheduleModel>> PeekLock()
         {
             return await _scheduleService.PeekLockAsync();
         }
 
-        [HttpPost("status")]
+        [HttpPost("{id}/status")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
         public async Task UpdateStatus([FromRoute] int id, [FromBody] ScheduleModel model)
         {
