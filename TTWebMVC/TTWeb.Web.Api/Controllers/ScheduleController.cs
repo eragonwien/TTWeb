@@ -40,13 +40,6 @@ namespace TTWeb.Web.Api.Controllers
             return await _scheduleService.ReadAsync();
         }
 
-        [HttpPost("fetch")]
-        [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
-        public async Task<ScheduleModel> FetchOne()
-        {
-            return await _scheduleService.FetchOneAsync();
-        }
-
         [HttpPatch("{id}")]
         public async Task<ScheduleModel> Update([FromRoute] int id, [FromBody] ScheduleModel model)
         {
@@ -59,6 +52,13 @@ namespace TTWeb.Web.Api.Controllers
         public async Task Delete([FromRoute] int id)
         {
             await _scheduleService.DeleteAsync(id, OwnerId);
+        }
+
+        [HttpPost("fetch")]
+        [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
+        public async Task<IEnumerable<ScheduleModel>> Fetch()
+        {
+            return await _scheduleService.FetchAsync();
         }
     }
 }
