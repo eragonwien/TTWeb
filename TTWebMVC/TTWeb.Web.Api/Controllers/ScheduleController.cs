@@ -56,9 +56,9 @@ namespace TTWeb.Web.Api.Controllers
 
         [HttpPost("fetch")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
-        public async Task<IEnumerable<ScheduleModel>> Fetch()
+        public async Task<IEnumerable<ScheduleModel>> PeekLock()
         {
-            return await _scheduleService.FetchAsync();
+            return await _scheduleService.PeekLockAsync();
         }
     }
 }
