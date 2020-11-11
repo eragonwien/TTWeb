@@ -28,7 +28,9 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         private IQueryable<Data.Models.Schedule> BaseQuery =>
             _context.Schedules
                 .Include(s => s.Owner)
+                .Include(s => s.Sender)
                 .Include(s => s.ScheduleReceiverMappings)
+                    .ThenInclude(m => m.Receiver)
                 .Include(s => s.ScheduleWeekdayMappings)
                 .Include(s => s.TimeFrames)
                 .Include(s => s.ScheduleJobs)
