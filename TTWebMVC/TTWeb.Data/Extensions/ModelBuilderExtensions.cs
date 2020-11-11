@@ -88,22 +88,33 @@ namespace TTWeb.Data.Extensions
 
             modelBuilder.Entity<FacebookUser>()
                 .Property(u => u.Username)
-                .HasMaxLength(MaxLengthMediumString)
+                .HasMaxLength(MaxLengthLongString)
                 .IsRequired();
 
             modelBuilder.Entity<FacebookUser>()
                 .Property(u => u.Password)
-                .HasMaxLength(MaxLengthMediumString)
-                .IsRequired();
+                .HasMaxLength(MaxLengthLongString);
+
+            modelBuilder.Entity<FacebookUser>()
+                .Property(u => u.HomeAddress)
+                .HasMaxLength(MaxLengthLongString);
+
+            modelBuilder.Entity<FacebookUser>()
+                .Property(u => u.ProfileAddress)
+                .HasMaxLength(MaxLengthLongString);
 
             modelBuilder.Entity<FacebookUser>()
                 .HasOne(e => e.Owner)
                 .WithMany(e => e.OwnedFacebookUsers)
                 .HasForeignKey(e => e.OwnerId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<FacebookUser>()
                 .Property(e => e.OwnerId)
+                .IsRequired();
+
+            modelBuilder.Entity<FacebookUser>()
+                .Property(e => e.Enabled)
                 .IsRequired();
 
             return modelBuilder;
@@ -282,7 +293,14 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedFacebookUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FacebookUser>()
-                .HasData(new FacebookUser { Id = 1, Username = "eragonwien@gmail.com", Password = "1234", OwnerId = 1 });
+                .HasData(new FacebookUser
+                {
+                    Id = 1, 
+                    Username = "eragonwien@gmail.com", 
+                    Password = "1234", 
+                    OwnerId = 1, 
+                    Enabled = true
+                });
 
             return modelBuilder;
         }

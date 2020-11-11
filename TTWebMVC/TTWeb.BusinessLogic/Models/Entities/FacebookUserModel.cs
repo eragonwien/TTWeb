@@ -2,18 +2,18 @@
 
 namespace TTWeb.BusinessLogic.Models.Entities
 {
-    public class FacebookUserModel
+    public class FacebookUserModel : BaseUserOwnedModel
     {
-        public int? Id { get; set; }
-
-        [Required]
-        public int? OwnerId { get; set; }
-
         [Required]
         public string Username { get; set; }
 
-        [Required]
         public string Password { get; set; }
+
+        public string HomeAddress { get; set; }
+
+        public string ProfileAddress { get; set; }
+
+        public bool Enabled { get; set; }
 
         public FacebookUserModel ClearPassword()
         {
