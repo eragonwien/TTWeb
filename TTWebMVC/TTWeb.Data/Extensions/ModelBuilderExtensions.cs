@@ -51,6 +51,18 @@ namespace TTWeb.Data.Extensions
                 .HasMaxLength(MaxLengthLongString)
                 .IsRequired();
 
+            modelBuilder.Entity<LoginUser>()
+                .HasMany(e => e.OwnedSchedules)
+                .WithOne(m => m.Owner)
+                .HasForeignKey(m => m.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LoginUser>()
+                .HasMany(e => e.OwnedFacebookUsers)
+                .WithOne(m => m.Owner)
+                .HasForeignKey(m => m.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             return modelBuilder;
         }
 
@@ -102,12 +114,6 @@ namespace TTWeb.Data.Extensions
             modelBuilder.Entity<FacebookUser>()
                 .Property(u => u.ProfileAddress)
                 .HasMaxLength(MaxLengthLongString);
-
-            modelBuilder.Entity<FacebookUser>()
-                .HasOne(e => e.Owner)
-                .WithMany(e => e.OwnedFacebookUsers)
-                .HasForeignKey(e => e.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<FacebookUser>()
                 .Property(e => e.OwnerId)
@@ -197,12 +203,6 @@ namespace TTWeb.Data.Extensions
                 .WithMany(u => u.SendSchedule)
                 .HasForeignKey(m => m.SenderId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
-
-            modelBuilder.Entity<Schedule>()
-                .HasOne(e => e.Owner)
-                .WithMany(e => e.OwnedSchedules)
-                .HasForeignKey(e => e.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Schedule>()
                 .HasMany(m => m.TimeFrames)

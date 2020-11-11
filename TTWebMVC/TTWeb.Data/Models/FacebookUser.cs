@@ -7,7 +7,6 @@ namespace TTWeb.Data.Models
     {
         public int Id { get; set; }
 
-        [Required]
         public string Username { get; set; }
         
         public string Password { get; set; }
@@ -18,11 +17,10 @@ namespace TTWeb.Data.Models
 
         public bool Enabled { get; set; }
 
-        [Required]
         public int OwnerId { get; set; }
 
-        public virtual ICollection<Schedule> SendSchedule { get; set; }
-        public virtual ICollection<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
-        public virtual LoginUser Owner { get; set; }
+        public ICollection<Schedule> SendSchedule { get; set; }
+        public ICollection<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
+        public LoginUser Owner { get; set; }
     }
 }
