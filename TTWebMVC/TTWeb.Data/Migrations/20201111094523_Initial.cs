@@ -28,8 +28,11 @@ namespace TTWeb.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(maxLength: 64, nullable: false),
-                    Password = table.Column<string>(maxLength: 64, nullable: false),
+                    Username = table.Column<string>(maxLength: 128, nullable: false),
+                    Password = table.Column<string>(maxLength: 128, nullable: true),
+                    HomeAddress = table.Column<string>(maxLength: 128, nullable: true),
+                    ProfileAddress = table.Column<string>(maxLength: 128, nullable: true),
+                    Enabled = table.Column<bool>(nullable: false),
                     OwnerId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -58,7 +61,7 @@ namespace TTWeb.Data.Migrations
                         column: x => x.LoginUserId,
                         principalTable: "LoginUser",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,15 +72,31 @@ namespace TTWeb.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Action = table.Column<string>(maxLength: 64, nullable: false),
                     IntervalType = table.Column<string>(maxLength: 64, nullable: false),
-                    SenderId = table.Column<int>(nullable: false)
+                    PlanningStatusId = table.Column<int>(nullable: false, defaultValue: 1),
+                    SenderId = table.Column<int>(nullable: false),
+                    OwnerId = table.Column<int>(nullable: false),
+                    WorkerId = table.Column<int>(nullable: true),
+                    LockedUntil = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Schedule", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Schedule_LoginUser_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "LoginUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Schedule_FacebookUser_SenderId",
                         column: x => x.SenderId,
                         principalTable: "FacebookUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Schedule_LoginUser_WorkerId",
+                        column: x => x.WorkerId,
+                        principalTable: "LoginUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -98,7 +117,7 @@ namespace TTWeb.Data.Migrations
                         column: x => x.ScheduleId,
                         principalTable: "Schedule",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -116,13 +135,13 @@ namespace TTWeb.Data.Migrations
                         column: x => x.ReceiverId,
                         principalTable: "FacebookUser",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ScheduleReceiverMapping_Schedule_ScheduleId",
                         column: x => x.ScheduleId,
                         principalTable: "Schedule",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -143,7 +162,7 @@ namespace TTWeb.Data.Migrations
                         column: x => x.ScheduleId,
                         principalTable: "Schedule",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -161,7 +180,7 @@ namespace TTWeb.Data.Migrations
                         column: x => x.ScheduleId,
                         principalTable: "Schedule",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -180,7 +199,7 @@ namespace TTWeb.Data.Migrations
                         column: x => x.ScheduleJobId,
                         principalTable: "ScheduleJob",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -190,18 +209,24 @@ namespace TTWeb.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "FacebookUser",
-                columns: new[] { "Id", "OwnerId", "Password", "Username" },
-                values: new object[] { 1, 1, "1234", "eragonwien@gmail.com" });
+                columns: new[] { "Id", "Enabled", "HomeAddress", "OwnerId", "Password", "ProfileAddress", "Username" },
+                values: new object[] { 1, true, null, 1, "1234", null, "eragonwien@gmail.com" });
 
             migrationBuilder.InsertData(
                 table: "LoginUserPermissionMapping",
                 columns: new[] { "LoginUserId", "UserPermissionId" },
-                values: new object[] { 1, 1 });
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 1, 3 },
+                    { 1, 4 }
+                });
 
             migrationBuilder.InsertData(
                 table: "Schedule",
-                columns: new[] { "Id", "Action", "IntervalType", "SenderId" },
-                values: new object[] { 1, "LIKE", "Daily", 1 });
+                columns: new[] { "Id", "Action", "IntervalType", "LockedUntil", "OwnerId", "PlanningStatusId", "SenderId", "WorkerId" },
+                values: new object[] { 1, "Like", "Daily", null, 1, 1, 1, null });
 
             migrationBuilder.InsertData(
                 table: "ScheduleJob",
@@ -251,9 +276,19 @@ namespace TTWeb.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Schedule_OwnerId",
+                table: "Schedule",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Schedule_SenderId",
                 table: "Schedule",
                 column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schedule_WorkerId",
+                table: "Schedule",
+                column: "WorkerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ScheduleJob_ScheduleId",

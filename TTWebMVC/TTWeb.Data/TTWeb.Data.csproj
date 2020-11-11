@@ -5,17 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20201031061835_Initial.cs" />
-    <Compile Remove="Migrations\20201031061835_Initial.Designer.cs" />
-    <Compile Remove="Migrations\20201103075613_AddFacebookUserOwner.cs" />
-    <Compile Remove="Migrations\20201103075613_AddFacebookUserOwner.Designer.cs" />
-    <Compile Remove="Migrations\20201103075749_AddFacebookUserOwner.cs" />
-    <Compile Remove="Migrations\20201103075749_AddFacebookUserOwner.Designer.cs" />
-    <Compile Remove="Migrations\20201103075837_Initial.cs" />
-    <Compile Remove="Migrations\20201103075837_Initial.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9">
       <PrivateAssets>all</PrivateAssets>

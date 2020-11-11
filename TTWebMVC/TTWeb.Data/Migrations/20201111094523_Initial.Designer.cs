@@ -10,8 +10,8 @@ using TTWeb.Data.Database;
 namespace TTWeb.Data.Migrations
 {
     [DbContext(typeof(TTWebContext))]
-    [Migration("20201109131652_AddsPropertySchedulePlannedDate")]
-    partial class AddsPropertySchedulePlannedDate
+    [Migration("20201111094523_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,18 +28,28 @@ namespace TTWeb.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("HomeAddress")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(64)")
-                        .HasMaxLength(64);
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("ProfileAddress")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(64)")
-                        .HasMaxLength(64);
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.HasKey("Id");
 
@@ -54,6 +64,7 @@ namespace TTWeb.Data.Migrations
                         new
                         {
                             Id = 1,
+                            Enabled = true,
                             OwnerId = 1,
                             Password = "1234",
                             Username = "eragonwien@gmail.com"
@@ -152,13 +163,23 @@ namespace TTWeb.Data.Migrations
                         .HasColumnType("nvarchar(64)")
                         .HasMaxLength(64);
 
+                    b.Property<DateTime?>("LockedUntil")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("PlannedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("PlanningStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("PlanningStatusId")
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<int?>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WorkerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -166,6 +187,8 @@ namespace TTWeb.Data.Migrations
                     b.HasIndex("OwnerId");
 
                     b.HasIndex("SenderId");
+
+                    b.HasIndex("WorkerId");
 
                     b.ToTable("Schedule");
 
@@ -176,6 +199,7 @@ namespace TTWeb.Data.Migrations
                             Action = "Like",
                             IntervalType = "Daily",
                             OwnerId = 1,
+                            PlanningStatus = 1,
                             SenderId = 1
                         });
                 });
@@ -336,12 +360,17 @@ namespace TTWeb.Data.Migrations
                     b.HasOne("TTWeb.Data.Models.LoginUser", "Owner")
                         .WithMany("OwnedSchedules")
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("TTWeb.Data.Models.FacebookUser", "Sender")
                         .WithMany("SendSchedule")
-                        .HasForeignKey("SenderId");
+                        .HasForeignKey("SenderId")
+                        .IsRequired();
+
+                    b.HasOne("TTWeb.Data.Models.LoginUser", "Worker")
+                        .WithMany("WorkingSchedules")
+                        .HasForeignKey("WorkerId");
                 });
 
             modelBuilder.Entity("TTWeb.Data.Models.ScheduleJob", b =>
