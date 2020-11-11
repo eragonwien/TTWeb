@@ -64,9 +64,9 @@ namespace TTWeb.Web.Api.Controllers
 
         [HttpPost("trigger-planning")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
-        public async Task<IEnumerable<ScheduleModel>> TriggerPlanning()
+        public async Task TriggerPlanning()
         {
-            return await _scheduleService.PlanAsync();
+            await _scheduleService.PlanAsync();
         }
     }
 }

@@ -16,12 +16,5 @@ namespace TTWeb.Web.Api.Controllers
         {
             _scheduleJobService = scheduleJobService;
         }
-
-        [HttpPost]
-        [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
-        public async Task Create([FromBody] ScheduleJobModel model)
-        {
-            await _scheduleJobService.CreateAsync(model);
-        }
     }
 }
