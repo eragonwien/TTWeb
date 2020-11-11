@@ -340,7 +340,7 @@ namespace TTWeb.Data.Migrations
                     b.HasOne("TTWeb.Data.Models.LoginUser", "Owner")
                         .WithMany("OwnedFacebookUsers")
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -358,7 +358,7 @@ namespace TTWeb.Data.Migrations
                     b.HasOne("TTWeb.Data.Models.LoginUser", "Owner")
                         .WithMany("OwnedSchedules")
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TTWeb.Data.Models.FacebookUser", "Sender")
