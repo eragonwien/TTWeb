@@ -5,7 +5,7 @@ using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Models.Entities
 {
-    public class ScheduleModel : BaseUserOwnedModel, IValidatableObject
+    public class ScheduleModel : BaseUserOwnedModel
     {
         [Required]
         public ScheduleAction Action { get; set; }
@@ -14,10 +14,10 @@ namespace TTWeb.BusinessLogic.Models.Entities
         public ScheduleIntervalType IntervalType { get; set; }
 
         [Required]
-        public int SenderId { get; set; }
+        public FacebookUserModel Sender { get; set; }
 
         [Required]
-        public List<ScheduleReceiverModel> Receivers { get; set; }
+        public IEnumerable<FacebookUserModel> Receivers { get; set; }
 
         [Required]
         public List<DayOfWeek> Weekdays { get; set; }
@@ -28,10 +28,5 @@ namespace TTWeb.BusinessLogic.Models.Entities
         public ProcessingStatus PlanningStatus { get; set; }
 
         public int? WorkerId { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext context)
-        {
-            yield break;
-        }
     }
 }

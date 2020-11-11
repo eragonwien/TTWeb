@@ -52,13 +52,19 @@ namespace TTWeb.Data.Extensions
                 .IsRequired();
 
             modelBuilder.Entity<LoginUser>()
-                .HasMany(e => e.OwnedSchedules)
+                .HasMany(e => e.OwnedFacebookUsers)
                 .WithOne(m => m.Owner)
                 .HasForeignKey(m => m.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<LoginUser>()
-                .HasMany(e => e.OwnedFacebookUsers)
+                .HasMany(e => e.WorkingSchedules)
+                .WithOne(m => m.Worker)
+                .HasForeignKey(m => m.WorkerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LoginUser>()
+                .HasMany(e => e.OwnedSchedules)
                 .WithOne(m => m.Owner)
                 .HasForeignKey(m => m.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);

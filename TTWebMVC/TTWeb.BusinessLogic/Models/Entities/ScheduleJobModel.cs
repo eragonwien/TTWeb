@@ -15,7 +15,7 @@ namespace TTWeb.BusinessLogic.Models.Entities
         public ScheduleAction Action { get; set; }
 
         public DateTime StartTime { get; set; }
-        public ScheduleSenderModel Sender { get; set; }
-        public IEnumerable<ScheduleReceiverModel> Receivers { get; set; }
+        public FacebookUserModel Sender { get; set; }
+        public IEnumerable<FacebookUserModel> Receivers { get; set; }
     }
 }
