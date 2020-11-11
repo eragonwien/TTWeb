@@ -13,12 +13,7 @@ namespace TTWeb.BusinessLogic.Models.Entities
 
         public string ProfileAddress { get; set; }
 
+        [Required]
         public bool Enabled { get; set; }
-
-        public FacebookUserModel ClearPassword()
-        {
-            Password = string.Empty;
-            return this;
-        }
     }
 }
