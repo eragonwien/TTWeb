@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -127,45 +128,49 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             schedules.ForEach(s => s.LockUntil(now.Add(_planningAppSettings.LockDuration)).SetStatus(ProcessingStatus.InProgress));
             await _context.SaveChangesAsync();
 
-            var successPlannedJobs = new List<ScheduleJob>();
-            await PlanJobs();
-            await UpdateScheduleStatus();
-
-            async Task PlanJobs()
-            {
-                var planResults = await PlanJobAsync(schedules.Select(s => _mapper.Map<ScheduleModel>(s)));
-                successPlannedJobs = planResults.Where(r => r.Succeed).Select(r => _mapper.Map<ScheduleJob>(r.Result)).ToList();
-                await _context.ScheduleJobs.AddRangeAsync(successPlannedJobs);
-                await _context.SaveChangesAsync();
-            }
-
-            async Task UpdateScheduleStatus()
-            {
-                // Sets successfully planned schedules as completed
-                _context.Schedules.AttachRange(successPlannedJobs.Select(j => new Data.Models.Schedule
-                {
-                    Id = j.ScheduleId,
-                    PlanningStatus = ProcessingStatus.Completed
-                }));
-
-                // Sets unsuccessfully planned schedules as error
-                // TODO: logs planning error in (another?)table
-                _context.Schedules.AttachRange(schedules.Select(s => s.Id)
-                    .Except(successPlannedJobs.Select(j => j.ScheduleId))
-                    .Select(id => new Data.Models.Schedule
-                    {
-                        Id = id,
-                        PlanningStatus = ProcessingStatus.Error
-                    }));
-
-                await _context.SaveChangesAsync();
-            }
+            var successPlannedJobs = await PlanJobs(schedules);
+            await UpdateScheduleStatus(schedules, successPlannedJobs);
         }
 
-        private static Task<List<ProcessingResult<ScheduleJobModel>>> PlanJobAsync(IEnumerable<ScheduleModel> schedules)
+        private async Task<List<ScheduleJob>> PlanJobs(IEnumerable<Data.Models.Schedule> schedules)
         {
             if (schedules == null) throw new ArgumentNullException(nameof(schedules));
-            throw new NotImplementedException();
+            var planResults = await _scheduleJobService.PlanJobAsync(schedules);
+            var successPlannedJobs = planResults
+                .Where(r => r.Succeed)
+                .Select(r => _mapper.Map<ScheduleJob>(r.Result))
+                .ToList();
+
+            await _context.ScheduleJobs.AddRangeAsync(successPlannedJobs);
+            await _context.SaveChangesAsync();
+            return successPlannedJobs;
+        }
+
+        private async Task UpdateScheduleStatus(IEnumerable<Data.Models.Schedule> schedules,
+            IReadOnlyCollection<ScheduleJob> successPlannedJobs)
+        {
+            if (schedules == null) throw new ArgumentNullException(nameof(schedules));
+            if (successPlannedJobs == null) throw new ArgumentNullException(nameof(successPlannedJobs));
+
+            // Sets successfully planned schedules as completed
+            _context.Schedules.AttachRange(successPlannedJobs.Select(j => new Data.Models.Schedule
+            {
+                Id = j.ScheduleId,
+                PlanningStatus = ProcessingStatus.Completed
+            }));
+
+            // Sets unsuccessfully planned schedules as error
+            // TODO: logs planning error in (another?)table
+            _context.Schedules
+                .AttachRange(schedules.Select(s => s.Id)
+                .Except(successPlannedJobs.Select(j => j.ScheduleId))
+                .Select(id => new Data.Models.Schedule
+                {
+                    Id = id,
+                    PlanningStatus = ProcessingStatus.Error
+                }));
+
+            await _context.SaveChangesAsync();
         }
     }
 }
