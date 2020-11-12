@@ -13,16 +13,13 @@ namespace TTWeb.Web.Api.Middlewares
 {
     public class WebApiExceptionHandlerMiddleware
     {
-        private readonly ILogger<WebApiExceptionHandlerMiddleware> _logger;
         private readonly RequestDelegate _next;
         private readonly IHostEnvironment _env;
 
-        public WebApiExceptionHandlerMiddleware(RequestDelegate next, 
-            ILogger<WebApiExceptionHandlerMiddleware> logger, 
+        public WebApiExceptionHandlerMiddleware(RequestDelegate next,
             IHostEnvironment env)
         {
             _next = next;
-            _logger = logger;
             _env = env;
         }
 
@@ -47,10 +44,10 @@ namespace TTWeb.Web.Api.Middlewares
 
             switch (ex)
             {
-                case IBadRequestException badRequestException:
+                case IBadRequestException _:
                     statusCode = HttpStatusCode.BadRequest;
                     break;
-                case UnauthorizedAccessException unauthorizedAccessException:
+                case UnauthorizedAccessException _:
                     statusCode = HttpStatusCode.Unauthorized;
                     break;
                 case SqlException sqlException:
@@ -63,7 +60,7 @@ namespace TTWeb.Web.Api.Middlewares
             async Task WriteResponseAsync()
             {
                 httpContext.Response.ContentType = "application/json; charset=utf-8";
-                httpContext.Response.StatusCode = (int) statusCode;
+                httpContext.Response.StatusCode = (int)statusCode;
                 await httpContext.Response.WriteAsync(new ErrorResponseModel(statusCode, message, stackTrace).ToJsonString());
             }
 
