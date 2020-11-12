@@ -14,7 +14,7 @@ namespace TTWeb.BusinessLogic.Models.Entities
         public ScheduleIntervalType IntervalType { get; set; }
 
         [Required]
-        public FacebookUser Sender { get; set; }
+        public FacebookUserModel Sender { get; set; }
 
         [Required]
         public IEnumerable<FacebookUserModel> Receivers { get; set; }

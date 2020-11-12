@@ -55,6 +55,8 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             await _context.Schedules.AddAsync(schedule);
             await _context.SaveChangesAsync();
 
+            await _context.Entry(schedule).Reference(s => s.Sender).LoadAsync();
+            await _context.Entry(schedule).Collection(s => s.ScheduleReceiverMappings).LoadAsync();
             return _mapper.Map(schedule, model);
         }
 
@@ -71,6 +73,8 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             schedule = _mapper.Map(model, schedule);
             await _context.SaveChangesAsync();
 
+            await _context.Entry(schedule).Reference(s => s.Sender).LoadAsync();
+            await _context.Entry(schedule).Collection(s => s.ScheduleReceiverMappings).LoadAsync();
             return _mapper.Map(schedule, model);
         }
 

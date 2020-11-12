@@ -12,6 +12,7 @@ using TTWeb.Web.Api.Extensions;
 using TTWeb.Web.Api.Services.Account;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace TTWeb.Web.Api
 {
@@ -71,7 +72,10 @@ namespace TTWeb.Web.Api
                 {
                     options.Filters.Add(new AccessOwnResourceFilterAttribute());
                 })
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson(o =>
+                {
+                    o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

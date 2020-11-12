@@ -63,5 +63,10 @@ namespace TTWeb.BusinessLogic.Extensions
 
             return services;
         }
+
+        public static IServiceCollection ConfigureJsonOptions(this IServiceCollection services)
+        {
+            return services;
+        }
     }
 }
