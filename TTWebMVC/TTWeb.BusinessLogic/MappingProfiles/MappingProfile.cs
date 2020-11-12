@@ -21,6 +21,9 @@ namespace TTWeb.BusinessLogic.MappingProfiles
             CreateMap<FacebookUser, FacebookUserModel>()
                 .ReverseMap();
 
+            CreateMap<FacebookUser, ScheduleFacebookUserModel>()
+                .ReverseMap();
+
             CreateMap<ScheduleModel, Schedule>()
                 .ForMember(b => b.Sender, option => option.Ignore())
                 .ForMember(b => b.SenderId, option => option.MapFrom(a => a.Sender.Id))
@@ -33,7 +36,7 @@ namespace TTWeb.BusinessLogic.MappingProfiles
                 .ForMember(b => b.Weekdays, option => option.MapFrom(a => a.ScheduleWeekdayMappings))
                 .ForMember(b => b.TimeFrames, option => option.MapFrom(a => a.TimeFrames));
 
-            CreateMap<ScheduleTimeFrame, ScheduleTimeFrameModel>()
+            CreateMap<ScheduleTimeFrame, ScheduleTimeFrameModel>();
 
             CreateMap<ScheduleWeekdayMapping, DayOfWeek>()
                 .ConvertUsing(m => m.Weekday);
