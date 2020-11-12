@@ -174,11 +174,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureTimeFrame(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleTimeFrame>()
-                .HasKey(u => u.Id);
-
-            modelBuilder.Entity<ScheduleTimeFrame>()
-                .Property(m => m.Id)
-                .ValueGeneratedOnAdd();
+                .HasKey(m => new { m.ScheduleId, m.From, m.To });
 
             return modelBuilder;
         }
@@ -350,7 +346,7 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<ScheduleTimeFrame>()
                 .HasData(new ScheduleTimeFrame
-                { Id = 1, ScheduleId = 1, From = TimeSpan.FromHours(9), To = TimeSpan.FromHours(14) });
+                { ScheduleId = 1, From = TimeSpan.FromHours(9), To = TimeSpan.FromHours(14) });
 
             return modelBuilder;
         }
