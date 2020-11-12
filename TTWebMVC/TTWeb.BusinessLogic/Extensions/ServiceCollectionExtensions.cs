@@ -20,9 +20,7 @@ namespace TTWeb.BusinessLogic.Extensions
         {
             var mapperConfig = new MapperConfiguration(c =>
             {
-                c.AddProfile<LoginUserProfile>();
-                c.AddProfile<FacebookUserProfile>();
-                c.AddProfile<ScheduleProfile>();
+                c.AddProfile<MappingProfile>();
             });
 
             services.AddSingleton(s => mapperConfig.CreateMapper());
