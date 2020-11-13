@@ -47,6 +47,13 @@ namespace TTWeb.BusinessLogic.MappingProfiles
                 .ForMember(b => b.Sender, o => o.MapFrom(a => a.Sender))
                 .ForMember(b => b.Receiver, o => o.Ignore())
                 .ForMember(b => b.Weekdays, o => o.MapFrom(a => a.ScheduleWeekdayMappings));
+
+            CreateMap<ScheduleJobModel, ScheduleJob>()
+                .ForMember(b => b.Id, o => o.Ignore())
+                .ForMember(b => b.Receiver, o => o.Ignore())
+                .ForMember(b => b.ReceiverId, o => o.MapFrom(a => a.Receiver.Id))
+                .ForMember(b => b.Sender, o => o.Ignore())
+                .ForMember(b => b.SenderId, o => o.MapFrom(a => a.Sender.Id));
         }
     }
 }

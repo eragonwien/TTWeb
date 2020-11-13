@@ -28,5 +28,11 @@ namespace TTWeb.Data.Models
         public FacebookUser Receiver { get; set; }
 
         public ICollection<ScheduleJobResult> Results { get; set; }
+
+        public ScheduleJob WithStatus(ProcessingStatus status)
+        {
+            Status = status;
+            return this;
+        }
     }
 }

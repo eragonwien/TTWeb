@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +8,6 @@ using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.Entities;
-using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.Data.Database;
 using TTWeb.Data.Extensions;
 using TTWeb.Data.Models;
@@ -137,37 +133,24 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             await _context.SaveChangesAsync();
 
             var planningResults = _scheduleJobService.PlanJob(schedules);
-            var successPlannedJobs = planningResults
-                .Where(r => r.Succeed)
-                .Select(r => _mapper.Map<ScheduleJob>(r.Result))
-                .ToList();
 
-            await UpdateScheduleStatus(schedules, successPlannedJobs);
+            var successPlannedJobs = await _scheduleJobService.CreateAsync(planningResults.Where(r => r.Succeed).Select(r => r.Result));
+
+            await UpdateScheduleStatus(schedules, successPlannedJobs.ToList());
         }
 
-        private async Task UpdateScheduleStatus(IEnumerable<Data.Models.Schedule> schedules,
+        private async Task UpdateScheduleStatus(List<Data.Models.Schedule> schedules,
             IReadOnlyCollection<ScheduleJob> successPlannedJobs)
         {
             if (schedules == null) throw new ArgumentNullException(nameof(schedules));
             if (successPlannedJobs == null) throw new ArgumentNullException(nameof(successPlannedJobs));
 
-            // Sets successfully planned schedules as completed
-            _context.Schedules.AttachRange(successPlannedJobs.Select(j => new Data.Models.Schedule
+            foreach (var schedule in schedules)
             {
-                Id = j.ScheduleId,
-                PlanningStatus = ProcessingStatus.Completed
-            }));
-
-            // Sets unsuccessfully planned schedules as error
-            // TODO: logs planning error in (another?)table
-            _context.Schedules
-                .AttachRange(schedules.Select(s => s.Id)
-                .Except(successPlannedJobs.Select(j => j.ScheduleId))
-                .Select(id => new Data.Models.Schedule
-                {
-                    Id = id,
-                    PlanningStatus = ProcessingStatus.Error
-                }));
+                schedule.PlanningStatus = successPlannedJobs.Any(j => j.ScheduleId == schedule.Id)
+                    ? ProcessingStatus.Completed
+                    : ProcessingStatus.Error;
+            }
 
             await _context.SaveChangesAsync();
         }

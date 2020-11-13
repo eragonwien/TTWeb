@@ -6,6 +6,7 @@ using AutoMapper;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.Data.Database;
+using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Services.Schedule
 {
@@ -53,6 +54,16 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             }
 
             return results;
+        }
+
+        public async Task<IEnumerable<ScheduleJob>> CreateAsync(IEnumerable<ScheduleJobModel> models)
+        {
+            if (models == null) throw new ArgumentNullException(nameof(models));
+
+            var jobs = models.Select(m => _mapper.Map<ScheduleJob>(m).WithStatus(ProcessingStatus.New)).ToList();
+            await _context.ScheduleJobs.AddRangeAsync(jobs);
+            await _context.SaveChangesAsync();
+            return jobs;
         }
     }
 }
