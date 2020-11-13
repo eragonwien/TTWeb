@@ -287,7 +287,8 @@ namespace TTWeb.Data.Extensions
                     new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.AccessOwnResources },
                     new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.AccessAllResources },
                     new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageUsers },
-                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageDeployment });
+                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageDeployment },
+                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageWorker });
 
             return modelBuilder;
         }
