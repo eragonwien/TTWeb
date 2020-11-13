@@ -23,9 +23,9 @@ namespace TTWeb.Data.Models
 
         public Schedule Schedule { get; set; }
 
-        //public FacebookUser Sender { get; set; }
+        public FacebookUser Sender { get; set; }
 
-        //public FacebookUser Receiver { get; set; }
+        public FacebookUser Receiver { get; set; }
 
         public ICollection<ScheduleJobResult> Results { get; set; }
     }

@@ -20,9 +20,9 @@ namespace TTWeb.Data.Models
 
         public ICollection<Schedule> SenderSchedules { get; set; }
 
-        //public ICollection<ScheduleJob> SenderScheduleJobs { get; set; }
+        public ICollection<ScheduleJob> SenderScheduleJobs { get; set; }
 
-        //public ICollection<ScheduleJob> ReceiverScheduleJobs { get; set; }
+        public ICollection<ScheduleJob> ReceiverScheduleJobs { get; set; }
 
         public ICollection<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
 

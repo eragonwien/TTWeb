@@ -247,17 +247,17 @@ namespace TTWeb.Data.Extensions
                 .HasForeignKey(m => m.ScheduleId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //modelBuilder.Entity<ScheduleJob>()
-            //    .HasOne(m => m.Sender)
-            //    .WithMany(u => u.SenderScheduleJobs)
-            //    .HasForeignKey(m => m.SenderId)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ScheduleJob>()
+                .HasOne(m => m.Sender)
+                .WithMany(u => u.SenderScheduleJobs)
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            //modelBuilder.Entity<ScheduleJob>()
-            //    .HasOne(m => m.Receiver)
-            //    .WithMany(u => u.ReceiverScheduleJobs)
-            //    .HasForeignKey(m => m.ReceiverId)
-            //    .OnDelete(DeleteBehavior.ClientSetNull);
+            modelBuilder.Entity<ScheduleJob>()
+                .HasOne(m => m.Receiver)
+                .WithMany(u => u.ReceiverScheduleJobs)
+                .HasForeignKey(m => m.ReceiverId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             return modelBuilder;
         }
