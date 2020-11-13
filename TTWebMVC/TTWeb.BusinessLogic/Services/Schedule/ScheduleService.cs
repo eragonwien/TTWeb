@@ -133,7 +133,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
             if (schedules.Count == 0) return;
 
-            schedules.ForEach(s => s.LockUntil(now.Add(_planningAppSettings.LockDuration)).SetStatus(ProcessingStatus.InProgress));
+            schedules.ForEach(s => s.Lock(now, _planningAppSettings.LockDuration));
             await _context.SaveChangesAsync();
 
             var planningResults = _scheduleJobService.PlanJob(schedules);

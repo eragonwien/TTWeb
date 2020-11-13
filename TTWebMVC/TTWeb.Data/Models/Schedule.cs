@@ -27,6 +27,8 @@ namespace TTWeb.Data.Models
 
         public DateTime? LockedUntil { get; set; }
 
+        public DateTime? LockAt { get; set; }
+
         public FacebookUser Sender { get; set; }
         public LoginUser Owner { get; set; }
         public LoginUser Worker { get; set; }
@@ -35,15 +37,11 @@ namespace TTWeb.Data.Models
         public ICollection<ScheduleTimeFrame> TimeFrames { get; set; }
         public ICollection<ScheduleJob> ScheduleJobs { get; set; }
         
-        public Schedule LockUntil(DateTime? lockTime)
+        public Schedule Lock(DateTime lockDate, TimeSpan lockDuration)
         {
-            LockedUntil = lockTime;
-            return this;
-        }
-
-        public Schedule SetStatus(ProcessingStatus status)
-        {
-            PlanningStatus = status;
+            LockAt = lockDate;
+            LockedUntil = lockDate.Add(lockDuration);
+            PlanningStatus = ProcessingStatus.InProgress;
             return this;
         }
     }
