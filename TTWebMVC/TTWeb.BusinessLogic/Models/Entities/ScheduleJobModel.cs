@@ -38,7 +38,7 @@ namespace TTWeb.BusinessLogic.Models.Entities
         public DateTime? StartDate { get; set; }
 
         private DateTime _currentDateTime = DateTime.UtcNow;
-        private Random _randomer = new Random();
+        private readonly Random _random = new Random();
 
         public ScheduleJobModel CalculateStartTime()
         {
@@ -113,7 +113,7 @@ namespace TTWeb.BusinessLogic.Models.Entities
         {
             if (endDate < startDate) throw new ArgumentException($"Start date of {startDate} should be smaller then end date of {endDate}");
             var diff = endDate - startDate;
-            var randomDiff = new TimeSpan(0, _randomer.Next(0, (int)diff.TotalMinutes), 0);
+            var randomDiff = new TimeSpan(0, _random.Next(0, (int)diff.TotalMinutes), 0);
             return startDate + randomDiff;
         }
     }
