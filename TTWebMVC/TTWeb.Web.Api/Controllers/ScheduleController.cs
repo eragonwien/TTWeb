@@ -57,9 +57,9 @@ namespace TTWeb.Web.Api.Controllers
 
         [HttpGet("peek")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
-        public async Task<IEnumerable<ScheduleModel>> Peek([FromQuery] int count, [FromQuery] ProcessingStatus status)
+        public async Task<IEnumerable<ScheduleModel>> Peek([FromQuery] int count)
         {
-            return await _scheduleService.PeekAsync(count, status);
+            return await _scheduleService.PeekAsync(count);
         }
 
         [HttpPost("trigger-planning")]

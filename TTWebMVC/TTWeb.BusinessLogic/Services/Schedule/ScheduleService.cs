@@ -112,10 +112,10 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ScheduleModel>> PeekAsync(int count, ProcessingStatus status)
+        public async Task<IEnumerable<ScheduleModel>> PeekAsync(int count)
         {
             return await BaseQuery
-                .Where(s => s.PlanningStatus == status)
+                .FilterOpenSchedules(DateTime.UtcNow)
                 .Take(count > 0 ? count : _planningAppSettings.CountPerRequest)
                 .Select(s => _mapper.Map<ScheduleModel>(s))
                 .ToListAsync();
@@ -123,17 +123,16 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
         public async Task PlanAsync()
         {
-            var now = DateTime.UtcNow;
+            var utcNow = DateTime.UtcNow;
 
             var schedules = await BaseQuery
-                .Where(s => s.PlanningStatus == ProcessingStatus.New
-                            || s.PlanningStatus == ProcessingStatus.Retry)
+                .FilterOpenSchedules(utcNow)
                 .Take(_planningAppSettings.CountPerRequest)
                 .ToListAsync();
 
             if (schedules.Count == 0) return;
 
-            schedules.ForEach(s => s.Lock(now, _planningAppSettings.LockDuration));
+            schedules.ForEach(s => s.Lock(utcNow, _planningAppSettings.LockDuration));
             await _context.SaveChangesAsync();
 
             var planningResults = _scheduleJobService.PlanJob(schedules);
