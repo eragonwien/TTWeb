@@ -47,7 +47,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 {
                     result.Succeed = false;
                     result.Exception = ex;
-                    result.Message = $"Error occurs during calculation ofschedule {schedule.Id}";
+                    result.Message = $"Error occurs during calculation of schedule {schedule.Id}";
                 }
                 results.Add(result);
             }

@@ -128,6 +128,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             var schedules = await BaseQuery
                 .FilterOpenSchedules(utcNow)
                 .Take(_planningAppSettings.CountPerRequest)
+                .OrderBy(s => s.Id)
                 .ToListAsync();
 
             if (schedules.Count == 0) return;
