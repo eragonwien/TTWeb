@@ -12,7 +12,7 @@ namespace TTWeb.BusinessLogic.MappingProfiles
         public MappingProfile()
         {
             CreateMap<LoginUser, LoginUserModel>()
-                .ForMember(b => b.UserPermissions, option => option.MapFrom(a => a.LoginUserPermissionMappings.Select(m => m.UserPermission)))
+                .ForMember(b => b.UserPermissions, o => o.MapFrom(a => a.LoginUserPermissionMappings.Select(m => m.UserPermission)))
                 .ReverseMap();
 
             CreateMap<LoginUserModel, ExternalLoginModel>()
@@ -25,21 +25,28 @@ namespace TTWeb.BusinessLogic.MappingProfiles
                 .ReverseMap();
 
             CreateMap<ScheduleModel, Schedule>()
-                .ForMember(b => b.Sender, option => option.Ignore())
-                .ForMember(b => b.SenderId, option => option.MapFrom(a => a.Sender.Id))
-                .ForMember(b => b.ScheduleReceiverMappings, option => option.MapFrom(a => a.Receivers.Select(m => new ScheduleReceiverMapping { ScheduleId = a.Id, ReceiverId = m.Id })))
-                .ForMember(b => b.ScheduleWeekdayMappings, option => option.MapFrom(a => a.Weekdays.Select(m => new ScheduleWeekdayMapping { ScheduleId = a.Id, Weekday = m })))
-                .ForMember(b => b.TimeFrames, option => option.MapFrom(a => a.TimeFrames.Select(m => new ScheduleTimeFrame { ScheduleId = a.Id, From = m.From, To = m.To })));
+                .ForMember(b => b.Sender, o => o.Ignore())
+                .ForMember(b => b.SenderId, o => o.MapFrom(a => a.Sender.Id))
+                .ForMember(b => b.ScheduleReceiverMappings, o => o.MapFrom(a => a.Receivers.Select(m => new ScheduleReceiverMapping { ScheduleId = a.Id, ReceiverId = m.Id })))
+                .ForMember(b => b.ScheduleWeekdayMappings, o => o.MapFrom(a => a.Weekdays.Select(m => new ScheduleWeekdayMapping { ScheduleId = a.Id, Weekday = m })))
+                .ForMember(b => b.TimeFrames, o => o.MapFrom(a => a.TimeFrames.Select(m => new ScheduleTimeFrame { ScheduleId = a.Id, From = m.From, To = m.To })));
 
             CreateMap<Schedule, ScheduleModel>()
-                .ForMember(b => b.Receivers, option => option.MapFrom(a => a.ScheduleReceiverMappings.Select(m => m.Receiver)))
-                .ForMember(b => b.Weekdays, option => option.MapFrom(a => a.ScheduleWeekdayMappings))
-                .ForMember(b => b.TimeFrames, option => option.MapFrom(a => a.TimeFrames));
+                .ForMember(b => b.Receivers, o => o.MapFrom(a => a.ScheduleReceiverMappings.Select(m => m.Receiver)))
+                .ForMember(b => b.Weekdays, o => o.MapFrom(a => a.ScheduleWeekdayMappings))
+                .ForMember(b => b.TimeFrames, o => o.MapFrom(a => a.TimeFrames));
 
             CreateMap<ScheduleTimeFrame, ScheduleTimeFrameModel>();
 
             CreateMap<ScheduleWeekdayMapping, DayOfWeek>()
                 .ConvertUsing(m => m.Weekday);
+
+            CreateMap<Schedule, ScheduleJobModel>()
+                .ForMember(b => b.Id, o => o.Ignore())
+                .ForMember(b => b.ScheduleId, o => o.MapFrom(a => a.Id))
+                .ForMember(b => b.Sender, o => o.MapFrom(a => a.Sender))
+                .ForMember(b => b.Receiver, o => o.Ignore())
+                .ForMember(b => b.Weekdays, o => o.MapFrom(a => a.ScheduleWeekdayMappings));
         }
     }
 }

@@ -71,6 +71,8 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             if (schedule == null) throw new ResourceNotFoundException(nameof(Data.Models.Schedule), model.Id);
 
             schedule = _mapper.Map(model, schedule);
+            _context.Entry(schedule).Property(s => s.PlanningStatus).IsModified = false;
+            _context.Entry(schedule).Property(s => s.WorkerId).IsModified = false;
             await _context.SaveChangesAsync();
 
             await _context.Entry(schedule).Reference(s => s.Sender).LoadAsync();
@@ -134,22 +136,13 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             schedules.ForEach(s => s.LockUntil(now.Add(_planningAppSettings.LockDuration)).SetStatus(ProcessingStatus.InProgress));
             await _context.SaveChangesAsync();
 
-            var successPlannedJobs = await PlanJobs(schedules);
-            await UpdateScheduleStatus(schedules, successPlannedJobs);
-        }
-
-        private async Task<List<ScheduleJob>> PlanJobs(IEnumerable<Data.Models.Schedule> schedules)
-        {
-            if (schedules == null) throw new ArgumentNullException(nameof(schedules));
-            var planResults = await _scheduleJobService.PlanJobAsync(schedules);
-            var successPlannedJobs = planResults
+            var planningResults = _scheduleJobService.PlanJob(schedules);
+            var successPlannedJobs = planningResults
                 .Where(r => r.Succeed)
                 .Select(r => _mapper.Map<ScheduleJob>(r.Result))
                 .ToList();
 
-            await _context.ScheduleJobs.AddRangeAsync(successPlannedJobs);
-            await _context.SaveChangesAsync();
-            return successPlannedJobs;
+            await UpdateScheduleStatus(schedules, successPlannedJobs);
         }
 
         private async Task UpdateScheduleStatus(IEnumerable<Data.Models.Schedule> schedules,
