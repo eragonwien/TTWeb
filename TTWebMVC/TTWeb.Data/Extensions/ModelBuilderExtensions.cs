@@ -367,7 +367,14 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedScheduleJob(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleJob>()
-                .HasData(new ScheduleJob { Id = 1, ScheduleId = 1 });
+                .HasData(new ScheduleJob
+                {
+                    Id = 1, 
+                    ScheduleId = 1,
+                    Action = ScheduleAction.Like,
+                    StartDate = DateTime.UtcNow,
+                    Status = ProcessingStatus.Paused
+                });
 
             return modelBuilder;
         }
