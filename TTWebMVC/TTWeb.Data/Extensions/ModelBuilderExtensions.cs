@@ -251,7 +251,7 @@ namespace TTWeb.Data.Extensions
             //    .HasOne(m => m.Sender)
             //    .WithMany(u => u.SenderScheduleJobs)
             //    .HasForeignKey(m => m.SenderId)
-            //    .OnDelete(DeleteBehavior.ClientSetNull);
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             //modelBuilder.Entity<ScheduleJob>()
             //    .HasOne(m => m.Receiver)
@@ -373,7 +373,9 @@ namespace TTWeb.Data.Extensions
                     ScheduleId = 1,
                     Action = ScheduleAction.Like,
                     StartDate = DateTime.UtcNow,
-                    Status = ProcessingStatus.Paused
+                    Status = ProcessingStatus.Paused,
+                    SenderId = 1,
+                    ReceiverId = 1
                 });
 
             return modelBuilder;
