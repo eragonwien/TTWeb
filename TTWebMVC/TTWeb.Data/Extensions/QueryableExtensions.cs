@@ -38,5 +38,14 @@ namespace TTWeb.Data.Extensions
 
             return query;
         }
+
+        public static IQueryable<T> FilterOpenJobs<T>(this IQueryable<T> query) where T : ScheduleJob
+        {
+            if (query == null) throw new ArgumentNullException(nameof(query));
+
+            query = query.Where(j => j.Status == ProcessingStatus.New || j.Status == ProcessingStatus.Retry);
+
+            return query;
+        }
     }
 }

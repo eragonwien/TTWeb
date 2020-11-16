@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.BusinessLogic.Services.Schedule;
 
 namespace TTWeb.Web.Api.Controllers
@@ -15,6 +16,24 @@ namespace TTWeb.Web.Api.Controllers
         public ScheduleJobController(IScheduleJobService scheduleJobService)
         {
             _scheduleJobService = scheduleJobService;
+        }
+
+        [HttpGet("peek")]
+        public async Task<IEnumerable<ScheduleJobModel>> Peek()
+        {
+            return await _scheduleJobService.PeekAsync();
+        }
+
+        [HttpPost("peek-lock")]
+        public async Task<IEnumerable<ScheduleJobModel>> PeekLock()
+        {
+            return await _scheduleJobService.PeekLockAsync();
+        }
+
+        [HttpPatch("{id}/status")]
+        public async Task UpdateStatus([FromRoute] int id, [FromBody] ProcessingResult<ScheduleJobModel> result)
+        {
+            await _scheduleJobService.UpdateStatusAsync(id, result);
         }
     }
 }

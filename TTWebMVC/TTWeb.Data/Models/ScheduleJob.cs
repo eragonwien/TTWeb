@@ -34,5 +34,12 @@ namespace TTWeb.Data.Models
             Status = status;
             return this;
         }
+
+        public ScheduleJob Lock()
+        {
+            // TODO: locks job
+            Status = ProcessingStatus.InProgress;
+            return this;
+        }
     }
 }
