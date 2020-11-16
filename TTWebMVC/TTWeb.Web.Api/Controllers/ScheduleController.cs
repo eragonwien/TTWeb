@@ -66,7 +66,7 @@ namespace TTWeb.Web.Api.Controllers
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
         public async Task TriggerPlanning()
         {
-            await _scheduleService.PlanAsync();
+            await _scheduleService.PlanAsync(LoginUserId);
         }
     }
 }

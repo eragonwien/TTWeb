@@ -44,5 +44,11 @@ namespace TTWeb.Data.Models
             PlanningStatus = ProcessingStatus.InProgress;
             return this;
         }
+
+        public Schedule SetWorkerId(int workerId)
+        {
+            WorkerId = workerId;
+            return this;
+        }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Models.Entities
@@ -37,7 +36,7 @@ namespace TTWeb.BusinessLogic.Models.Entities
 
         public DateTime? StartDate { get; set; }
 
-        private DateTime _currentDateTime = DateTime.UtcNow;
+        private readonly DateTime _currentDateTime = DateTime.UtcNow;
         private readonly Random _random = new Random();
 
         public ScheduleJobModel CalculateStartTime()

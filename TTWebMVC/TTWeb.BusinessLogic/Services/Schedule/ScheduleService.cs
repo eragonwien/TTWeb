@@ -117,7 +117,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .ToListAsync();
         }
 
-        public async Task PlanAsync()
+        public async Task PlanAsync(int workerId)
         {
             var utcNow = DateTime.UtcNow;
 
@@ -129,7 +129,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
             if (schedules.Count == 0) return;
 
-            schedules.ForEach(s => s.Lock(utcNow, _planningAppSettings.LockDuration));
+            schedules.ForEach(s => s.Lock(utcNow, _planningAppSettings.LockDuration).SetWorkerId(workerId));
             await _context.SaveChangesAsync();
 
             var planningResults = _scheduleJobService.PlanJob(schedules);
