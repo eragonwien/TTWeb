@@ -36,6 +36,7 @@ namespace TTWeb.BusinessLogic.Extensions
             services.AddScoped<IFacebookUserService, FacebookUserService>();
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<IScheduleJobService, ScheduleJobService>();
+            services.AddScoped<IScheduleJobResultService, ScheduleJobResultService>();
             return services;
         }
 
