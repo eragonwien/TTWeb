@@ -10,8 +10,5 @@ namespace TTWeb.BusinessLogic.Services.Schedule
     {
         List<ProcessingResult<ScheduleJobModel>> PlanJob(IEnumerable<Data.Models.Schedule> schedules);
         Task<IEnumerable<ScheduleJob>> CreateAsync(IEnumerable<ScheduleJobModel> models);
-        Task<List<ScheduleJobModel>> PeekAsync();
-        Task<List<ScheduleJobModel>> PeekLockAsync(int workerId);
-        Task UpdateStatusAsync(ScheduleJobModel model);
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Models.Entities
@@ -32,8 +31,6 @@ namespace TTWeb.BusinessLogic.Models.Entities
 
         [Required]
         public TimeSpan? To { get; set; }
-
-        public ProcessingStatus Status { get; set; }
 
         public int? WorkerId { get; set; }
 
