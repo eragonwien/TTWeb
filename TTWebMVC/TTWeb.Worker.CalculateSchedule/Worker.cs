@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using TTWeb.BusinessLogic.Models.AppSettings;
 
 namespace TTWeb.Worker.CalculateSchedule
 {
@@ -11,11 +13,15 @@ namespace TTWeb.Worker.CalculateSchedule
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<Worker> _logger;
+        private readonly WebApiAppSettings _webApiAppSettings;
 
-        public Worker(IHttpClientFactory clientFactory, ILogger<Worker> logger)
+        public Worker(IHttpClientFactory clientFactory,
+            ILogger<Worker> logger,
+            IOptions<WebApiAppSettings> webApiAppSettingsOption)
         {
             _httpClientFactory = clientFactory;
             _logger = logger;
+            _webApiAppSettings = webApiAppSettingsOption.Value;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -29,7 +35,8 @@ namespace TTWeb.Worker.CalculateSchedule
 
         private async Task TriggerPlanningAsync()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/repos/aspnet/AspNetCore.Docs/branches");
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                _webApiAppSettings.GetRoute(_webApiAppSettings.Routes.TriggerPlanning));
 
             var httpClient = _httpClientFactory.CreateClient();
 

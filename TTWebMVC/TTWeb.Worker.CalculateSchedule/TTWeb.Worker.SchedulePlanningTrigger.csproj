@@ -1,18 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<UserSecretsId>dotnet-TTWeb.Worker.CalculateSchedule-1CDD64F9-0AA9-422C-A19D-60DEBC0BF945</UserSecretsId>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="..\AppSettings\appsettings.Development.json" Link="appsettings.Development.json">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Include="..\AppSettings\appsettings.json" Link="appsettings.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9">
@@ -31,4 +22,8 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Compile>
 	</ItemGroup>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	  <Exec Command="copy &quot;$(SolutionDir)\AppSettings\*.json&quot;  &quot;$(MSBuildProjectDirectory)&quot;" />
+	</Target>
 </Project>
