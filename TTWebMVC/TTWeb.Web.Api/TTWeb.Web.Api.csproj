@@ -48,7 +48,7 @@
 	  </Content>
 	</ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="copy &quot;$(SolutionDir)\AppSettings\*.json&quot;  &quot;$(ProjectDir)&quot;" />
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	  <Exec Command="copy &quot;$(SolutionDir)\AppSettings\*.json&quot;  &quot;$(MSBuildProjectDirectory)&quot;" />
 	</Target>
 </Project>
