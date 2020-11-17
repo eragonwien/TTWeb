@@ -24,6 +24,8 @@ namespace TTWeb.Worker.CalculateSchedule
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                // TODO: Creates stand alone service
+                // TODO: Triggers planning
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 await Task.Delay(5000, stoppingToken);
             }

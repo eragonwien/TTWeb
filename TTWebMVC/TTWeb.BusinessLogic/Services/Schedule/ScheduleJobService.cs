@@ -19,11 +19,16 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         private readonly TTWebContext _context;
         private readonly IMapper _mapper;
         private readonly SchedulingJobAppSettings _jobAppSettings;
+        private readonly IScheduleJobResultService _scheduleJobResultService;
 
-        public ScheduleJobService(TTWebContext context, IMapper mapper, IOptions<SchedulingJobAppSettings> jobAppSettingsOption)
+        public ScheduleJobService(TTWebContext context,
+            IMapper mapper, 
+            IOptions<SchedulingJobAppSettings> jobAppSettingsOption, 
+            IScheduleJobResultService scheduleJobResultService)
         {
             _context = context;
             _mapper = mapper;
+            _scheduleJobResultService = scheduleJobResultService;
             _jobAppSettings = jobAppSettingsOption.Value;
         }
 
@@ -84,12 +89,28 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
         public async Task<IEnumerable<ScheduleJobModel>> PeekLockAsync()
         {
-            var jobs = await PeekAsync();
+            var jobs = await BaseQuery
+                .FilterOpenJobs()
+                .Take(_jobAppSettings.PeekCount)
+                .ToListAsync();
 
-            _context.AttachRange(jobs.Select(j => new ScheduleJob { Id = j.Id, Status = ProcessingStatus.InProgress }));
+            var now = DateTime.UtcNow;
+            jobs.ForEach(j => j.Lock(now));
             await _context.SaveChangesAsync();
 
-            return jobs;
+            return jobs.Select(j => _mapper.Map<ScheduleJobModel>(j));
+        }
+
+        public async Task UpdateStatusAsync(int id, ProcessingResult<ScheduleJobModel> result)
+        {
+            _context.ScheduleJobs.Attach(new ScheduleJob
+            {
+                Id = id, 
+                Status = result.Succeed ? ProcessingStatus.Completed : ProcessingStatus.Error 
+            });
+            await _context.SaveChangesAsync();
+
+            await _scheduleJobResultService.CreateAsync(new ScheduleJobResultModel {ScheduleJobId = id});
         }
 
         private IQueryable<ScheduleJob> BaseQuery =>
