@@ -1,32 +1,40 @@
 using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TTWeb.BusinessLogic.Services.Schedule;
 
 namespace TTWeb.Worker.CalculateSchedule
 {
     public class Worker : BackgroundService
     {
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<Worker> _logger;
-        private readonly IScheduleService _scheduleService;
 
-        public Worker(ILogger<Worker> logger, IScheduleService scheduleService)
+        public Worker(IHttpClientFactory clientFactory, ILogger<Worker> logger)
         {
+            _httpClientFactory = clientFactory;
             _logger = logger;
-            _scheduleService = scheduleService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                // TODO: Creates stand alone service
-                // TODO: Triggers planning
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(5000, stoppingToken);
+                await TriggerPlanningAsync();
             }
+        }
+
+        private async Task TriggerPlanningAsync()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/repos/aspnet/AspNetCore.Docs/branches");
+
+            var httpClient = _httpClientFactory.CreateClient();
+
+            var response = await httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
         }
     }
 }

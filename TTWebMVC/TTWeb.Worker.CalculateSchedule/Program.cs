@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TTWeb.BusinessLogic.Services.Schedule;
 
 namespace TTWeb.Worker.CalculateSchedule
 {
@@ -16,8 +15,8 @@ namespace TTWeb.Worker.CalculateSchedule
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddHttpClient();
                     services.AddHostedService<Worker>();
-                    services.AddScoped<IScheduleService, ScheduleService>();
                 })
                 .ConfigureLogging(o =>
                 {
