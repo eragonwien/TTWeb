@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.Data.Database;
+using TTWeb.Data.Extensions;
 using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Services.Schedule
@@ -14,11 +18,13 @@ namespace TTWeb.BusinessLogic.Services.Schedule
     {
         private readonly TTWebContext _context;
         private readonly IMapper _mapper;
+        private readonly SchedulingJobAppSettings _jobAppSettings;
 
-        public ScheduleJobService(TTWebContext context, IMapper mapper)
+        public ScheduleJobService(TTWebContext context, IMapper mapper, IOptions<SchedulingJobAppSettings> jobAppSettingsOption)
         {
             _context = context;
             _mapper = mapper;
+            _jobAppSettings = jobAppSettingsOption.Value;
         }
 
         public List<ProcessingResult<ScheduleJobModel>> PlanJob(IEnumerable<Data.Models.Schedule> schedules)
@@ -65,5 +71,30 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             await _context.SaveChangesAsync();
             return jobs;
         }
+
+        public async Task<IEnumerable<ScheduleJobModel>> PeekAsync()
+        {
+            return await BaseQuery
+                .AsNoTracking()
+                .FilterOpenJobs()
+                .Take(_jobAppSettings.PeekCount)
+                .Select(j => _mapper.Map<ScheduleJobModel>(j))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ScheduleJobModel>> PeekLockAsync()
+        {
+            var jobs = await PeekAsync();
+
+            _context.AttachRange(jobs.Select(j => new ScheduleJob { Id = j.Id, Status = ProcessingStatus.InProgress }));
+            await _context.SaveChangesAsync();
+
+            return jobs;
+        }
+
+        private IQueryable<ScheduleJob> BaseQuery =>
+            _context.ScheduleJobs
+            .Include(j => j.Sender)
+            .Include(j => j.Receiver);
     }
 }
