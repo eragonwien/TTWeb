@@ -2,6 +2,6 @@
 {
     public class SchedulingJobAppSettings
     {
-        public int PeekCount { get; set; }
+        public int CountPerRequest { get; set; }
     }
 }

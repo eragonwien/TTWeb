@@ -82,7 +82,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             return await BaseQuery
                 .AsNoTracking()
                 .FilterOpenJobs()
-                .Take(_jobAppSettings.PeekCount)
+                .Take(_jobAppSettings.CountPerRequest)
                 .Select(j => _mapper.Map<ScheduleJobModel>(j))
                 .ToListAsync();
         }
@@ -91,7 +91,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         {
             var jobs = await BaseQuery
                 .FilterOpenJobs()
-                .Take(_jobAppSettings.PeekCount)
+                .Take(_jobAppSettings.CountPerRequest)
                 .ToListAsync();
 
             var now = DateTime.UtcNow;
