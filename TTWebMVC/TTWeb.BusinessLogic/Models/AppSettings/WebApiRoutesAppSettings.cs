@@ -2,6 +2,7 @@
 {
     public class WebApiRoutesAppSettings
     {
-        public string TriggerPlanning { get; set; }
+        public string BaseUri { get; set; }
+        public string BoxLogin { get; set; }
     }
 }
