@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.Data.Database;
+using TTWeb.Data.Extensions;
 using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Services.Schedule
@@ -14,11 +18,13 @@ namespace TTWeb.BusinessLogic.Services.Schedule
     {
         private readonly TTWebContext _context;
         private readonly IMapper _mapper;
+        private readonly SchedulingJobAppSettings _jobAppSettings;
 
-        public ScheduleJobService(TTWebContext context, IMapper mapper)
+        public ScheduleJobService(TTWebContext context, IMapper mapper, IOptions<SchedulingAppSettings> schedulingAppSettingsOption)
         {
             _context = context;
             _mapper = mapper;
+            _jobAppSettings = schedulingAppSettingsOption.Value.Job;
         }
 
         public List<ProcessingResult<ScheduleJobModel>> PlanJob(IEnumerable<Data.Models.Schedule> schedules)
@@ -65,5 +71,41 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             await _context.SaveChangesAsync();
             return jobs;
         }
+
+        public async Task<List<ScheduleJobModel>> PeekAsync()
+        {
+            return await BaseQuery
+                .AsNoTracking()
+                .FilterOpenJobs()
+                .Take(_jobAppSettings.CountPerRequest)
+                .Select(j => _mapper.Map<ScheduleJobModel>(j))
+                .ToListAsync();
+        }
+
+        public async Task<List<ScheduleJobModel>> PeekLockAsync(int workerId)
+        {
+            var jobs = await BaseQuery
+                .FilterOpenJobs()
+                .Take(_jobAppSettings.CountPerRequest)
+                .ToListAsync();
+
+            var now = DateTime.UtcNow;
+            jobs.ForEach(j => j.Lock(now));
+            await _context.SaveChangesAsync();
+
+            return jobs.Select(j => _mapper.Map<ScheduleJobModel>(j)).ToList();
+        }
+
+        public async Task UpdateStatusAsync(ScheduleJobModel model)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+            _context.Attach(new ScheduleJob {Id = model.Id, Status = model.Status});
+            await _context.SaveChangesAsync();
+        }
+
+        private IQueryable<ScheduleJob> BaseQuery => _context.ScheduleJobs
+            .Include(j => j.Sender)
+            .Include(j => j.Receiver)
+            .Include(j => j.Schedule);
     }
 }
