@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Schedule;
-using TTWeb.Data.Models;
 
 namespace TTWeb.Web.Api.Controllers
 {

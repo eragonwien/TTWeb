@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.BusinessLogic.Services.Schedule;

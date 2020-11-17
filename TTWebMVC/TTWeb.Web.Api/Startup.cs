@@ -1,18 +1,18 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.Data.Models;
 using TTWeb.Web.Api.Components.Attributes;
-using TTWeb.Web.Api.Middlewares;
 using TTWeb.Web.Api.Extensions;
+using TTWeb.Web.Api.Middlewares;
 using TTWeb.Web.Api.Services.Account;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Newtonsoft.Json;
 
 namespace TTWeb.Web.Api
 {

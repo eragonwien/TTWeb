@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Helpers;
 
