@@ -17,7 +17,6 @@ namespace TTWeb.Worker.CalculateSchedule
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<Worker>();
-                    services.AddScoped<IScheduleService, ScheduleService>();
                 })
                 .ConfigureLogging(o =>
                 {
