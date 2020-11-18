@@ -5,9 +5,9 @@ namespace TTWeb.BusinessLogic.Models.Account
     public class BoxLoginModel
     {
         [Required]
-        public string BoxId { get; set; }
+        public string ClientId { get; set; }
 
         [Required]
-        public string BoxSecret { get; set; }
+        public string ClientSecret { get; set; }
     }
 }
