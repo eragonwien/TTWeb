@@ -5,20 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
 
 namespace TTWeb.BusinessLogic.Services.Client
 {
     public class WebApiClient
     {
-        private readonly WebApiAppSettings _webApiAppSettings;
         public HttpClient Client { get; set; }
 
+        private readonly AuthenticationJsonWebTokenAppSettings _jsonWebTokenAppSettings;
+        private LoginTokenModel _token = new LoginTokenModel();
+
         public WebApiClient(IOptions<HttpClientAppSettings> httpClientAppSettingsOptions, 
+            IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions, 
             HttpClient client)
         {
-            _webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
-            client.BaseAddress = new Uri(_webApiAppSettings.BaseAddress);
+            var webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
+            _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken;
+
+            client.BaseAddress = new Uri(webApiAppSettings.BaseAddress);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(HttpClientAppSettings.AcceptHeaderDefault));
             client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("planning-trigger-localhost"));
             Client = client;
@@ -26,10 +32,10 @@ namespace TTWeb.BusinessLogic.Services.Client
 
         public async Task AuthenticateAsync()
         {
-            if (!TryGetStoredAccessToken())
+            if (!HasValidStoredToken() || _token.AccessToken.IsAlmostExpired(_jsonWebTokenAppSettings.AccessToken.Duration))
                 await GetAccessTokenAsync();
 
-            if (IsTokenRefreshRequired())
+            if (_token.RefreshToken.IsAlmostExpired(_jsonWebTokenAppSettings.RefreshToken.Duration))
                 await RefreshTokenAsync();
         }
 
@@ -45,11 +51,12 @@ namespace TTWeb.BusinessLogic.Services.Client
         /// Returns true if there is an access token stored locally, which has not expired
         /// </summary>
         /// <returns></returns>
-        private bool TryGetStoredAccessToken()
+        private bool HasValidStoredToken()
         {
-            // TODO: reads local token
-            // TODO: validates expiration date
-            return false;
+            return !_token.AccessToken.IsEmpty            
+                   && !_token.RefreshToken.IsEmpty 
+                   && !_token.AccessToken.Expired
+                   &&!_token.RefreshToken.Expired;
         }
 
         /// <summary>
@@ -62,15 +69,6 @@ namespace TTWeb.BusinessLogic.Services.Client
             // TODO: receives jwt token from server
             // TODO: stores token locally
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Returns true, if token has only half of the time left
-        /// </summary>
-        /// <returns></returns>
-        private bool IsTokenRefreshRequired()
-        {
-            return true;
         }
 
         /// <summary>
