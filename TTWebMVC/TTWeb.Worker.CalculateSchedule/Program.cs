@@ -25,8 +25,9 @@ namespace TTWeb.Worker.CalculateSchedule
                 })
                 .ConfigureServices((context, services) =>
                 {
+                    // TODO: adds ttweb web api client
                     services.AddHttpClient();
-                    services.AddHostedService<Worker>();
+                    services.AddHostedService<SchedulePlanningTrigger.Worker>();
 
                     services.Configure<WebApiAppSettings>(context.Configuration.GetSection(WebApiAppSettings.Section));
                 })
