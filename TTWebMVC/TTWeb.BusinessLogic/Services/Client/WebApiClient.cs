@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Services.Authentication;
@@ -16,16 +17,22 @@ namespace TTWeb.BusinessLogic.Services.Client
         public HttpClient Client { get; set; }
 
         private readonly AuthenticationJsonWebTokenAppSettings _jsonWebTokenAppSettings;
+        private readonly BoxAppSettings _boxAppSettingsOptions;
+        private readonly WebApiAppSettings _webApiAppSettings;
         private readonly IAuthenticationHelperService _authenticationHelperService;
         private LoginTokenModel _token = new LoginTokenModel();
 
         public WebApiClient(IOptions<HttpClientAppSettings> httpClientAppSettingsOptions, 
             IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions, 
+            IOptions<BoxAppSettings> boxAppSettingsOptions, 
+            IOptions<WebApiAppSettings> webApiAppSettingsOptions, 
             IAuthenticationHelperService authenticationHelperService,
             HttpClient client)
         {
             var webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
             _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken;
+            _boxAppSettingsOptions = boxAppSettingsOptions.Value;
+            _webApiAppSettings = webApiAppSettingsOptions.Value;
             _authenticationHelperService = authenticationHelperService;
 
             client.BaseAddress = new Uri(webApiAppSettings.BaseAddress);
@@ -61,26 +68,36 @@ namespace TTWeb.BusinessLogic.Services.Client
 
         /// <summary>
         /// Gets new access token from server using client id and secret
+        /// Throws exception if the authentication fails
         /// </summary>
         /// <returns></returns>
         private async Task GetAccessTokenAsync()
         {
-            // TODO: Sends clientId and clientSecret to server at POST /account/box-login
-            // TODO: receives jwt token from server
-            // TODO: stores token locally
-            throw new NotImplementedException();
+            _token.Reset();
+
+            var loginModel = new BoxLoginModel(_boxAppSettingsOptions.ClientId, _boxAppSettingsOptions.ClientSecret);
+            var response = await PostAsync(_webApiAppSettings.Routes.BoxLogin, loginModel);
+            response.EnsureSuccessStatusCode();
+
+            _token = await response.LoadJsonAsync<LoginTokenModel>();
         }
 
         /// <summary>
         /// Gets new access token from server using refresh token
+        /// 
         /// </summary>
         /// <returns></returns>
         private async Task RefreshTokenAsync()
         {
-            // TODO: Sends access- & refresh token to server at POST /account/refresh-token
-            // TODO: receives jwt token from server
-            // TODO: stores token locally
-            throw new NotImplementedException();
+            var response = await PostAsync(_webApiAppSettings.Routes.RefreshToken, _token);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                await GetAccessTokenAsync();
+                return;
+            }
+
+            _token = await response.LoadJsonAsync<LoginTokenModel>();
         }
     }
 }

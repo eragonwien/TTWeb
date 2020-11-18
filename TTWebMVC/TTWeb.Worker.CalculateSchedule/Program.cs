@@ -29,6 +29,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                 .ConfigureServices((context, services) =>
                 {
                     services.Configure<HttpClientAppSettings>(context.Configuration.GetSection(HttpClientAppSettings.Section));
+                    services.Configure<BoxAppSettings>(context.Configuration.GetSection(BoxAppSettings.Section));
 
                     services.AddHttpClient<WebApiClient>();
                     services.AddSingleton<IBoxService, BoxService>();
