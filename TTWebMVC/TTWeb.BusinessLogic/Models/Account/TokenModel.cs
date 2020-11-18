@@ -9,12 +9,5 @@ namespace TTWeb.BusinessLogic.Models.Account
 
         public bool IsEmpty => string.IsNullOrWhiteSpace(Token);
         public bool Expired => ExpirationDateUtc < DateTime.UtcNow;
-
-        public bool IsAlmostExpired(TimeSpan maxDuration)
-        {
-            var tolerantTimeSpan = new TimeSpan(maxDuration.Ticks / 2);
-            var timeLeft = DateTime.UtcNow - ExpirationDateUtc;
-            return timeLeft <= tolerantTimeSpan;
-        }
     }
 }

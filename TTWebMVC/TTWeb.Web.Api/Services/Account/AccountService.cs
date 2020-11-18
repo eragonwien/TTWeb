@@ -84,7 +84,7 @@ namespace TTWeb.Web.Api.Services.Account
             loginTokenModel.AccessToken.Token = _tokenHandler.WriteToken(accessToken);
             loginTokenModel.AccessToken.ExpirationDateUtc = accessToken.ValidTo;
 
-            if (refreshTokenValidation.Token.IsAlmostExpired(_authSettings.JsonWebToken.RefreshToken.Duration))
+            if (_authHelperService.IsAlmostExpired(refreshTokenValidation.Token.ValidTo, _authSettings.JsonWebToken.RefreshToken.Duration))
             {
                 var refreshToken = _tokenHandler.CreateRefreshToken(_authSettings.JsonWebToken);
                 loginTokenModel.RefreshToken.Token = _tokenHandler.WriteToken(refreshToken);

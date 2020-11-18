@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.IdentityModel.Tokens;
-using TTWeb.BusinessLogic.Models.Account;
+﻿using Microsoft.IdentityModel.Tokens;
 
 namespace TTWeb.BusinessLogic.Models.AppSettings
 {

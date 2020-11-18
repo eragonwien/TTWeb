@@ -6,7 +6,5 @@ namespace TTWeb.BusinessLogic.Models.AppSettings
     {
         public string Key { get; set; }
         public TimeSpan Duration { get; set; }
-
-
     }
 }

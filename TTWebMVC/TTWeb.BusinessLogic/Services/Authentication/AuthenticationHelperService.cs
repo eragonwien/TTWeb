@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using TTWeb.BusinessLogic.Models.Account;
 
@@ -21,6 +22,13 @@ namespace TTWeb.BusinessLogic.Services.Authentication
 
             if (_env.IsDevelopment()) return true;
             return false;
+        }
+
+        public bool IsAlmostExpired(DateTime expirationDate, TimeSpan maxDuration)
+        {
+            var tolerantTimeSpan = new TimeSpan(maxDuration.Ticks / 2);
+            var timeLeft = DateTime.UtcNow - expirationDate;
+            return timeLeft <= tolerantTimeSpan;
         }
     }
 }

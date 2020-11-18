@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Services.Authentication;
 
 namespace TTWeb.BusinessLogic.Services.Client
 {
@@ -15,14 +16,17 @@ namespace TTWeb.BusinessLogic.Services.Client
         public HttpClient Client { get; set; }
 
         private readonly AuthenticationJsonWebTokenAppSettings _jsonWebTokenAppSettings;
+        private readonly IAuthenticationHelperService _authenticationHelperService;
         private LoginTokenModel _token = new LoginTokenModel();
 
         public WebApiClient(IOptions<HttpClientAppSettings> httpClientAppSettingsOptions, 
             IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions, 
+            IAuthenticationHelperService authenticationHelperService,
             HttpClient client)
         {
             var webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
             _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken;
+            _authenticationHelperService = authenticationHelperService;
 
             client.BaseAddress = new Uri(webApiAppSettings.BaseAddress);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(HttpClientAppSettings.AcceptHeaderDefault));
@@ -32,10 +36,10 @@ namespace TTWeb.BusinessLogic.Services.Client
 
         public async Task AuthenticateAsync()
         {
-            if (!HasValidStoredToken() || _token.AccessToken.IsAlmostExpired(_jsonWebTokenAppSettings.AccessToken.Duration))
+            if (!IsTokenRefreshRequired(_token.AccessToken, _jsonWebTokenAppSettings.AccessToken.Duration)) 
                 await GetAccessTokenAsync();
 
-            if (_token.RefreshToken.IsAlmostExpired(_jsonWebTokenAppSettings.RefreshToken.Duration))
+            if (!IsTokenRefreshRequired(_token.RefreshToken, _jsonWebTokenAppSettings.RefreshToken.Duration))
                 await RefreshTokenAsync();
         }
 
@@ -47,16 +51,12 @@ namespace TTWeb.BusinessLogic.Services.Client
             return await Client.PostAsync(url, new StringContent(json, Encoding.UTF8, HttpClientAppSettings.AcceptHeaderDefault));
         }
 
-        /// <summary>
-        /// Returns true if there is an access token stored locally, which has not expired
-        /// </summary>
-        /// <returns></returns>
-        private bool HasValidStoredToken()
+        private bool IsTokenRefreshRequired(TokenModel token, TimeSpan tokenMaxDuration)
         {
-            return !_token.AccessToken.IsEmpty            
-                   && !_token.RefreshToken.IsEmpty 
-                   && !_token.AccessToken.Expired
-                   &&!_token.RefreshToken.Expired;
+            if (token == null) throw new ArgumentNullException(nameof(token));
+            return !token.IsEmpty 
+                   && !token.Expired &&
+                   !_authenticationHelperService.IsAlmostExpired(token.ExpirationDateUtc, tokenMaxDuration);
         }
 
         /// <summary>
