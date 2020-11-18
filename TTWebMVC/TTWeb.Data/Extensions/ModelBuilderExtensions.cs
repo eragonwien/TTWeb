@@ -75,6 +75,16 @@ namespace TTWeb.Data.Extensions
                .HasConversion<int>()
                .HasDefaultValue(LoginUserType.User);
 
+            modelBuilder.Entity<LoginUser>()
+                .Property(m => m.ClientId)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<LoginUser>()
+                .Property(m => m.ClientSecret)
+                .ValueGeneratedOnAddOrUpdate();
+
+            //modelBuilder.Entity<LoginUser>(e => e.HasCheckConstraint("CK_LoginUser_User_ClientId_Empty", $"[TypeId] != {(int)LoginUserType.Box} OR [ClientId] IS NULL"));
+
             return modelBuilder;
         }
 

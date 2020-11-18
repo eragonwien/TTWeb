@@ -6,8 +6,6 @@ namespace TTWeb.Data.Models
 {
     public class LoginUser : IHasIdEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public string Email { get; set; }
@@ -17,6 +15,10 @@ namespace TTWeb.Data.Models
         public string LastName { get; set; }
 
         public LoginUserType Type { get; set; }
+
+        public string ClientId { get; set; }
+
+        public string ClientSecret { get; set; }
 
         public ICollection<LoginUserPermissionMapping> LoginUserPermissionMappings { get; set; }
 
