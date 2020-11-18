@@ -69,6 +69,12 @@ namespace TTWeb.Data.Extensions
                 .HasForeignKey(m => m.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<LoginUser>()
+               .Property(m => m.Type)
+               .HasColumnName("TypeId")
+               .HasConversion<int>()
+               .HasDefaultValue(LoginUserType.User);
+
             return modelBuilder;
         }
 
@@ -287,7 +293,14 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedLoginUser(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginUser>()
-                .HasData(new LoginUser { Id = 1, Email = "test@test.com", FirstName = "test", LastName = "dev" });
+                .HasData(new LoginUser
+                {
+                    Id = 1,
+                    Email = "test@test.com",
+                    FirstName = "test",
+                    LastName = "dev",
+                    Type = LoginUserType.User
+                });
 
             return modelBuilder;
         }
@@ -310,10 +323,10 @@ namespace TTWeb.Data.Extensions
             modelBuilder.Entity<FacebookUser>()
                 .HasData(new FacebookUser
                 {
-                    Id = 1, 
-                    Username = "eragonwien@gmail.com", 
-                    Password = "1234", 
-                    OwnerId = 1, 
+                    Id = 1,
+                    Username = "eragonwien@gmail.com",
+                    Password = "1234",
+                    OwnerId = 1,
                     Enabled = true
                 });
 
@@ -369,7 +382,7 @@ namespace TTWeb.Data.Extensions
             modelBuilder.Entity<ScheduleJob>()
                 .HasData(new ScheduleJob
                 {
-                    Id = 1, 
+                    Id = 1,
                     ScheduleId = 1,
                     Action = ScheduleAction.Like,
                     StartDate = DateTime.UtcNow,
