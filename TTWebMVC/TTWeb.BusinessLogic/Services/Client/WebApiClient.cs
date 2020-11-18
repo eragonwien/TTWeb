@@ -22,10 +22,10 @@ namespace TTWeb.BusinessLogic.Services.Client
         private readonly IAuthenticationHelperService _authenticationHelperService;
         private LoginTokenModel _token = new LoginTokenModel();
 
-        public WebApiClient(IOptions<HttpClientAppSettings> httpClientAppSettingsOptions, 
-            IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions, 
-            IOptions<BoxAppSettings> boxAppSettingsOptions, 
-            IOptions<WebApiAppSettings> webApiAppSettingsOptions, 
+        public WebApiClient(IOptions<HttpClientAppSettings> httpClientAppSettingsOptions,
+            IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions,
+            IOptions<BoxAppSettings> boxAppSettingsOptions,
+            IOptions<WebApiAppSettings> webApiAppSettingsOptions,
             IAuthenticationHelperService authenticationHelperService,
             HttpClient client)
         {
@@ -43,11 +43,11 @@ namespace TTWeb.BusinessLogic.Services.Client
 
         public async Task AuthenticateAsync()
         {
-            if (!IsTokenRefreshRequired(_token.AccessToken, _jsonWebTokenAppSettings.AccessToken.Duration)) 
-                await GetAccessTokenAsync();
+            if (!IsTokenRefreshRequired(_token.AccessToken, _jsonWebTokenAppSettings.AccessToken.Duration))
+                await RequestAccessTokenAsync();
 
             if (!IsTokenRefreshRequired(_token.RefreshToken, _jsonWebTokenAppSettings.RefreshToken.Duration))
-                await RefreshTokenAsync();
+                await RequestRefreshTokenAsync();
         }
 
         public async Task<HttpResponseMessage> PostAsync(string url, object requestMessage = null)
@@ -61,7 +61,7 @@ namespace TTWeb.BusinessLogic.Services.Client
         private bool IsTokenRefreshRequired(TokenModel token, TimeSpan tokenMaxDuration)
         {
             if (token == null) throw new ArgumentNullException(nameof(token));
-            return !token.IsEmpty 
+            return !token.IsEmpty
                    && !token.Expired &&
                    !_authenticationHelperService.IsAlmostExpired(token.ExpirationDateUtc, tokenMaxDuration);
         }
@@ -71,7 +71,7 @@ namespace TTWeb.BusinessLogic.Services.Client
         /// Throws exception if the authentication fails
         /// </summary>
         /// <returns></returns>
-        private async Task GetAccessTokenAsync()
+        private async Task RequestAccessTokenAsync()
         {
             _token.Reset();
 
@@ -87,13 +87,13 @@ namespace TTWeb.BusinessLogic.Services.Client
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task RefreshTokenAsync()
+        private async Task RequestRefreshTokenAsync()
         {
             var response = await PostAsync(_webApiAppSettings.Routes.RefreshToken, _token);
 
             if (!response.IsSuccessStatusCode)
             {
-                await GetAccessTokenAsync();
+                await RequestAccessTokenAsync();
                 return;
             }
 
