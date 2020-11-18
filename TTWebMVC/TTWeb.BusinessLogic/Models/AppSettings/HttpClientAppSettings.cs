@@ -3,6 +3,7 @@
     public class HttpClientAppSettings
     {
         public const string Section = "HttpClient";
+        public const string AcceptHeaderDefault = "application/json";
         public WebApiAppSettings WebApi { get; set; }
     }
 }

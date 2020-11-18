@@ -1,41 +1,31 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Services.Client;
 
 namespace TTWeb.BusinessLogic.Services.Box
 {
     public class BoxService : IBoxService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly WebApiClient _webApiClient;
         private readonly ILogger<BoxService> _logger;
-        private readonly SchedulingAppSettings _schedulingAppSettings;
+        private readonly WebApiAppSettings _webApiAppSettings;
 
-        public BoxService(IHttpClientFactory httpClientFactory,
+        public BoxService(WebApiClient webApiClient,
             ILogger<BoxService> logger,
-            IOptions<SchedulingAppSettings> schedulingAppSettingsOptions)
+            IOptions<WebApiAppSettings> webApiAppSettingsOptions)
         {
-            _httpClientFactory = httpClientFactory;
+            _webApiClient = webApiClient;
             _logger = logger;
-            _schedulingAppSettings = schedulingAppSettingsOptions.Value;
+            _webApiAppSettings = webApiAppSettingsOptions.Value;
         }
 
-        public Task AuthenticateAsync()
+        public async Task TriggerPlanningAsync()
         {
-            // TODO: Sends clientId and clientSecret to server at POST /account/box-login
-            // TODO: receives jwt token from server
-            // TODO: stores token locally
-            // TODO: retrieves token from storage (skips if already has token)
-            // TODO: validates expiration date
-            // TODO: refresh token if expiration date almost dues
-            throw new System.NotImplementedException();
-        }
-
-        public Task TriggerPlanningAsync()
-        {
-            // TODO: POST at /api/schedules/trigger-planning
-            throw new System.NotImplementedException();
+            await _webApiClient.AuthenticateAsync();
+            var response = await _webApiClient.PostAsync(_webApiAppSettings.Routes.TriggerPlanning);
+            response.EnsureSuccessStatusCode();
         }
     }
 }

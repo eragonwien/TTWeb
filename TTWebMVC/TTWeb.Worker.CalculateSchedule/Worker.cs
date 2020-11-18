@@ -1,5 +1,4 @@
 using System;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +23,6 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await _boxService.AuthenticateAsync();
                 await _boxService.TriggerPlanningAsync();
             }
         }

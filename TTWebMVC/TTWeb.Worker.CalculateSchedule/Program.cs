@@ -1,11 +1,14 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
+using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Services.Box;
+using TTWeb.BusinessLogic.Services.Client;
 
-namespace TTWeb.Worker.CalculateSchedule
+namespace TTWeb.Worker.SchedulePlanningTrigger
 {
     public class Program
     {
@@ -27,10 +30,9 @@ namespace TTWeb.Worker.CalculateSchedule
                 {
                     services.Configure<HttpClientAppSettings>(context.Configuration.GetSection(HttpClientAppSettings.Section));
 
-                    // TODO: adds ttweb web api client
-                    services.AddHttpClient();
-                    services.AddHostedService<SchedulePlanningTrigger.Worker>();
-
+                    services.AddHttpClient<WebApiClient>();
+                    services.AddSingleton<IBoxService, BoxService>();
+                    services.AddHostedService<Worker>();
                 })
                 .ConfigureLogging(o =>
                 {
