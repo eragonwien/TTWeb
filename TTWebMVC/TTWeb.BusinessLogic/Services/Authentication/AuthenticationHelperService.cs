@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using TTWeb.BusinessLogic.Models.Account;
+using TTWeb.BusinessLogic.Models.Entities;
 
 namespace TTWeb.BusinessLogic.Services.Authentication
 {
@@ -29,6 +32,17 @@ namespace TTWeb.BusinessLogic.Services.Authentication
             var tolerantTimeSpan = new TimeSpan(maxDuration.Ticks / 2);
             var timeLeft = DateTime.UtcNow - expirationDate;
             return timeLeft <= tolerantTimeSpan;
+        }
+
+        public IEnumerable<Claim> GenerateClaims(LoginUserModel loginUserModel)
+        {
+            yield return new Claim(ClaimTypes.NameIdentifier, loginUserModel.Id.ToString());
+            yield return new Claim(ClaimTypes.Email, loginUserModel.Email);
+            yield return new Claim(ClaimTypes.GivenName, loginUserModel.FirstName);
+            yield return new Claim(ClaimTypes.Surname, loginUserModel.LastName);
+
+            foreach (var permission in loginUserModel.UserPermissions)
+                yield return new Claim(ClaimTypes.Role, permission.ToString());
         }
     }
 }

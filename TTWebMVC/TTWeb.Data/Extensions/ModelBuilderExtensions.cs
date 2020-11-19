@@ -69,20 +69,6 @@ namespace TTWeb.Data.Extensions
                 .HasForeignKey(m => m.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<LoginUser>()
-               .Property(m => m.Type)
-               .HasColumnName("TypeId")
-               .HasConversion<int>()
-               .HasDefaultValue(LoginUserType.User);
-
-            modelBuilder.Entity<LoginUser>()
-                .Property(m => m.ClientId)
-                .ValueGeneratedOnUpdate();
-
-            modelBuilder.Entity<LoginUser>()
-                .Property(m => m.ClientSecret)
-                .ValueGeneratedOnUpdate();
-
             return modelBuilder;
         }
 
@@ -307,7 +293,6 @@ namespace TTWeb.Data.Extensions
                     Email = "test@test.com",
                     FirstName = "test",
                     LastName = "dev",
-                    Type = LoginUserType.User
                 });
 
             return modelBuilder;

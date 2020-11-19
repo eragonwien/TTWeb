@@ -54,7 +54,8 @@ namespace TTWeb.Web.Api.Services.Account
 
             var loginTokenModel = new LoginTokenModel();
 
-            var accessToken = _tokenHandler.CreateAccessToken(_authSettings.JsonWebToken, user.GenerateClaims());
+            var userClaims = _authHelperService.GenerateClaims(user);
+            var accessToken = _tokenHandler.CreateAccessToken(_authSettings.JsonWebToken, userClaims);
             loginTokenModel.AccessToken.Token = _tokenHandler.WriteToken(accessToken);
             loginTokenModel.AccessToken.ExpirationDateUtc = accessToken.ValidTo;
 

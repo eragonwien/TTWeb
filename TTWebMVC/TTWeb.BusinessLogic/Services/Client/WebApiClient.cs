@@ -73,13 +73,14 @@ namespace TTWeb.BusinessLogic.Services.Client
         /// <returns></returns>
         private async Task RequestAccessTokenAsync()
         {
-            _token.Reset();
+            //_token.Reset();
 
-            var loginModel = new BoxLoginModel(_boxAppSettingsOptions.ClientId, _boxAppSettingsOptions.ClientSecret);
-            var response = await PostAsync(_webApiAppSettings.Routes.BoxLogin, loginModel);
-            response.EnsureSuccessStatusCode();
+            //var loginModel = new BoxLoginModel(_boxAppSettingsOptions.ClientId, _boxAppSettingsOptions.ClientSecret);
+            //var response = await PostAsync(_webApiAppSettings.Routes.BoxLogin, loginModel);
+            //response.EnsureSuccessStatusCode();
 
-            _token = await response.LoadJsonAsync<LoginTokenModel>();
+            //_token = await response.LoadJsonAsync<LoginTokenModel>();
+            throw new NotImplementedException();
         }
 
         /// <summary>

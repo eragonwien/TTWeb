@@ -14,12 +14,6 @@ namespace TTWeb.Data.Models
 
         public string LastName { get; set; }
 
-        public LoginUserType Type { get; set; }
-
-        public string ClientId { get; set; }
-
-        public string ClientSecret { get; set; }
-
         public ICollection<LoginUserPermissionMapping> LoginUserPermissionMappings { get; set; }
 
         public ICollection<FacebookUser> OwnedFacebookUsers { get; set; }
