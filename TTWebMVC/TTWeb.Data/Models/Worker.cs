@@ -9,5 +9,7 @@ namespace TTWeb.Data.Models
         public string Secret { get; set; }
 
         public ICollection<WorkerPermissionMapping> WorkerPermissionMappings { get; set; }
+
+        public ICollection<Schedule> WorkingSchedules { get; set; }
     }
 }

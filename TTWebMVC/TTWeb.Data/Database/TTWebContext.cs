@@ -32,6 +32,8 @@ namespace TTWeb.Data.Database
                 .ConfigureSchedule()
                 .ConfigureScheduleJob()
                 .ConfigureScheduleJobResult()
+                .ConfigureWorker()
+                .ConfigureWorkerPermissionMapping()
                 .SeedLoginUser()
                 .SeedLoginUserPermissionMapping()
                 .SeedFacebookUser()
@@ -40,7 +42,9 @@ namespace TTWeb.Data.Database
                 .SeedScheduleWeekdayMapping()
                 .SeedTimeFrame()
                 .SeedScheduleJob()
-                .SeedScheduleJobResult();
+                .SeedScheduleJobResult()
+                .SeedWorker()
+                .SeedWorkerPermissionMapping();
         }
     }
 }

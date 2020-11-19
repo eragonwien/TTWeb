@@ -58,12 +58,6 @@ namespace TTWeb.Data.Extensions
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<LoginUser>()
-                .HasMany(e => e.WorkingSchedules)
-                .WithOne(m => m.Worker)
-                .HasForeignKey(m => m.WorkerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<LoginUser>()
                 .HasMany(e => e.OwnedSchedules)
                 .WithOne(m => m.Owner)
                 .HasForeignKey(m => m.OwnerId)
@@ -223,12 +217,6 @@ namespace TTWeb.Data.Extensions
                 .IsRequired()
                 .HasDefaultValue(ProcessingStatus.New);
 
-            modelBuilder.Entity<Schedule>()
-                .HasOne(e => e.Worker)
-                .WithMany(e => e.WorkingSchedules)
-                .HasForeignKey(e => e.WorkerId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
             return modelBuilder;
         }
 
@@ -293,13 +281,19 @@ namespace TTWeb.Data.Extensions
                 .Property(m => m.Secret)
                 .IsRequired();
 
+            modelBuilder.Entity<Worker>()
+                .HasMany(e => e.WorkingSchedules)
+                .WithOne(m => m.Worker)
+                .HasForeignKey(m => m.WorkerId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
             return modelBuilder;
         }
 
         public static ModelBuilder ConfigureWorkerPermissionMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<WorkerPermissionMapping>()
-                .HasKey(m => new { m.WorkerId, m.UserPermission });
+                .HasKey(m => new { m.UserPermission, m.WorkerId });
 
             modelBuilder.Entity<WorkerPermissionMapping>()
                 .HasOne(m => m.Worker)

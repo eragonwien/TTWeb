@@ -17,7 +17,5 @@ namespace TTWeb.Data.Models
         public ICollection<FacebookUser> OwnedFacebookUsers { get; set; }
 
         public ICollection<Schedule> OwnedSchedules { get; set; }
-
-        public ICollection<Schedule> WorkingSchedules { get; set; }
     }
 }

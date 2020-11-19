@@ -30,13 +30,19 @@ namespace TTWeb.Data.Models
         public DateTime? LockAt { get; set; }
 
         public FacebookUser Sender { get; set; }
+
         public LoginUser Owner { get; set; }
-        public LoginUser Worker { get; set; }
+
+        public Worker Worker { get; set; }
+
         public ICollection<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
+
         public ICollection<ScheduleWeekdayMapping> ScheduleWeekdayMappings { get; set; }
+
         public ICollection<ScheduleTimeFrame> TimeFrames { get; set; }
+
         public ICollection<ScheduleJob> ScheduleJobs { get; set; }
-        
+
         public Schedule Lock(DateTime lockDate, TimeSpan lockDuration)
         {
             LockAt = lockDate;
