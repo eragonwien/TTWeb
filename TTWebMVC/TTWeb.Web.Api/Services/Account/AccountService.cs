@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -35,9 +36,18 @@ namespace TTWeb.Web.Api.Services.Account
             _tokenHandler = new JwtSecurityTokenHandler();
         }
 
-        public Task<ProcessingResult<WorkerModel>> AuthenticateBoxAsync(WorkerModel loginModel)
+        public async Task<ProcessingResult<WorkerModel>> AuthenticateBoxAsync(WorkerModel loginModel)
         {
-            throw new NotImplementedException();
+            var result = new ProcessingResult<WorkerModel>();
+            if (!await _authHelperService.IsExternalAccessTokenValidAsync(loginModel))
+                return result.WithSuccess(false).WithReason("token is invalid");
+
+            var workerModel = _mapper.Map<WorkerModel>(loginModel);
+
+            // TODO: loads model from db
+            // TODO: returns error if not found
+
+            return result.WithSuccess().WithResult(workerModel);
         }
 
         public async Task<ProcessingResult<LoginUserModel>> AuthenticateExternalAsync(ExternalLoginModel loginModel)
@@ -57,9 +67,26 @@ namespace TTWeb.Web.Api.Services.Account
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
 
+            var userClaims = _authHelperService.GenerateClaims(user);
+
+            return BuildLoginTokenModel(userClaims);
+        }
+
+        public LoginTokenModel GenerateAccessToken(WorkerModel worker)
+        {
+            if (worker == null) throw new ArgumentNullException(nameof(worker));
+
+            var userClaims = _authHelperService.GenerateClaims(worker);
+
+            return BuildLoginTokenModel(userClaims);
+        }
+
+        private LoginTokenModel BuildLoginTokenModel(IEnumerable<Claim> userClaims)
+        {
+            if (userClaims is null) throw new ArgumentNullException(nameof(userClaims));
+
             var loginTokenModel = new LoginTokenModel();
 
-            var userClaims = _authHelperService.GenerateClaims(user);
             var accessToken = _tokenHandler.CreateAccessToken(_authSettings.JsonWebToken, userClaims);
             loginTokenModel.AccessToken.Token = _tokenHandler.WriteToken(accessToken);
             loginTokenModel.AccessToken.ExpirationDateUtc = accessToken.ValidTo;
@@ -69,11 +96,6 @@ namespace TTWeb.Web.Api.Services.Account
             loginTokenModel.RefreshToken.ExpirationDateUtc = refreshToken.ValidTo;
 
             return loginTokenModel;
-        }
-
-        public LoginTokenModel GenerateAccessToken(WorkerModel worker)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<LoginTokenModel> RefreshAccessToken(LoginTokenModel loginTokenModel)
