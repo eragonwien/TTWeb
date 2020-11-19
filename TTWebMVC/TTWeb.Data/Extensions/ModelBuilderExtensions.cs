@@ -280,6 +280,41 @@ namespace TTWeb.Data.Extensions
             return modelBuilder;
         }
 
+        public static ModelBuilder ConfigureWorker(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Worker>()
+                .HasKey(m => m.Id);
+
+            modelBuilder.Entity<Worker>()
+                .Property(m => m.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Worker>()
+                .Property(m => m.Secret)
+                .IsRequired();
+
+            return modelBuilder;
+        }
+
+        public static ModelBuilder ConfigureWorkerPermissionMapping(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<WorkerPermissionMapping>()
+                .HasKey(m => new { m.WorkerId, m.UserPermission });
+
+            modelBuilder.Entity<WorkerPermissionMapping>()
+                .HasOne(m => m.Worker)
+                .WithMany(u => u.WorkerPermissionMappings)
+                .HasForeignKey(m => m.WorkerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkerPermissionMapping>()
+                .Property(m => m.UserPermission)
+                .HasColumnName("UserPermissionId")
+                .HasConversion<int>();
+
+            return modelBuilder;
+        }
+
         #endregion
 
         #region Seeding
@@ -391,6 +426,26 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<ScheduleJobResult>()
                 .HasData(new ScheduleJobResult { Id = 1, ScheduleJobId = 1 });
+
+            return modelBuilder;
+        }
+
+        public static ModelBuilder SeedWorker(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Worker>()
+                .HasData(new Worker
+                {
+                    Id = 1,
+                    Secret = Guid.NewGuid().ToString()
+                });
+
+            return modelBuilder;
+        }
+
+        public static ModelBuilder SeedWorkerPermissionMapping(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<WorkerPermissionMapping>()
+                .HasData(new WorkerPermissionMapping { WorkerId = 1, UserPermission = UserPermission.IsWorker });
 
             return modelBuilder;
         }

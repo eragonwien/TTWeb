@@ -41,7 +41,7 @@ namespace TTWeb.BusinessLogic.Services.Authentication
             yield return new Claim(ClaimTypes.GivenName, loginUserModel.FirstName);
             yield return new Claim(ClaimTypes.Surname, loginUserModel.LastName);
 
-            foreach (var permission in loginUserModel.UserPermissions)
+            foreach (var permission in loginUserModel.Permissions)
                 yield return new Claim(ClaimTypes.Role, permission.ToString());
         }
     }

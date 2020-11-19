@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Authentication;
 
 namespace TTWeb.BusinessLogic.Services.Client
@@ -73,14 +74,13 @@ namespace TTWeb.BusinessLogic.Services.Client
         /// <returns></returns>
         private async Task RequestAccessTokenAsync()
         {
-            //_token.Reset();
+            _token.Reset();
 
-            //var loginModel = new BoxLoginModel(_boxAppSettingsOptions.ClientId, _boxAppSettingsOptions.ClientSecret);
-            //var response = await PostAsync(_webApiAppSettings.Routes.BoxLogin, loginModel);
-            //response.EnsureSuccessStatusCode();
+            var loginModel = new WorkerModel(_boxAppSettingsOptions.ClientId, _boxAppSettingsOptions.ClientSecret);
+            var response = await PostAsync(_webApiAppSettings.Routes.BoxLogin, loginModel);
+            response.EnsureSuccessStatusCode();
 
-            //_token = await response.LoadJsonAsync<LoginTokenModel>();
-            throw new NotImplementedException();
+            _token = await response.LoadJsonAsync<LoginTokenModel>();
         }
 
         /// <summary>

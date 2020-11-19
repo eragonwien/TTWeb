@@ -15,6 +15,6 @@ namespace TTWeb.BusinessLogic.Models.Entities
         [Required]
         public string LastName { get; set; }
 
-        public ICollection<UserPermission> UserPermissions { get; set; }
+        public ICollection<UserPermission> Permissions { get; set; }
     }
 }
