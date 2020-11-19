@@ -35,6 +35,11 @@ namespace TTWeb.Web.Api.Services.Account
             _tokenHandler = new JwtSecurityTokenHandler();
         }
 
+        public Task<ProcessingResult<WorkerModel>> AuthenticateBoxAsync(WorkerModel loginModel)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ProcessingResult<LoginUserModel>> AuthenticateExternalAsync(ExternalLoginModel loginModel)
         {
             var result = new ProcessingResult<LoginUserModel>();
@@ -64,6 +69,11 @@ namespace TTWeb.Web.Api.Services.Account
             loginTokenModel.RefreshToken.ExpirationDateUtc = refreshToken.ValidTo;
 
             return loginTokenModel;
+        }
+
+        public LoginTokenModel GenerateAccessToken(WorkerModel worker)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<LoginTokenModel> RefreshAccessToken(LoginTokenModel loginTokenModel)
