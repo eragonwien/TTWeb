@@ -9,12 +9,12 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
 {
     public class Worker : BackgroundService
     {
-        private readonly IWorkerService _workerService;
+        private readonly IWorkerClientService _workerClientService;
         private readonly ILogger<Worker> _logger;
 
-        public Worker(IWorkerService workerService, ILogger<Worker> logger)
+        public Worker(IWorkerClientService workerClientService, ILogger<Worker> logger)
         {
-            _workerService = workerService;
+            _workerClientService = workerClientService;
             _logger = logger;
         }
 
@@ -23,7 +23,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await _workerService.TriggerPlanningAsync();
+                await _workerClientService.TriggerPlanningAsync();
             }
         }
     }

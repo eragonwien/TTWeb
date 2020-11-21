@@ -8,7 +8,7 @@ namespace TTWeb.Web.Api.Services.Account
     public interface IAccountService
     {
         Task<ProcessingResult<LoginUserModel>> AuthenticateExternalAsync(ExternalLoginModel loginModel);
-        Task<ProcessingResult<WorkerModel>> AuthenticateWorkerAsync(WorkerModel loginModel);
+        Task<ProcessingResult<WorkerModel>> AuthenticateWorkerAsync(WorkerModel model);
         LoginTokenModel GenerateAccessToken(LoginUserModel user);
         LoginTokenModel GenerateAccessToken(WorkerModel worker);
         Task<LoginTokenModel> RefreshAccessToken(LoginTokenModel loginTokenModel);

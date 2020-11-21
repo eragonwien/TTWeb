@@ -32,7 +32,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                     services.Configure<WorkerAppSettings>(context.Configuration.GetSection(WorkerAppSettings.Section));
 
                     services.AddHttpClient<WebApiClient>();
-                    services.AddSingleton<IWorkerService, WorkerService>();
+                    services.AddSingleton<IWorkerClientService, WorkerClientService>();
                     services.AddHostedService<Worker>();
                 })
                 .ConfigureLogging(o =>

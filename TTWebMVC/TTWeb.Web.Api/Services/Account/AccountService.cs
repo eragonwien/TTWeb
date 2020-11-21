@@ -13,6 +13,7 @@ using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.BusinessLogic.Services.Authentication;
 using TTWeb.BusinessLogic.Services.LoginUser;
+using TTWeb.BusinessLogic.Services.Worker;
 using TTWeb.Web.Api.Extensions;
 
 namespace TTWeb.Web.Api.Services.Account
@@ -21,6 +22,7 @@ namespace TTWeb.Web.Api.Services.Account
     {
         private readonly AuthenticationAppSettings _authSettings;
         private readonly IAuthenticationHelperService _authHelperService;
+        private readonly IWorkerService _workerService;
         private readonly ILoginUserService _loginUserService;
         private readonly IMapper _mapper;
         private readonly JwtSecurityTokenHandler _tokenHandler;
@@ -28,22 +30,23 @@ namespace TTWeb.Web.Api.Services.Account
         public AccountService(IOptions<AuthenticationAppSettings> authenticationAppSettings,
             IAuthenticationHelperService authHelperService,
             ILoginUserService loginUserService,
-            IMapper mapper)
+            IMapper mapper,
+            IWorkerService workerService)
         {
             _authSettings = authenticationAppSettings.Value;
             _authHelperService = authHelperService;
             _loginUserService = loginUserService;
             _mapper = mapper;
+            _workerService = workerService;
             _tokenHandler = new JwtSecurityTokenHandler();
         }
 
-        public async Task<ProcessingResult<WorkerModel>> AuthenticateWorkerAsync(WorkerModel loginModel)
+        public async Task<ProcessingResult<WorkerModel>> AuthenticateWorkerAsync(WorkerModel workerModel)
         {
             var result = new ProcessingResult<WorkerModel>();
 
-            var workerModel = _mapper.Map<WorkerModel>(loginModel);
+            var worker = await _workerService.FindAsync(workerModel.Id, workerModel.Secret);
 
-            // TODO: loads model from db
             // TODO: returns error if not found
 
             return result.WithSuccess().WithResult(workerModel);

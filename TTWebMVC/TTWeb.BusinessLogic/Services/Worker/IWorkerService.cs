@@ -4,6 +4,6 @@ namespace TTWeb.BusinessLogic.Services.Worker
 {
     public interface IWorkerService
     {
-        Task TriggerPlanningAsync();
+        Task<Data.Models.Worker> FindAsync(int id, string secret);
     }
 }
