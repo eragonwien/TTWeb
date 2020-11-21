@@ -29,16 +29,6 @@ namespace TTWeb.Web.Api.Controllers
             return _accountService.GenerateAccessToken(authenticationResult.Result);
         }
 
-        [HttpPost("login-worker")]
-        [AllowAnonymous]
-        public async Task<LoginTokenModel> WorkerLogin([FromBody] WorkerModel workerModel)
-        {
-            var authenticationResult = await _accountService.AuthenticateWorkerAsync(workerModel);
-
-            if (!authenticationResult.Succeed) throw new UnauthorizedAccessException($"Authentication failed due to {authenticationResult.Reason}");
-            return _accountService.GenerateAccessToken(authenticationResult.Result);
-        }
-
         [HttpPost("refresh-token")]
         [AllowAnonymous]
         public async Task<LoginTokenModel> RefreshToken([FromBody] LoginTokenModel loginTokenModel)

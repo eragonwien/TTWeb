@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Data.Database;
 
 namespace TTWeb.BusinessLogic.Services.Worker
@@ -20,6 +21,16 @@ namespace TTWeb.BusinessLogic.Services.Worker
             if (string.IsNullOrWhiteSpace(secret)) throw new ArgumentException(nameof(secret));
 
             return await _context.Workers.SingleOrDefaultAsync(w => w.Id == id && w.Secret == secret);
+        }
+
+        public Task<WorkerModel> GenerateAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }
