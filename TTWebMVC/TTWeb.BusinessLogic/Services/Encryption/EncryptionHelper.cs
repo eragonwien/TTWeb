@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using NETCore.Encrypt;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Models.AppSettings.Security;
 
 namespace TTWeb.BusinessLogic.Services.Encryption
 {

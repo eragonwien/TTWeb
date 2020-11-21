@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
+using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Authentication;
 

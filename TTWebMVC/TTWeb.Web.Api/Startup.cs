@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
+using TTWeb.BusinessLogic.Models.AppSettings.Security;
 using TTWeb.Data.Models;
 using TTWeb.Web.Api.Components.Attributes;
 using TTWeb.Web.Api.Extensions;

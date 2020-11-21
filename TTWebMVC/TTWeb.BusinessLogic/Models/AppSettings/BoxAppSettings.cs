@@ -1,4 +1,6 @@
-﻿namespace TTWeb.BusinessLogic.Models.AppSettings
+﻿using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
+
+namespace TTWeb.BusinessLogic.Models.AppSettings
 {
     public class BoxAppSettings
     {

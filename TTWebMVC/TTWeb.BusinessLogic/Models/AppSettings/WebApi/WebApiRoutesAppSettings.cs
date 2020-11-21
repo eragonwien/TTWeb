@@ -1,4 +1,4 @@
-﻿namespace TTWeb.BusinessLogic.Models.AppSettings
+﻿namespace TTWeb.BusinessLogic.Models.AppSettings.WebApi
 {
     public class WebApiRoutesAppSettings
     {

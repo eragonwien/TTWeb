@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 
-namespace TTWeb.BusinessLogic.Models.AppSettings
+namespace TTWeb.BusinessLogic.Models.AppSettings.Authentication
 {
     public class AuthenticationJsonWebTokenAppSettings
     {

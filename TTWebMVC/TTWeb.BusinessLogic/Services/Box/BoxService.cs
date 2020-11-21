@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
 using TTWeb.BusinessLogic.Services.Client;
 
 namespace TTWeb.BusinessLogic.Services.Box

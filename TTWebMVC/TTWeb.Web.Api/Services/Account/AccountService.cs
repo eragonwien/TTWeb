@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.BusinessLogic.Services.Authentication;

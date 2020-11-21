@@ -1,4 +1,6 @@
-﻿namespace TTWeb.BusinessLogic.Models.AppSettings
+﻿using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
+
+namespace TTWeb.BusinessLogic.Models.AppSettings
 {
     public class HttpClientAppSettings
     {

@@ -1,4 +1,4 @@
-﻿namespace TTWeb.BusinessLogic.Models.AppSettings
+﻿namespace TTWeb.BusinessLogic.Models.AppSettings.Security
 {
     public class SecurityCorsAppSettings
     {
