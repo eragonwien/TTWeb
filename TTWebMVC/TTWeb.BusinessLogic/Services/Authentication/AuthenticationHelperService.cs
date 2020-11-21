@@ -27,6 +27,11 @@ namespace TTWeb.BusinessLogic.Services.Authentication
             return false;
         }
 
+        public Task<bool> IsExternalAccessTokenValidAsync(WorkerModel loginModel)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsAlmostExpired(DateTime expirationDate, TimeSpan maxDuration)
         {
             var tolerantTimeSpan = new TimeSpan(maxDuration.Ticks / 2);
@@ -42,6 +47,14 @@ namespace TTWeb.BusinessLogic.Services.Authentication
             yield return new Claim(ClaimTypes.Surname, loginUserModel.LastName);
 
             foreach (var permission in loginUserModel.Permissions)
+                yield return new Claim(ClaimTypes.Role, permission.ToString());
+        }
+
+        public IEnumerable<Claim> GenerateClaims(WorkerModel workerModel)
+        {
+            yield return new Claim(ClaimTypes.NameIdentifier, workerModel.Id.ToString());
+            
+            foreach (var permission in workerModel.Permissions)
                 yield return new Claim(ClaimTypes.Role, permission.ToString());
         }
     }

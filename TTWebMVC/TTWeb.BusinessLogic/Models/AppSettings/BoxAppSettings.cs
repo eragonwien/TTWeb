@@ -6,5 +6,6 @@
 
         public int ClientId { get; set; }
         public string ClientSecret { get; set; }
+        public AuthenticationJsonWebTokenAppSettings JsonWebToken { get; set; }
     }
 }
