@@ -13,6 +13,7 @@ using TTWeb.BusinessLogic.Services.Encryption;
 using TTWeb.BusinessLogic.Services.Facebook;
 using TTWeb.BusinessLogic.Services.LoginUser;
 using TTWeb.BusinessLogic.Services.Schedule;
+using TTWeb.BusinessLogic.Services.Worker;
 using TTWeb.Data.Database;
 
 namespace TTWeb.BusinessLogic.Extensions
@@ -40,6 +41,7 @@ namespace TTWeb.BusinessLogic.Extensions
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<IScheduleJobService, ScheduleJobService>();
             services.AddScoped<IScheduleJobResultService, ScheduleJobResultService>();
+            services.AddScoped<IWorkerService, WorkerService>();
             return services;
         }
 
