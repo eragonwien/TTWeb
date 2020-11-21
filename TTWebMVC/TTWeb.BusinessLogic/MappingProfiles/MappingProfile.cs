@@ -54,6 +54,8 @@ namespace TTWeb.BusinessLogic.MappingProfiles
                 .ForMember(b => b.ReceiverId, o => o.MapFrom(a => a.Receiver.Id))
                 .ForMember(b => b.Sender, o => o.Ignore())
                 .ForMember(b => b.SenderId, o => o.MapFrom(a => a.Sender.Id));
+
+            CreateMap<Worker, WorkerModel>().ReverseMap();
         }
     }
 }

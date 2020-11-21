@@ -34,7 +34,7 @@ namespace TTWeb.Web.Api.Controllers
             return _accountService.GenerateAccessToken(authenticationResult.Result);
         }
 
-        [HttpPost("generate")]
+        [HttpPost()]
         [Authorize(Policy = Startup.RequireManageWorkerPermissionPolicy)]
         public async Task<WorkerModel> Generate()
         {

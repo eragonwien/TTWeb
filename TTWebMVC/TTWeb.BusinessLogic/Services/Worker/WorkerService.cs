@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Data.Database;
@@ -9,10 +10,12 @@ namespace TTWeb.BusinessLogic.Services.Worker
     public class WorkerService : IWorkerService
     {
         private readonly TTWebContext _context;
+        private readonly IMapper _mapper;
 
-        public WorkerService(TTWebContext context)
+        public WorkerService(TTWebContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Data.Models.Worker> FindAsync(int id, string secret)
@@ -23,9 +26,10 @@ namespace TTWeb.BusinessLogic.Services.Worker
             return await _context.Workers.SingleOrDefaultAsync(w => w.Id == id && w.Secret == secret);
         }
 
-        public Task<WorkerModel> GenerateAsync()
+        public async Task<WorkerModel> GenerateAsync()
         {
-            throw new NotImplementedException();
+            var worker = await _context.Workers.AddAsync(new Data.Models.Worker());
+            return _mapper.Map<WorkerModel>(worker);
         }
 
         public Task DeleteAsync()
