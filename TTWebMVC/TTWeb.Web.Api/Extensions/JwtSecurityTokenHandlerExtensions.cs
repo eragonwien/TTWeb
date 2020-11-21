@@ -7,13 +7,14 @@ using Microsoft.IdentityModel.Tokens;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
+using TTWeb.BusinessLogic.Models.AppSettings.Token;
 
 namespace TTWeb.Web.Api.Extensions
 {
     public static class JwtSecurityTokenHandlerExtensions
     {
         public static JwtSecurityToken CreateAccessToken(this JwtSecurityTokenHandler tokenHandler,
-            AuthenticationJsonWebTokenAppSettings settings,
+            JsonWebTokenAppSettings settings,
             IEnumerable<Claim> claims)
         {
             return tokenHandler.CreateSecurityToken(settings.AccessToken.Key,
@@ -23,7 +24,7 @@ namespace TTWeb.Web.Api.Extensions
         }
 
         public static JwtSecurityToken CreateRefreshToken(this JwtSecurityTokenHandler tokenHandler,
-            AuthenticationJsonWebTokenAppSettings settings)
+            JsonWebTokenAppSettings settings)
         {
             return tokenHandler.CreateSecurityToken(settings.RefreshToken.Key,
                 settings.Issuer,

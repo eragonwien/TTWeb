@@ -1,8 +1,8 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 
-namespace TTWeb.BusinessLogic.Models.AppSettings.Authentication
+namespace TTWeb.BusinessLogic.Models.AppSettings.Token
 {
-    public class AuthenticationJsonWebTokenAppSettings
+    public class JsonWebTokenAppSettings
     {
         public string Issuer { get; set; }
         public TokenAppSettings AccessToken { get; set; }
