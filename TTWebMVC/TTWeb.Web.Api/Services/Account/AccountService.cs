@@ -37,11 +37,9 @@ namespace TTWeb.Web.Api.Services.Account
             _tokenHandler = new JwtSecurityTokenHandler();
         }
 
-        public async Task<ProcessingResult<WorkerModel>> AuthenticateBoxAsync(WorkerModel loginModel)
+        public async Task<ProcessingResult<WorkerModel>> AuthenticateWorkerAsync(WorkerModel loginModel)
         {
             var result = new ProcessingResult<WorkerModel>();
-            if (!await _authHelperService.IsExternalAccessTokenValidAsync(loginModel))
-                return result.WithSuccess(false).WithReason("token is invalid");
 
             var workerModel = _mapper.Map<WorkerModel>(loginModel);
 

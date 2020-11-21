@@ -3,7 +3,7 @@ using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Models.Entities
 {
-    public class BoxLoginUserModel : BaseEntityModel
+    public class WorkerLoginUserModel : BaseEntityModel
     {
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }

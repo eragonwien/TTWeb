@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace TTWeb.BusinessLogic.Services.Box
+namespace TTWeb.BusinessLogic.Services.Worker
 {
-    public interface IBoxService
+    public interface IWorkerService
     {
         Task TriggerPlanningAsync();
     }

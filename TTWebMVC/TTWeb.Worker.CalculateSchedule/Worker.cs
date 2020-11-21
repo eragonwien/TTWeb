@@ -3,18 +3,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TTWeb.BusinessLogic.Services.Box;
+using TTWeb.BusinessLogic.Services.Worker;
 
 namespace TTWeb.Worker.SchedulePlanningTrigger
 {
     public class Worker : BackgroundService
     {
-        private readonly IBoxService _boxService;
+        private readonly IWorkerService _workerService;
         private readonly ILogger<Worker> _logger;
 
-        public Worker(IBoxService boxService, ILogger<Worker> logger)
+        public Worker(IWorkerService workerService, ILogger<Worker> logger)
         {
-            _boxService = boxService;
+            _workerService = workerService;
             _logger = logger;
         }
 
@@ -23,7 +23,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await _boxService.TriggerPlanningAsync();
+                await _workerService.TriggerPlanningAsync();
             }
         }
     }

@@ -3,6 +3,6 @@
     public enum LoginUserType
     {
         User = 1,
-        Box = 2
+        Worker = 2
     }
 }

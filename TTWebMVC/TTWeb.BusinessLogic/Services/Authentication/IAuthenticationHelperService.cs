@@ -10,7 +10,6 @@ namespace TTWeb.BusinessLogic.Services.Authentication
     public interface IAuthenticationHelperService
     {
         Task<bool> IsExternalAccessTokenValidAsync(ExternalLoginModel loginModel);
-        Task<bool> IsExternalAccessTokenValidAsync(WorkerModel loginModel);
         bool IsAlmostExpired(DateTime expirationDate, TimeSpan maxDuration);
         IEnumerable<Claim> GenerateClaims(LoginUserModel loginUserModel);
         IEnumerable<Claim> GenerateClaims(WorkerModel workerModel);

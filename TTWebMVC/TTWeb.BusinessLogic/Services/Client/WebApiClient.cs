@@ -21,21 +21,21 @@ namespace TTWeb.BusinessLogic.Services.Client
         public HttpClient Client { get; set; }
 
         private readonly JsonWebTokenAppSettings _jsonWebTokenAppSettings;
-        private readonly BoxAppSettings _boxAppSettingsOptions;
+        private readonly WorkerAppSettings _workerAppSettingsOptions;
         private readonly WebApiAppSettings _webApiAppSettings;
         private readonly IAuthenticationHelperService _authenticationHelperService;
         private LoginTokenModel _token = new LoginTokenModel();
 
         public WebApiClient(IOptions<HttpClientAppSettings> httpClientAppSettingsOptions,
             IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions,
-            IOptions<BoxAppSettings> boxAppSettingsOptions,
+            IOptions<WorkerAppSettings> workerAppSettingsOptions,
             IOptions<WebApiAppSettings> webApiAppSettingsOptions,
             IAuthenticationHelperService authenticationHelperService,
             HttpClient client)
         {
             var webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
             _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken;
-            _boxAppSettingsOptions = boxAppSettingsOptions.Value;
+            _workerAppSettingsOptions = workerAppSettingsOptions.Value;
             _webApiAppSettings = webApiAppSettingsOptions.Value;
             _authenticationHelperService = authenticationHelperService;
 
@@ -79,8 +79,8 @@ namespace TTWeb.BusinessLogic.Services.Client
         {
             _token.Reset();
 
-            var loginModel = new WorkerModel(_boxAppSettingsOptions.ClientId, _boxAppSettingsOptions.ClientSecret);
-            var response = await PostAsync(_webApiAppSettings.Routes.BoxLogin, loginModel);
+            var loginModel = new WorkerModel(_workerAppSettingsOptions.ClientId, _workerAppSettingsOptions.ClientSecret);
+            var response = await PostAsync(_webApiAppSettings.Routes.WorkerLogin, loginModel);
             response.EnsureSuccessStatusCode();
 
             _token = await response.LoadJsonAsync<LoginTokenModel>();

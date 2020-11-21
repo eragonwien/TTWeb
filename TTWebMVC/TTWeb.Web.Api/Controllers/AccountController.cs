@@ -29,11 +29,11 @@ namespace TTWeb.Web.Api.Controllers
             return _accountService.GenerateAccessToken(authenticationResult.Result);
         }
 
-        [HttpPost("box-login")]
+        [HttpPost("login-worker")]
         [AllowAnonymous]
-        public async Task<LoginTokenModel> BoxLogin([FromBody] WorkerModel loginModel)
+        public async Task<LoginTokenModel> WorkerLogin([FromBody] WorkerModel loginModel)
         {
-            var authenticationResult = await _accountService.AuthenticateBoxAsync(loginModel);
+            var authenticationResult = await _accountService.AuthenticateWorkerAsync(loginModel);
 
             if (!authenticationResult.Succeed) throw new UnauthorizedAccessException($"Authentication failed due to {authenticationResult.Reason}");
             return _accountService.GenerateAccessToken(authenticationResult.Result);

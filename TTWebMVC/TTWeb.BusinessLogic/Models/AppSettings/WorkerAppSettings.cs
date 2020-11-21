@@ -3,9 +3,9 @@ using TTWeb.BusinessLogic.Models.AppSettings.Token;
 
 namespace TTWeb.BusinessLogic.Models.AppSettings
 {
-    public class BoxAppSettings
+    public class WorkerAppSettings
     {
-        public const string Section = "Box";
+        public const string Section = "Worker";
 
         public int ClientId { get; set; }
         public string ClientSecret { get; set; }

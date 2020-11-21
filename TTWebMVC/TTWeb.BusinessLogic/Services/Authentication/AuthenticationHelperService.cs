@@ -27,11 +27,6 @@ namespace TTWeb.BusinessLogic.Services.Authentication
             return false;
         }
 
-        public Task<bool> IsExternalAccessTokenValidAsync(WorkerModel loginModel)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool IsAlmostExpired(DateTime expirationDate, TimeSpan maxDuration)
         {
             var tolerantTimeSpan = new TimeSpan(maxDuration.Ticks / 2);

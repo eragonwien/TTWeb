@@ -5,8 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings;
-using TTWeb.BusinessLogic.Services.Box;
 using TTWeb.BusinessLogic.Services.Client;
+using TTWeb.BusinessLogic.Services.Worker;
 
 namespace TTWeb.Worker.SchedulePlanningTrigger
 {
@@ -29,10 +29,10 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                 .ConfigureServices((context, services) =>
                 {
                     services.Configure<HttpClientAppSettings>(context.Configuration.GetSection(HttpClientAppSettings.Section));
-                    services.Configure<BoxAppSettings>(context.Configuration.GetSection(BoxAppSettings.Section));
+                    services.Configure<WorkerAppSettings>(context.Configuration.GetSection(WorkerAppSettings.Section));
 
                     services.AddHttpClient<WebApiClient>();
-                    services.AddSingleton<IBoxService, BoxService>();
+                    services.AddSingleton<IWorkerService, WorkerService>();
                     services.AddHostedService<Worker>();
                 })
                 .ConfigureLogging(o =>
