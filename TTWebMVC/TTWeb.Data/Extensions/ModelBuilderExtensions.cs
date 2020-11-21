@@ -230,6 +230,10 @@ namespace TTWeb.Data.Extensions
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<ScheduleJob>()
+                .Property(m => m.StartDate)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<ScheduleJob>()
                 .HasOne(m => m.Schedule)
                 .WithMany(u => u.ScheduleJobs)
                 .HasForeignKey(m => m.ScheduleId)
@@ -275,6 +279,10 @@ namespace TTWeb.Data.Extensions
 
             modelBuilder.Entity<Worker>()
                 .Property(m => m.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Worker>()
+                .Property(m => m.Secret)
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Worker>()
@@ -364,8 +372,7 @@ namespace TTWeb.Data.Extensions
                     Action = ScheduleAction.Like,
                     IntervalType = ScheduleIntervalType.Daily,
                     SenderId = 1,
-                    OwnerId = 1,
-                    PlanningStatus = ProcessingStatus.New
+                    OwnerId = 1
                 });
 
             return modelBuilder;
@@ -407,7 +414,6 @@ namespace TTWeb.Data.Extensions
                     Id = 1,
                     ScheduleId = 1,
                     Action = ScheduleAction.Like,
-                    StartDate = DateTime.UtcNow,
                     Status = ProcessingStatus.Paused,
                     SenderId = 1,
                     ReceiverId = 1
@@ -429,8 +435,7 @@ namespace TTWeb.Data.Extensions
             modelBuilder.Entity<Worker>()
                 .HasData(new Worker
                 {
-                    Id = 1,
-                    Secret = Guid.NewGuid().ToString()
+                    Id = 1
                 });
 
             return modelBuilder;
