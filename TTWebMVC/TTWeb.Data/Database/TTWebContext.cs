@@ -18,6 +18,7 @@ namespace TTWeb.Data.Database
         public DbSet<ScheduleTimeFrame> ScheduleTimeFrames { get; set; }
         public DbSet<ScheduleJob> ScheduleJobs { get; set; }
         public DbSet<ScheduleJobResult> ScheduleJobsResults { get; set; }
+        public DbSet<Worker> Workers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

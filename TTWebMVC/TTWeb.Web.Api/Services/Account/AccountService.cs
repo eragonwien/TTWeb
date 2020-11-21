@@ -5,15 +5,18 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
+using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
+using TTWeb.BusinessLogic.Models.AppSettings.Token;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.BusinessLogic.Services.Authentication;
 using TTWeb.BusinessLogic.Services.LoginUser;
 using TTWeb.BusinessLogic.Services.Worker;
+using TTWeb.Data.Models;
 using TTWeb.Web.Api.Extensions;
 
 namespace TTWeb.Web.Api.Services.Account
@@ -22,6 +25,7 @@ namespace TTWeb.Web.Api.Services.Account
     {
         private readonly AuthenticationAppSettings _authSettings;
         private readonly IAuthenticationHelperService _authHelperService;
+        private readonly WorkerAppSettings _workerAppSettings;
         private readonly IWorkerService _workerService;
         private readonly ILoginUserService _loginUserService;
         private readonly IMapper _mapper;
@@ -31,13 +35,15 @@ namespace TTWeb.Web.Api.Services.Account
             IAuthenticationHelperService authHelperService,
             ILoginUserService loginUserService,
             IMapper mapper,
-            IWorkerService workerService)
+            IWorkerService workerService, 
+            IOptions<WorkerAppSettings> workerAppSettingsOptions)
         {
             _authSettings = authenticationAppSettings.Value;
             _authHelperService = authHelperService;
             _loginUserService = loginUserService;
             _mapper = mapper;
             _workerService = workerService;
+            _workerAppSettings = workerAppSettingsOptions.Value;
             _tokenHandler = new JwtSecurityTokenHandler();
         }
 
@@ -47,7 +53,7 @@ namespace TTWeb.Web.Api.Services.Account
 
             var worker = await _workerService.FindAsync(workerModel.Id, workerModel.Secret);
 
-            // TODO: returns error if not found
+            if (worker == null) throw new ResourceNotFoundException(nameof(Worker), workerModel.Id.ToString());
 
             return result.WithSuccess().WithResult(workerModel);
         }
@@ -71,7 +77,7 @@ namespace TTWeb.Web.Api.Services.Account
 
             var userClaims = _authHelperService.GenerateClaims(user);
 
-            return BuildLoginTokenModel(userClaims);
+            return BuildLoginTokenModel(userClaims, _authSettings.JsonWebToken);
         }
 
         public LoginTokenModel GenerateAccessToken(WorkerModel worker)
@@ -80,20 +86,21 @@ namespace TTWeb.Web.Api.Services.Account
 
             var userClaims = _authHelperService.GenerateClaims(worker);
 
-            return BuildLoginTokenModel(userClaims);
+            return BuildLoginTokenModel(userClaims, _workerAppSettings.JsonWebToken);
         }
 
-        private LoginTokenModel BuildLoginTokenModel(IEnumerable<Claim> userClaims)
+        private LoginTokenModel BuildLoginTokenModel(IEnumerable<Claim> userClaims, 
+            JsonWebTokenAppSettings jwtSettings)
         {
             if (userClaims is null) throw new ArgumentNullException(nameof(userClaims));
 
             var loginTokenModel = new LoginTokenModel();
 
-            var accessToken = _tokenHandler.CreateAccessToken(_authSettings.JsonWebToken, userClaims);
+            var accessToken = _tokenHandler.CreateAccessToken(jwtSettings, userClaims);
             loginTokenModel.AccessToken.Token = _tokenHandler.WriteToken(accessToken);
             loginTokenModel.AccessToken.ExpirationDateUtc = accessToken.ValidTo;
 
-            var refreshToken = _tokenHandler.CreateRefreshToken(_authSettings.JsonWebToken);
+            var refreshToken = _tokenHandler.CreateRefreshToken(jwtSettings);
             loginTokenModel.RefreshToken.Token = _tokenHandler.WriteToken(refreshToken);
             loginTokenModel.RefreshToken.ExpirationDateUtc = refreshToken.ValidTo;
 
