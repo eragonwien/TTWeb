@@ -401,7 +401,11 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<ScheduleTimeFrame>()
                 .HasData(new ScheduleTimeFrame
-                { ScheduleId = 1, From = TimeSpan.FromHours(9), To = TimeSpan.FromHours(14) });
+                {
+                    ScheduleId = 1,
+                    From = TimeSpan.FromHours(9),
+                    To = TimeSpan.FromHours(14)
+                });
 
             return modelBuilder;
         }
@@ -433,10 +437,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedWorker(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Worker>()
-                .HasData(new Worker
-                {
-                    Id = 1
-                });
+                .HasData(new Worker { Id = 1 });
 
             return modelBuilder;
         }
