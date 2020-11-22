@@ -283,10 +283,7 @@ namespace TTWeb.Data.Extensions
 
             modelBuilder.Entity<Worker>()
                 .Property(m => m.Secret)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Worker>()
-                .Property(m => m.Secret)
+                .ValueGeneratedOnAdd()
                 .IsRequired();
 
             modelBuilder.Entity<Worker>()
