@@ -6,7 +6,7 @@ namespace TTWeb.BusinessLogic.Models.AppSettings.Authentication
     {
         public const string Section = "Authentication";
 
-        public JsonWebTokenAppSettings JsonWebToken { get; set; }
+        public AutheticationJsonWebTokenAppSettings JsonWebToken { get; set; }
         public AuthenticationProvidersAppSettings Providers { get; set; }
     }
 }

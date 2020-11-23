@@ -2,11 +2,11 @@
 
 namespace TTWeb.BusinessLogic.Models.AppSettings.Token
 {
-    public class JsonWebTokenAppSettings
+    public class AutheticationJsonWebTokenAppSettings
     {
         public string Issuer { get; set; }
-        public TokenAppSettings AccessToken { get; set; }
-        public TokenAppSettings RefreshToken { get; set; }
+        public AuthenticationJsonWebTokenTokenAppSettings AccessToken { get; set; }
+        public AuthenticationJsonWebTokenTokenAppSettings RefreshToken { get; set; }
 
         public TokenValidationParameters TokenValidationDefaultParameters => new TokenValidationParameters
         {

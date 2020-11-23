@@ -90,7 +90,7 @@ namespace TTWeb.Web.Api.Services.Account
         }
 
         private LoginTokenModel BuildLoginTokenModel(IEnumerable<Claim> userClaims,
-            JsonWebTokenAppSettings jwtSettings)
+            AutheticationJsonWebTokenAppSettings jwtSettings)
         {
             if (userClaims is null) throw new ArgumentNullException(nameof(userClaims));
 

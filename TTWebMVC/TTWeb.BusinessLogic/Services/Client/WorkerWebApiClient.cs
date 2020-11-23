@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.AppSettings.Token;
 using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
 using TTWeb.BusinessLogic.Models.Entities;
@@ -22,7 +23,7 @@ namespace TTWeb.BusinessLogic.Services.Client
     {
         public HttpClient Client { get; set; }
 
-        private readonly JsonWebTokenAppSettings _jsonWebTokenAppSettings;
+        private readonly AutheticationJsonWebTokenAppSettings _jsonWebTokenAppSettings;
         private readonly WorkerAppSettings _workerAppSettings;
         private readonly WebApiAppSettings _webApiAppSettings;
         private readonly IAuthenticationHelperService _authenticationHelperService;
@@ -30,12 +31,13 @@ namespace TTWeb.BusinessLogic.Services.Client
 
         public WorkerWebApiClient(IOptions<HttpClientAppSettings> httpClientAppSettingsOptions,
             IOptions<WorkerAppSettings> workerAppSettingsOptions,
+            IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions,
             IAuthenticationHelperService authenticationHelperService,
             HttpClient client)
         {
             _workerAppSettings = workerAppSettingsOptions.Value;
+            _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken;
             _webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
-            _jsonWebTokenAppSettings = _workerAppSettings.JsonWebToken;
             _authenticationHelperService = authenticationHelperService;
 
             client.BaseAddress = new Uri(_webApiAppSettings.BaseAddress);

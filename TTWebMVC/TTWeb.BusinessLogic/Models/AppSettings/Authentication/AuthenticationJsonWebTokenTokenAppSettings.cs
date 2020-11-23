@@ -2,7 +2,7 @@
 
 namespace TTWeb.BusinessLogic.Models.AppSettings.Token
 {
-    public class TokenAppSettings
+    public class AuthenticationJsonWebTokenTokenAppSettings
     {
         public string Key { get; set; }
         public TimeSpan Duration { get; set; }

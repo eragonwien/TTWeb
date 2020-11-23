@@ -14,7 +14,7 @@ namespace TTWeb.Web.Api.Extensions
     public static class JwtSecurityTokenHandlerExtensions
     {
         public static JwtSecurityToken CreateAccessToken(this JwtSecurityTokenHandler tokenHandler,
-            JsonWebTokenAppSettings settings,
+            AutheticationJsonWebTokenAppSettings settings,
             IEnumerable<Claim> claims)
         {
             return tokenHandler.CreateSecurityToken(settings.AccessToken.Key,
@@ -24,7 +24,7 @@ namespace TTWeb.Web.Api.Extensions
         }
 
         public static JwtSecurityToken CreateRefreshToken(this JwtSecurityTokenHandler tokenHandler,
-            JsonWebTokenAppSettings settings)
+            AutheticationJsonWebTokenAppSettings settings)
         {
             return tokenHandler.CreateSecurityToken(settings.RefreshToken.Key,
                 settings.Issuer,

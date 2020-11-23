@@ -9,6 +9,5 @@ namespace TTWeb.BusinessLogic.Models.AppSettings
 
         public int ClientId { get; set; }
         public string ClientSecret { get; set; }
-        public JsonWebTokenAppSettings JsonWebToken { get; set; }
     }
 }
