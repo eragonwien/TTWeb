@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Data.Database;
+using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Services.Worker
 {
@@ -13,8 +15,8 @@ namespace TTWeb.BusinessLogic.Services.Worker
         private readonly IMapper _mapper;
         private readonly IHelperService _helperService;
 
-        public WorkerService(TTWebContext context, 
-            IMapper mapper, 
+        public WorkerService(TTWebContext context,
+            IMapper mapper,
             IHelperService helperService)
         {
             _context = context;
@@ -27,12 +29,18 @@ namespace TTWeb.BusinessLogic.Services.Worker
             if (id <= 0) throw new ArgumentException(nameof(id));
             if (string.IsNullOrWhiteSpace(secret)) throw new ArgumentException(nameof(secret));
 
-            return await _context.Workers.SingleOrDefaultAsync(w => w.Id == id && w.Secret == secret);
+            return await _context.Workers
+                .Include(w => w.WorkerPermissionMappings)
+                .SingleOrDefaultAsync(w => w.Id == id && w.Secret == secret);
         }
 
         public async Task<WorkerModel> GenerateAsync()
         {
-            var worker = new Data.Models.Worker { Secret = _helperService.GetRandomString(32) };
+            var worker = new Data.Models.Worker
+            {
+                Secret = _helperService.GetRandomString(128),
+                WorkerPermissionMappings = new List<WorkerPermissionMapping> { new WorkerPermissionMapping { UserPermission = UserPermission.IsWorker } }
+            };
             await _context.Workers.AddAsync(worker);
             await _context.SaveChangesAsync();
 
