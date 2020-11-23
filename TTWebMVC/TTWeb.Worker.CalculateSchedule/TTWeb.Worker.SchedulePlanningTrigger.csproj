@@ -24,6 +24,6 @@
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-	  <Exec Command="copy &quot;$(SolutionDir)\AppSettings\*.json&quot;  &quot;$(MSBuildProjectDirectory)&quot;" />
+	  <Exec Command="copy &quot;$(SolutionDir)\AppSettings\appsettings.*.json&quot;  &quot;$(MSBuildProjectDirectory)&quot;" />
 	</Target>
 </Project>
