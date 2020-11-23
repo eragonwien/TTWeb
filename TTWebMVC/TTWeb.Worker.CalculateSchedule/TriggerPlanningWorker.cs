@@ -7,12 +7,12 @@ using TTWeb.BusinessLogic.Services.Worker;
 
 namespace TTWeb.Worker.SchedulePlanningTrigger
 {
-    public class Worker : BackgroundService
+    public class TriggerPlanningWorker : BackgroundService
     {
         private readonly IWorkerClientService _workerClientService;
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<TriggerPlanningWorker> _logger;
 
-        public Worker(IWorkerClientService workerClientService, ILogger<Worker> logger)
+        public TriggerPlanningWorker(IWorkerClientService workerClientService, ILogger<TriggerPlanningWorker> logger)
         {
             _workerClientService = workerClientService;
             _logger = logger;
