@@ -35,7 +35,7 @@ namespace TTWeb.Web.Api.Services.Account
             IAuthenticationHelperService authHelperService,
             ILoginUserService loginUserService,
             IMapper mapper,
-            IWorkerService workerService, 
+            IWorkerService workerService,
             IOptions<WorkerAppSettings> workerAppSettingsOptions)
         {
             _authSettings = authenticationAppSettings.Value;
@@ -89,7 +89,7 @@ namespace TTWeb.Web.Api.Services.Account
             return BuildLoginTokenModel(userClaims, _workerAppSettings.JsonWebToken);
         }
 
-        private LoginTokenModel BuildLoginTokenModel(IEnumerable<Claim> userClaims, 
+        private LoginTokenModel BuildLoginTokenModel(IEnumerable<Claim> userClaims,
             JsonWebTokenAppSettings jwtSettings)
         {
             if (userClaims is null) throw new ArgumentNullException(nameof(userClaims));

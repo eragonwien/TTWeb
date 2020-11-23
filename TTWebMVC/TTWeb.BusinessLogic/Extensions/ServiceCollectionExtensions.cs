@@ -61,6 +61,7 @@ namespace TTWeb.BusinessLogic.Extensions
             services.Configure<AuthenticationAppSettings>(configuration.GetSection(AuthenticationAppSettings.Section));
             services.Configure<SecurityAppSettings>(configuration.GetSection(SecurityAppSettings.Section));
             services.Configure<SchedulingAppSettings>(configuration.GetSection(SchedulingAppSettings.Section));
+            services.Configure<WorkerAppSettings>(configuration.GetSection(WorkerAppSettings.Section));
             return services;
         }
 
