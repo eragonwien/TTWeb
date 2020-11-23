@@ -11,11 +11,15 @@ namespace TTWeb.BusinessLogic.Services.Worker
     {
         private readonly TTWebContext _context;
         private readonly IMapper _mapper;
+        private readonly IHelperService _helperService;
 
-        public WorkerService(TTWebContext context, IMapper mapper)
+        public WorkerService(TTWebContext context, 
+            IMapper mapper, 
+            IHelperService helperService)
         {
             _context = context;
             _mapper = mapper;
+            _helperService = helperService;
         }
 
         public async Task<Data.Models.Worker> FindAsync(int id, string secret)
@@ -28,7 +32,10 @@ namespace TTWeb.BusinessLogic.Services.Worker
 
         public async Task<WorkerModel> GenerateAsync()
         {
-            var worker = await _context.Workers.AddAsync(new Data.Models.Worker());
+            var worker = new Data.Models.Worker { Secret = _helperService.GetRandomString(32) };
+            await _context.Workers.AddAsync(worker);
+            await _context.SaveChangesAsync();
+
             return _mapper.Map<WorkerModel>(worker);
         }
 
