@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
 using TTWeb.BusinessLogic.Services.Client;
 
@@ -8,17 +9,17 @@ namespace TTWeb.BusinessLogic.Services.Worker
 {
     public class WorkerClientService : IWorkerClientService
     {
-        private readonly WebApiClient _webApiClient;
+        private readonly WorkerWebApiClient _webApiClient;
         private readonly ILogger<WorkerClientService> _logger;
         private readonly WebApiAppSettings _webApiAppSettings;
 
-        public WorkerClientService(WebApiClient webApiClient,
+        public WorkerClientService(WorkerWebApiClient webApiClient,
             ILogger<WorkerClientService> logger,
-            IOptions<WebApiAppSettings> webApiAppSettingsOptions)
+            IOptions<HttpClientAppSettings> httpClientAppSettingsOptions)
         {
             _webApiClient = webApiClient;
             _logger = logger;
-            _webApiAppSettings = webApiAppSettingsOptions.Value;
+            _webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
         }
 
         public async Task TriggerPlanningAsync()

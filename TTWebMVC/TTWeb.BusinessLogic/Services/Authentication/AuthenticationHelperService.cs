@@ -30,7 +30,7 @@ namespace TTWeb.BusinessLogic.Services.Authentication
         public bool IsAlmostExpired(DateTime expirationDate, TimeSpan maxDuration)
         {
             var tolerantTimeSpan = new TimeSpan(maxDuration.Ticks / 2);
-            var timeLeft = DateTime.UtcNow - expirationDate;
+            var timeLeft = expirationDate - DateTime.UtcNow;
             return timeLeft <= tolerantTimeSpan;
         }
 
@@ -48,7 +48,7 @@ namespace TTWeb.BusinessLogic.Services.Authentication
         public IEnumerable<Claim> GenerateClaims(WorkerModel workerModel)
         {
             yield return new Claim(ClaimTypes.NameIdentifier, workerModel.Id.ToString());
-            
+
             foreach (var permission in workerModel.Permissions)
                 yield return new Claim(ClaimTypes.Role, permission.ToString());
         }

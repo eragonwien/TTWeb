@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
-using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.AppSettings.Token;
 using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
 using TTWeb.BusinessLogic.Models.Entities;
@@ -16,32 +15,31 @@ using TTWeb.BusinessLogic.Services.Authentication;
 
 namespace TTWeb.BusinessLogic.Services.Client
 {
-    public class WebApiClient
+    /// <summary>
+    /// Serves the communication between worker client and web api
+    /// </summary>
+    public class WorkerWebApiClient
     {
         public HttpClient Client { get; set; }
 
         private readonly JsonWebTokenAppSettings _jsonWebTokenAppSettings;
-        private readonly WorkerAppSettings _workerAppSettingsOptions;
+        private readonly WorkerAppSettings _workerAppSettings;
         private readonly WebApiAppSettings _webApiAppSettings;
         private readonly IAuthenticationHelperService _authenticationHelperService;
         private LoginTokenModel _token = new LoginTokenModel();
 
-        public WebApiClient(IOptions<HttpClientAppSettings> httpClientAppSettingsOptions,
-            IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions,
+        public WorkerWebApiClient(IOptions<HttpClientAppSettings> httpClientAppSettingsOptions,
             IOptions<WorkerAppSettings> workerAppSettingsOptions,
-            IOptions<WebApiAppSettings> webApiAppSettingsOptions,
             IAuthenticationHelperService authenticationHelperService,
             HttpClient client)
         {
-            var webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
-            _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken;
-            _workerAppSettingsOptions = workerAppSettingsOptions.Value;
-            _webApiAppSettings = webApiAppSettingsOptions.Value;
+            _workerAppSettings = workerAppSettingsOptions.Value;
+            _webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
+            _jsonWebTokenAppSettings = _workerAppSettings.JsonWebToken;
             _authenticationHelperService = authenticationHelperService;
 
-            client.BaseAddress = new Uri(webApiAppSettings.BaseAddress);
+            client.BaseAddress = new Uri(_webApiAppSettings.BaseAddress);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(HttpClientAppSettings.AcceptHeaderDefault));
-            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("planning-trigger-localhost"));
             Client = client;
         }
 
@@ -81,7 +79,8 @@ namespace TTWeb.BusinessLogic.Services.Client
         {
             _token.Reset();
 
-            var loginModel = new WorkerModel(_workerAppSettingsOptions.ClientId, _workerAppSettingsOptions.ClientSecret);
+            var loginModel = new WorkerModel(_workerAppSettings.ClientId, _workerAppSettings.ClientSecret);
+
             var response = await PostAsync(_webApiAppSettings.Routes.WorkerLogin, loginModel);
             response.EnsureSuccessStatusCode();
 
