@@ -52,6 +52,8 @@ namespace TTWeb.BusinessLogic.Services.Client
 
             if (!IsTokenRefreshRequired(_token.RefreshToken, _jsonWebTokenAppSettings.RefreshToken.Duration))
                 await RequestRefreshTokenAsync();
+
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token.AccessToken.Token);
         }
 
         public async Task<HttpResponseMessage> PostAsync(string url, object requestMessage = null)
