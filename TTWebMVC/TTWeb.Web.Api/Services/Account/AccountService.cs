@@ -57,7 +57,7 @@ namespace TTWeb.Web.Api.Services.Account
 
             if (worker == null) throw new ResourceNotFoundException(nameof(Worker), workerModel.Id.ToString());
 
-            return result.WithSuccess().WithResult(_mapper.Map<WorkerModel>(worker));
+            return result.WithSuccess().WithResult(worker);
         }
 
         public async Task<ProcessingResult<LoginUserModel>> AuthenticateExternalAsync(ExternalLoginModel loginModel)

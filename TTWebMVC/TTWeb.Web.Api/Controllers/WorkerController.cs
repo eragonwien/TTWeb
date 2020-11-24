@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +13,7 @@ namespace TTWeb.Web.Api.Controllers
 {
     [Route("api/workers")]
     [ApiController] 
-    [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
+    [Authorize(Policy = Startup.RequireManageWorkerPermissionPolicy)]
     public class WorkerController : BaseController
     {
         private readonly IAccountService _accountService;
@@ -34,18 +36,22 @@ namespace TTWeb.Web.Api.Controllers
             return _accountService.GenerateAccessToken(authenticationResult.Result);
         }
 
-        [HttpPost()]
-        [Authorize(Policy = Startup.RequireManageWorkerPermissionPolicy)]
+        [HttpPost]
         public async Task<WorkerModel> Generate()
         {
             return await _workerService.GenerateAsync();
         }
 
-        [HttpDelete]
-        [Authorize(Policy = Startup.RequireManageWorkerPermissionPolicy)]
-        public async Task Delete()
+        [HttpGet]
+        public async Task<List<WorkerModel>> Read()
         {
-            await _workerService.DeleteAsync();
+            return await _workerService.ReadAsync();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task Delete([FromRoute] int id)
+        {
+            await _workerService.DeleteAsync(id);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -24,14 +25,16 @@ namespace TTWeb.BusinessLogic.Services.Worker
             _helperService = helperService;
         }
 
-        public async Task<Data.Models.Worker> FindAsync(int id, string secret)
+        public async Task<WorkerModel> FindAsync(int id, string secret)
         {
             if (id <= 0) throw new ArgumentException(nameof(id));
             if (string.IsNullOrWhiteSpace(secret)) throw new ArgumentException(nameof(secret));
 
-            return await _context.Workers
-                .Include(w => w.WorkerPermissionMappings)
-                .SingleOrDefaultAsync(w => w.Id == id && w.Secret == secret);
+            return await BaseQuery
+                .AsNoTracking()
+                .Where(w => w.Id == id && w.Secret == secret)
+                .Select(w => _mapper.Map<WorkerModel>(w))
+                .SingleOrDefaultAsync();
         }
 
         public async Task<WorkerModel> GenerateAsync()
@@ -51,9 +54,22 @@ namespace TTWeb.BusinessLogic.Services.Worker
             return _mapper.Map<WorkerModel>(worker);
         }
 
-        public Task DeleteAsync()
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var worker = new Data.Models.Worker{Id = id};
+            _context.Workers.Attach(worker);
+            _context.Workers.Remove(worker);
+            await _context.SaveChangesAsync();
         }
+
+        public async Task<List<WorkerModel>> ReadAsync()
+        {
+            return await BaseQuery
+                .AsNoTracking()
+                .Select(w => _mapper.Map<WorkerModel>(w))
+                .ToListAsync();
+        }
+
+        private IQueryable<Data.Models.Worker> BaseQuery => _context.Workers.Include(w => w.WorkerPermissionMappings);
     }
 }
