@@ -31,7 +31,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                 _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
                 await _workerClientService.TriggerPlanningAsync();
                 _logger.LogInformation($"Planning triggered successfully at {DateTimeOffset.Now}");
-                await Task.Delay(_schedulingAppSettings.TriggerInterval, stoppingToken);
+                await Task.Delay(_schedulingAppSettings.Planning.TriggerInterval, stoppingToken);
             }
         }
     }

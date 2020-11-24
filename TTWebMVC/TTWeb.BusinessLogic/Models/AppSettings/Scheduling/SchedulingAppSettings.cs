@@ -10,6 +10,5 @@ namespace TTWeb.BusinessLogic.Models.AppSettings.Scheduling
 
         public SchedulingJobAppSettings Job { get; set; }
 
-        public TimeSpan TriggerInterval { get; set; }
     }
 }
