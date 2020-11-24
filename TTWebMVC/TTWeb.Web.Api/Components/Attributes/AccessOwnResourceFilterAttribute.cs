@@ -17,7 +17,7 @@ namespace TTWeb.Web.Api.Components.Attributes
         {
             var user = context.HttpContext.User;
             await ThrowExceptionOnLoginUserIdMismatch();
-            
+
 
             async Task ThrowExceptionOnLoginUserIdMismatch()
             {
@@ -26,7 +26,7 @@ namespace TTWeb.Web.Api.Components.Attributes
 
                 if (!user.IsInRole(UserPermission.AccessOwnResources))
                     throw new ResourceAccessDeniedException();
-                
+
                 if (!await AreLoginUserIdsMismatch())
                     throw new ResourceAccessDeniedException();
             }
@@ -43,6 +43,7 @@ namespace TTWeb.Web.Api.Components.Attributes
                 request.Body.Seek(0, SeekOrigin.Begin);
 
                 if (string.IsNullOrWhiteSpace(body)) return true;
+                if (body == null) return true;
 
                 var jsonBody = JObject.Parse(body);
                 var ownerId = (int?)jsonBody.GetValue("ownerId");

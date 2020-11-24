@@ -30,6 +30,7 @@ namespace TTWeb.Web.Api.Services.Account
         private readonly ILoginUserService _loginUserService;
         private readonly IMapper _mapper;
         private readonly JwtSecurityTokenHandler _tokenHandler;
+        private readonly AutheticationJsonWebTokenAppSettings _workerJsonWebTokenAppSettings;
 
         public AccountService(IOptions<AuthenticationAppSettings> authenticationAppSettings,
             IAuthenticationHelperService authHelperService,
@@ -44,6 +45,7 @@ namespace TTWeb.Web.Api.Services.Account
             _mapper = mapper;
             _workerService = workerService;
             _workerAppSettings = workerAppSettingsOptions.Value;
+            _workerJsonWebTokenAppSettings = _authSettings.JsonWebToken.Merge(_workerAppSettings);
             _tokenHandler = new JwtSecurityTokenHandler();
         }
 
@@ -86,7 +88,7 @@ namespace TTWeb.Web.Api.Services.Account
 
             var userClaims = _authHelperService.GenerateClaims(worker);
 
-            return BuildLoginTokenModel(userClaims, _workerAppSettings.JsonWebToken);
+            return BuildLoginTokenModel(userClaims, _workerJsonWebTokenAppSettings);
         }
 
         private LoginTokenModel BuildLoginTokenModel(IEnumerable<Claim> userClaims,

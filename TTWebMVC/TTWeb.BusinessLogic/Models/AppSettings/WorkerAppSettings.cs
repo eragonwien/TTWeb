@@ -9,5 +9,7 @@ namespace TTWeb.BusinessLogic.Models.AppSettings
 
         public int ClientId { get; set; }
         public string ClientSecret { get; set; }
+
+        public int? TokenLifeTimeMultiplier { get; set; }
     }
 }

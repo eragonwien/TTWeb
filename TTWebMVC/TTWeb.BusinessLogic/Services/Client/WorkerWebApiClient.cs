@@ -36,7 +36,7 @@ namespace TTWeb.BusinessLogic.Services.Client
             HttpClient client)
         {
             _workerAppSettings = workerAppSettingsOptions.Value;
-            _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken;
+            _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken.Merge(_workerAppSettings);
             _webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
             _authenticationHelperService = authenticationHelperService;
 

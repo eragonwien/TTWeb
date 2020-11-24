@@ -26,6 +26,7 @@ namespace TTWeb.BusinessLogic.Services.Worker
         {
             await _webApiClient.AuthenticateAsync();
             var response = await _webApiClient.PostAsync(_webApiAppSettings.Routes.TriggerPlanning);
+            var result = await response.Content.ReadAsStringAsync();
             response.EnsureSuccessStatusCode();
         }
     }

@@ -39,7 +39,11 @@ namespace TTWeb.BusinessLogic.Services.Worker
             var worker = new Data.Models.Worker
             {
                 Secret = _helperService.GetRandomString(128),
-                WorkerPermissionMappings = new List<WorkerPermissionMapping> { new WorkerPermissionMapping { UserPermission = UserPermission.IsWorker } }
+                WorkerPermissionMappings = new List<WorkerPermissionMapping>
+                {
+                    new WorkerPermissionMapping { UserPermission = UserPermission.IsWorker },
+                    new WorkerPermissionMapping { UserPermission = UserPermission.AccessOwnResources }
+                }
             };
             await _context.Workers.AddAsync(worker);
             await _context.SaveChangesAsync();
