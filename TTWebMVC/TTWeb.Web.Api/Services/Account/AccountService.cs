@@ -44,7 +44,7 @@ namespace TTWeb.Web.Api.Services.Account
             _mapper = mapper;
             _workerService = workerService;
             _workerAppSettings = workerAppSettingsOptions.Value;
-            _workerJsonWebTokenAppSettings = _authSettings.JsonWebToken;
+            _workerJsonWebTokenAppSettings = _authSettings.JsonWebToken.ExtendTokenDuration(_workerAppSettings.TokenLifeTimeMultiplier);
             _tokenHandler = new JwtSecurityTokenHandler();
         }
 

@@ -35,7 +35,7 @@ namespace TTWeb.BusinessLogic.Services.Client
             HttpClient client)
         {
             _workerAppSettings = workerAppSettingsOptions.Value;
-            _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken;
+            _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken.ExtendTokenDuration(_workerAppSettings.TokenLifeTimeMultiplier);
             _webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
             _authenticationHelperService = authenticationHelperService;
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using System;
 
 namespace TTWeb.BusinessLogic.Models.AppSettings.Authentication
 {
@@ -15,5 +16,15 @@ namespace TTWeb.BusinessLogic.Models.AppSettings.Authentication
             ValidateLifetime = true,
             ValidIssuer = Issuer
         };
+
+        public AuthenticationJsonWebTokenAppSettings ExtendTokenDuration(int? tokenLifeTimeMultiplier)
+        {
+            if (!tokenLifeTimeMultiplier.HasValue) return this;
+
+            AccessToken.Duration = TimeSpan.FromTicks(AccessToken.Duration.Ticks * tokenLifeTimeMultiplier.Value);
+            RefreshToken.Duration = TimeSpan.FromTicks(RefreshToken.Duration.Ticks * tokenLifeTimeMultiplier.Value);
+
+            return this;
+        }
     }
 }
