@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
+using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Services.Authentication;
 using TTWeb.BusinessLogic.Services.Client;
 using TTWeb.BusinessLogic.Services.Worker;
@@ -31,6 +32,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                     services.Configure<HttpClientAppSettings>(context.Configuration.GetSection(HttpClientAppSettings.Section));
                     services.Configure<WorkerAppSettings>(context.Configuration.GetSection(WorkerAppSettings.Section));
                     services.Configure<AuthenticationAppSettings>(context.Configuration.GetSection(AuthenticationAppSettings.Section));
+                    services.Configure<SchedulingAppSettings>(context.Configuration.GetSection(SchedulingAppSettings.Section));
 
                     services.AddHttpClient<WorkerWebApiClient>();
                     services.AddSingleton<IAuthenticationHelperService, AuthenticationHelperService>();
