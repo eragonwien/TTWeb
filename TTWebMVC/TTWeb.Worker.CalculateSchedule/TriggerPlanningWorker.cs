@@ -22,8 +22,10 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
                 await _workerClientService.TriggerPlanningAsync();
+                _logger.LogInformation($"Planning triggered successfully at {DateTimeOffset.Now}");
+                await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
             }
         }
     }

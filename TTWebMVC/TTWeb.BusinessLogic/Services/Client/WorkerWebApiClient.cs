@@ -9,7 +9,6 @@ using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
-using TTWeb.BusinessLogic.Models.AppSettings.Token;
 using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Authentication;
@@ -23,7 +22,7 @@ namespace TTWeb.BusinessLogic.Services.Client
     {
         public HttpClient Client { get; set; }
 
-        private readonly AutheticationJsonWebTokenAppSettings _jsonWebTokenAppSettings;
+        private readonly AuthenticationJsonWebTokenAppSettings _jsonWebTokenAppSettings;
         private readonly WorkerAppSettings _workerAppSettings;
         private readonly WebApiAppSettings _webApiAppSettings;
         private readonly IAuthenticationHelperService _authenticationHelperService;
@@ -36,7 +35,7 @@ namespace TTWeb.BusinessLogic.Services.Client
             HttpClient client)
         {
             _workerAppSettings = workerAppSettingsOptions.Value;
-            _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken.Merge(_workerAppSettings);
+            _jsonWebTokenAppSettings = authenticationAppSettingsOptions.Value.JsonWebToken;
             _webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
             _authenticationHelperService = authenticationHelperService;
 

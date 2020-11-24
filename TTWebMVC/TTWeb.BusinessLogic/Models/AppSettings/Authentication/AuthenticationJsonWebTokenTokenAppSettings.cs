@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TTWeb.BusinessLogic.Models.AppSettings.Token
+namespace TTWeb.BusinessLogic.Models.AppSettings.Authentication
 {
     public class AuthenticationJsonWebTokenTokenAppSettings
     {

@@ -10,7 +10,6 @@ using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
-using TTWeb.BusinessLogic.Models.AppSettings.Token;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.BusinessLogic.Services.Authentication;
@@ -30,7 +29,7 @@ namespace TTWeb.Web.Api.Services.Account
         private readonly ILoginUserService _loginUserService;
         private readonly IMapper _mapper;
         private readonly JwtSecurityTokenHandler _tokenHandler;
-        private readonly AutheticationJsonWebTokenAppSettings _workerJsonWebTokenAppSettings;
+        private readonly AuthenticationJsonWebTokenAppSettings _workerJsonWebTokenAppSettings;
 
         public AccountService(IOptions<AuthenticationAppSettings> authenticationAppSettings,
             IAuthenticationHelperService authHelperService,
@@ -45,7 +44,7 @@ namespace TTWeb.Web.Api.Services.Account
             _mapper = mapper;
             _workerService = workerService;
             _workerAppSettings = workerAppSettingsOptions.Value;
-            _workerJsonWebTokenAppSettings = _authSettings.JsonWebToken.Merge(_workerAppSettings);
+            _workerJsonWebTokenAppSettings = _authSettings.JsonWebToken;
             _tokenHandler = new JwtSecurityTokenHandler();
         }
 
@@ -92,7 +91,7 @@ namespace TTWeb.Web.Api.Services.Account
         }
 
         private LoginTokenModel BuildLoginTokenModel(IEnumerable<Claim> userClaims,
-            AutheticationJsonWebTokenAppSettings jwtSettings)
+            AuthenticationJsonWebTokenAppSettings jwtSettings)
         {
             if (userClaims is null) throw new ArgumentNullException(nameof(userClaims));
 

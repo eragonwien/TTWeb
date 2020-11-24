@@ -1,9 +1,11 @@
+using System;
 using System.IO;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Newtonsoft.Json.Linq;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.Data.Models;
@@ -35,7 +37,7 @@ namespace TTWeb.Web.Api.Components.Attributes
             {
                 var request = context.HttpContext.Request;
                 request.EnableBuffering();
-
+                var len = request.ContentLength;
                 string body;
                 using (var reader = new StreamReader(request.Body, Encoding.UTF8, true, 1024, true))
                     body = await reader.ReadToEndAsync();
@@ -43,9 +45,8 @@ namespace TTWeb.Web.Api.Components.Attributes
                 request.Body.Seek(0, SeekOrigin.Begin);
 
                 if (string.IsNullOrWhiteSpace(body)) return true;
-                if (body == null) return true;
+                if (!TryParse(body, out var jsonBody)) return true;
 
-                var jsonBody = JObject.Parse(body);
                 var ownerId = (int?)jsonBody.GetValue("ownerId");
 
                 if (!ownerId.HasValue) return true;
@@ -55,6 +56,20 @@ namespace TTWeb.Web.Api.Components.Attributes
             }
 
             await base.OnActionExecutionAsync(context, next);
+
+            bool TryParse(string str, out JObject parsedJObject)
+            {
+                try
+                {
+                    parsedJObject = JObject.Parse(str);
+                    return true;
+                }
+                catch (Exception)
+                {
+                    parsedJObject = null;
+                    return false;
+                }
+            }
         }
     }
 }

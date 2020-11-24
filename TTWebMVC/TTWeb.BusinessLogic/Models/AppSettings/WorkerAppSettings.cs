@@ -1,5 +1,4 @@
 ﻿using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
-using TTWeb.BusinessLogic.Models.AppSettings.Token;
 
 namespace TTWeb.BusinessLogic.Models.AppSettings
 {
@@ -9,7 +8,5 @@ namespace TTWeb.BusinessLogic.Models.AppSettings
 
         public int ClientId { get; set; }
         public string ClientSecret { get; set; }
-
-        public int? TokenLifeTimeMultiplier { get; set; }
     }
 }
