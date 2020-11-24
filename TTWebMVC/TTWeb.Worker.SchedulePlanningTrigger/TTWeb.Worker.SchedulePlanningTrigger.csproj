@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<UserSecretsId>dotnet-TTWeb.Worker.CalculateSchedule-1CDD64F9-0AA9-422C-A19D-60DEBC0BF945</UserSecretsId>
+		<UserSecretsId>dotnet-TTWeb.Worker.SchedulePlanningTrigger-1CDD64F9-0AA9-422C-A19D-60DEBC0BF945</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,6 +24,6 @@
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-	  <Exec Command="copy &quot;$(SolutionDir)\AppSettings\appsettings.*.json&quot;  &quot;$(MSBuildProjectDirectory)&quot;" />
+		<Exec Command="copy &quot;$(SolutionDir)\AppSettings\appsettings.*.json&quot;  &quot;$(MSBuildProjectDirectory)&quot;" />
 	</Target>
 </Project>

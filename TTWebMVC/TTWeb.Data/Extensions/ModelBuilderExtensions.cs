@@ -287,6 +287,10 @@ namespace TTWeb.Data.Extensions
                 .IsRequired();
 
             modelBuilder.Entity<Worker>()
+               .Property(m => m.CreateAt)
+               .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Worker>()
                 .HasMany(e => e.WorkingSchedules)
                 .WithOne(m => m.Worker)
                 .HasForeignKey(m => m.WorkerId)

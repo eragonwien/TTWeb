@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TTWeb.Data.Models
 {
@@ -7,6 +8,8 @@ namespace TTWeb.Data.Models
         public int Id { get; set; }
 
         public string Secret { get; set; }
+
+        public DateTime CreateAt { get; set; }
 
         public ICollection<WorkerPermissionMapping> WorkerPermissionMappings { get; set; }
 
