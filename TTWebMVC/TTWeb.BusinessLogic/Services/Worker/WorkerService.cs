@@ -39,15 +39,7 @@ namespace TTWeb.BusinessLogic.Services.Worker
 
         public async Task<WorkerModel> GenerateAsync()
         {
-            var worker = new Data.Models.Worker
-            {
-                Secret = _helperService.GetRandomString(128),
-                WorkerPermissionMappings = new List<WorkerPermissionMapping>
-                {
-                    new WorkerPermissionMapping { UserPermission = UserPermission.IsWorker },
-                    new WorkerPermissionMapping { UserPermission = UserPermission.AccessOwnResources }
-                }
-            };
+            var worker = new Data.Models.Worker(_helperService.GetRandomString(128));
             await _context.Workers.AddAsync(worker);
             await _context.SaveChangesAsync();
 
@@ -56,7 +48,7 @@ namespace TTWeb.BusinessLogic.Services.Worker
 
         public async Task DeleteAsync(int id)
         {
-            var worker = new Data.Models.Worker{Id = id};
+            var worker = new Data.Models.Worker { Id = id };
             _context.Workers.Attach(worker);
             _context.Workers.Remove(worker);
             await _context.SaveChangesAsync();
