@@ -12,6 +12,6 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         Task<ScheduleModel> ReadByIdAsync(int id, int? ownerId);
         Task<IEnumerable<ScheduleModel>> ReadAsync();
         Task<IEnumerable<ScheduleModel>> PeekAsync(int count);
-        Task PlanAsync(int workerId);
+        Task<int> PlanAsync(int workerId);
     }
 }

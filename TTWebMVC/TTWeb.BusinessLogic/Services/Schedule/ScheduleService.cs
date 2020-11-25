@@ -118,7 +118,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .ToListAsync();
         }
 
-        public async Task PlanAsync(int workerId)
+        public async Task<int> PlanAsync(int workerId)
         {
             var utcNow = DateTime.UtcNow;
 
@@ -128,7 +128,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .OrderBy(s => s.Id)
                 .ToListAsync();
 
-            if (schedules.Count == 0) return;
+            if (schedules.Count == 0) return schedules.Count;
 
             schedules.ForEach(s => s.Lock(utcNow, _planningAppSettings.LockDuration).SetWorkerId(workerId));
             await _context.SaveChangesAsync();
@@ -138,6 +138,8 @@ namespace TTWeb.BusinessLogic.Services.Schedule
             var successPlannedJobs = await _scheduleJobService.CreateAsync(planningResults.Where(r => r.Succeed).Select(r => r.Result));
 
             await UpdateScheduleStatus(schedules, successPlannedJobs.ToList());
+
+            return schedules.Count;
         }
 
         private async Task UpdateScheduleStatus(List<Data.Models.Schedule> schedules,
