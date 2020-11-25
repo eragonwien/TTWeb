@@ -1,8 +1,11 @@
-﻿namespace TTWeb.BusinessLogic.Models.AppSettings.Scheduling
+﻿using System;
+
+namespace TTWeb.BusinessLogic.Models.AppSettings.Scheduling
 {
     public class SchedulingJobAppSettings
     {
         public int CountPerRequest { get; set; }
 
+        public TimeSpan LockDuration { get; set; }
     }
 }

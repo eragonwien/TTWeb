@@ -96,7 +96,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .ToListAsync();
 
             var now = DateTime.UtcNow;
-            jobs.ForEach(j => j.Lock(now));
+            jobs.ForEach(j => j.Lock(now, _jobAppSettings.LockDuration));
             await _context.SaveChangesAsync();
 
             return jobs.Select(j => _mapper.Map<ScheduleJobModel>(j));

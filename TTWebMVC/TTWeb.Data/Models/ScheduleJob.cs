@@ -39,9 +39,10 @@ namespace TTWeb.Data.Models
             return this;
         }
 
-        public ScheduleJob Lock(DateTime lockDate)
+        public ScheduleJob Lock(DateTime lockDate, TimeSpan lockDuration)
         {
-            // TODO: locks job by date
+            LockAt = lockDate;
+            LockedUntil = LockAt.Value.Add(lockDuration);
             Status = ProcessingStatus.InProgress;
             return this;
         }
