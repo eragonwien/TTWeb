@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
@@ -18,11 +19,12 @@ namespace TTWeb.BusinessLogic.Services.Worker
             _webApiAppSettings = httpClientAppSettingsOptions.Value.WebApi;
         }
 
-        public async Task TriggerPlanningAsync()
+        public async Task<int> TriggerPlanningAsync()
         {
             await _webApiClient.AuthenticateAsync();
             var response = await _webApiClient.PostAsync(_webApiAppSettings.Routes.TriggerPlanning);
             response.EnsureSuccessStatusCode();
+            return Convert.ToInt32(await response.Content.ReadAsStringAsync());
         }
     }
 }

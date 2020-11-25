@@ -4,6 +4,6 @@ namespace TTWeb.BusinessLogic.Services.Worker
 {
     public interface IWorkerClientService
     {
-        Task TriggerPlanningAsync();
+        Task<int> TriggerPlanningAsync();
     }
 }

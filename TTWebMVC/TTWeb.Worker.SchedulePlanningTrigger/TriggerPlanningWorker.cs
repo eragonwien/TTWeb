@@ -29,9 +29,18 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
-                await _workerClientService.TriggerPlanningAsync();
-                _logger.LogInformation($"Planning triggered successfully at {DateTimeOffset.Now}");
-                await Task.Delay(_schedulingAppSettings.Planning.TriggerInterval, stoppingToken);
+                var planCount = await _workerClientService.TriggerPlanningAsync();
+                _logger.LogInformation($"{planCount} schedules triggered successfully at {DateTimeOffset.Now}");
+
+                if (planCount == 0)
+                {
+                    _logger.LogInformation($"No unprocessed schedule found - takes a short break of {_schedulingAppSettings.Planning.TriggerInterval.TotalMinutes} minutes");
+                    await Task.Delay(_schedulingAppSettings.Planning.TriggerInterval, stoppingToken);
+                }
+                else
+                {
+                    _logger.LogInformation("Unprocessed schedule - restart immediately");
+                }
             }
         }
     }
