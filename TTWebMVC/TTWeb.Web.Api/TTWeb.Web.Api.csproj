@@ -48,6 +48,10 @@
 	  </Content>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Components\Attributes\" />
+	</ItemGroup>
+
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 	  <Exec Command="copy &quot;$(SolutionDir)\AppSettings\appsettings.*.json&quot;  &quot;$(MSBuildProjectDirectory)&quot;" />
 	</Target>

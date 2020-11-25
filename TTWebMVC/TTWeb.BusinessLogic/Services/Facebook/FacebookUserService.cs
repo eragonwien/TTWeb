@@ -49,6 +49,7 @@ namespace TTWeb.BusinessLogic.Services.Facebook
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
+            // TODO: throws exception if owner does not match
             var facebookUser = await BaseQuery.FilterById(model.Id).SingleOrDefaultAsync();
             if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), model.Id.ToString());
 

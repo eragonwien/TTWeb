@@ -61,6 +61,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
+            // TODO: throws exception if wrong owner
             var schedule = await BaseQuery
                 .FilterById(model.Id)
                 .SingleOrDefaultAsync();
@@ -118,13 +119,13 @@ namespace TTWeb.BusinessLogic.Services.Schedule
                 .ToListAsync();
         }
 
-        public async Task<int> PlanAsync(int workerId)
+        public async Task<int> PlanAsync(int? count, int workerId)
         {
             var utcNow = DateTime.UtcNow;
 
             var schedules = await BaseQuery
                 .FilterOpenSchedules(utcNow)
-                .Take(_planningAppSettings.CountPerRequest)
+                .Take(count ?? _planningAppSettings.CountPerRequest)
                 .OrderBy(s => s.Id)
                 .ToListAsync();
 

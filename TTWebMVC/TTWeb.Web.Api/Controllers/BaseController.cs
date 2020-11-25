@@ -20,12 +20,15 @@ namespace TTWeb.Web.Api.Controllers
                 .Select(c => (UserPermission)Enum.Parse(typeof(UserPermission), c.Value))
                 .AsEnumerable();
 
-        protected void ThrowExceptionOnUnauthorizedAccess(int? loginUserId)
+        protected void ThrowExceptionOnWrongOwner(int? ownerId)
         {
-            if (LoginUserPermissions.Contains(UserPermission.AccessAllResources)) return;
-            if (!LoginUserPermissions.Contains(UserPermission.AccessOwnResources)) return;
+            if (User.IsInRole(UserPermission.AccessAllResources))
+                return;
 
-            if (loginUserId.HasValue && loginUserId != LoginUserId)
+            if (!User.IsInRole(UserPermission.AccessOwnResources))
+                throw new ResourceAccessDeniedException();
+
+            if (ownerId.HasValue && ownerId != LoginUserId)
                 throw new ResourceAccessDeniedException();
         }
     }

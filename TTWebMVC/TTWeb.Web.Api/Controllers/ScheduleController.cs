@@ -29,7 +29,7 @@ namespace TTWeb.Web.Api.Controllers
         public async Task<ScheduleModel> ReadOne([FromRoute] int id)
         {
             var schedule = await _scheduleService.ReadByIdAsync(id, OwnerId);
-            ThrowExceptionOnUnauthorizedAccess(schedule?.OwnerId);
+            ThrowExceptionOnWrongOwner(schedule?.OwnerId);
             return schedule;
         }
 
@@ -44,7 +44,7 @@ namespace TTWeb.Web.Api.Controllers
         public async Task<ScheduleModel> Update([FromRoute] int id, [FromBody] ScheduleModel model)
         {
             if (id != model.Id) throw new InvalidInputException(nameof(model.Id));
-
+            ThrowExceptionOnWrongOwner(model.OwnerId);
             return await _scheduleService.UpdateAsync(model);
         }
 
@@ -63,9 +63,9 @@ namespace TTWeb.Web.Api.Controllers
 
         [HttpPost("trigger-planning")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
-        public async Task<int> TriggerPlanning()
+        public async Task<int> TriggerPlanning([FromQuery] int count)
         {
-            return await _scheduleService.PlanAsync(LoginUserId);
+            return await _scheduleService.PlanAsync(count, LoginUserId);
         }
     }
 }

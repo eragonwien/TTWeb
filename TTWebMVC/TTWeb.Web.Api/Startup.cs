@@ -72,10 +72,7 @@ namespace TTWeb.Web.Api
             });
 
             services
-                .AddControllers(options =>
-                {
-                    options.Filters.Add(new AccessOwnResourceFilterAttribute());
-                })
+                .AddControllers()
                 .AddNewtonsoftJson(o =>
                 {
                     o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;

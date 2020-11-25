@@ -29,6 +29,7 @@ namespace TTWeb.Web.Api.Controllers
         public async Task<FacebookUserModel> ReadOne([FromRoute] int id)
         {
             var facebookUser = await _facebookUserService.ReadByIdAsync(id, OwnerId);
+            ThrowExceptionOnWrongOwner(facebookUser.OwnerId);
             return facebookUser;
         }
 
@@ -43,6 +44,7 @@ namespace TTWeb.Web.Api.Controllers
         public async Task<FacebookUserModel> Update([FromRoute] int id, [FromBody] FacebookUserModel updateModel)
         {
             if (id != updateModel.Id) throw new InvalidInputException(nameof(updateModel.Id));
+            ThrowExceptionOnWrongOwner(updateModel.OwnerId);
 
             return await _facebookUserService.UpdateAsync(updateModel);
         }
