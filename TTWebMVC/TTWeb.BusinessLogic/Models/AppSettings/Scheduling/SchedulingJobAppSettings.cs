@@ -3,5 +3,6 @@
     public class SchedulingJobAppSettings
     {
         public int CountPerRequest { get; set; }
+
     }
 }
