@@ -1,22 +1,22 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Services.Worker;
 
-namespace TTWeb.Worker.SchedulePlanningTrigger
+namespace TTWeb.Worker.ScheduleExecutor
 {
-    public class TriggerPlanningWorker : BackgroundService
+    public class ScheduleExecutorWorker : BackgroundService
     {
         private readonly IWorkerClientService _workerClientService;
-        private readonly ILogger<TriggerPlanningWorker> _logger;
+        private readonly ILogger<ScheduleExecutorWorker> _logger;
         private readonly SchedulingAppSettings _schedulingAppSettings;
 
-        public TriggerPlanningWorker(IWorkerClientService workerClientService,
-            ILogger<TriggerPlanningWorker> logger,
+        public ScheduleExecutorWorker(IWorkerClientService workerClientService,
+            ILogger<ScheduleExecutorWorker> logger,
             IOptions<SchedulingAppSettings> schedulingAppSettingsOptions)
         {
             _workerClientService = workerClientService;
@@ -29,17 +29,18 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
-                var planCount = await _workerClientService.TriggerPlanningAsync();
-                _logger.LogInformation($"{planCount} schedules triggered successfully at {DateTimeOffset.Now}");
 
-                if (planCount == 0)
+                var jobs = await _workerClientService.FetchJobsAsync();
+
+                if (jobs.Count == 0)
                 {
-                    _logger.LogInformation($"No unprocessed schedule found - takes a short break of {_schedulingAppSettings.Planning.TriggerInterval.TotalMinutes} minutes");
+                    _logger.LogInformation($"No unprocessed job found - takes a short break of {_schedulingAppSettings.Planning.TriggerInterval.TotalMinutes} minutes");
                     await Task.Delay(_schedulingAppSettings.Planning.TriggerInterval, stoppingToken);
                 }
                 else
                 {
-                    _logger.LogInformation("Unprocessed schedule found - restart immediately");
+                    // TODO: reads and executes job here
+                    _logger.LogInformation("Unprocessed job found - restart immediately");
                 }
             }
         }
