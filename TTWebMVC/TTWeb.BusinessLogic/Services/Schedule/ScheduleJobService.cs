@@ -23,8 +23,8 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         private readonly IScheduleJobResultService _scheduleJobResultService;
 
         public ScheduleJobService(TTWebContext context,
-            IMapper mapper, 
-            IOptions<SchedulingJobAppSettings> jobAppSettingsOption, 
+            IMapper mapper,
+            IOptions<SchedulingJobAppSettings> jobAppSettingsOption,
             IScheduleJobResultService scheduleJobResultService)
         {
             _context = context;
@@ -106,12 +106,12 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         {
             _context.ScheduleJobs.Attach(new ScheduleJob
             {
-                Id = id, 
-                Status = result.Succeed ? ProcessingStatus.Completed : ProcessingStatus.Error 
+                Id = id,
+                Status = result.Succeed ? ProcessingStatus.Completed : ProcessingStatus.Error
             });
             await _context.SaveChangesAsync();
 
-            await _scheduleJobResultService.CreateAsync(new ScheduleJobResultModel {ScheduleJobId = id});
+            await _scheduleJobResultService.CreateAsync(new ScheduleJobResultModel { ScheduleJobId = id });
         }
 
         private IQueryable<ScheduleJob> BaseQuery =>

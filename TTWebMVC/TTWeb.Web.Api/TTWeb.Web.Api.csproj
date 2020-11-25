@@ -40,19 +40,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Update="appsettings.Development.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
-	  <Content Update="appsettings.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
+		<Content Update="appsettings.Development.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Components\Attributes\" />
+		<Folder Include="Components\Attributes\" />
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-	  <Exec Command="copy &quot;$(SolutionDir)\AppSettings\appsettings.*.json&quot;  &quot;$(MSBuildProjectDirectory)&quot;" />
+		<Exec Command="copy &quot;$(SolutionDir)\AppSettings\appsettings.*.json&quot;  &quot;$(MSBuildProjectDirectory)&quot;" />
 	</Target>
 </Project>

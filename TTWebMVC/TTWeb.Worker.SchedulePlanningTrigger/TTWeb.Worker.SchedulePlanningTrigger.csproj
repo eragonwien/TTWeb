@@ -13,6 +13,15 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.9" />
 	</ItemGroup>
 
+	<PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
+		<EnvironmentName>Development</EnvironmentName>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' != '' AND '$(Configuration)' != 'Debug' ">
+		<EnvironmentName>Production</EnvironmentName>
+	</PropertyGroup>
+
+
 	<ItemGroup>
 		<ProjectReference Include="..\TTWeb.BusinessLogic\TTWeb.BusinessLogic.csproj" />
 	</ItemGroup>

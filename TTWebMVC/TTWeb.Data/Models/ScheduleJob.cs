@@ -21,6 +21,10 @@ namespace TTWeb.Data.Models
 
         public ProcessingStatus Status { get; set; }
 
+        public DateTime? LockAt { get; set; }
+
+        public DateTime? LockedUntil { get; set; }
+
         public Schedule Schedule { get; set; }
 
         public FacebookUser Sender { get; set; }
