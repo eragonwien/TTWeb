@@ -2,6 +2,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
@@ -14,14 +15,17 @@ namespace TTWeb.Worker.ScheduleExecutor
         private readonly IWorkerClientService _workerClientService;
         private readonly ILogger<ScheduleExecutorWorker> _logger;
         private readonly SchedulingAppSettings _schedulingAppSettings;
+        private readonly IFacebookSeleniumService _facebookService;
 
         public ScheduleExecutorWorker(IWorkerClientService workerClientService,
             ILogger<ScheduleExecutorWorker> logger,
-            IOptions<SchedulingAppSettings> schedulingAppSettingsOptions)
+            IOptions<SchedulingAppSettings> schedulingAppSettingsOptions,
+            IFacebookSeleniumService facebookService)
         {
             _workerClientService = workerClientService;
             _logger = logger;
             _schedulingAppSettings = schedulingAppSettingsOptions.Value;
+            _facebookService = facebookService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -39,10 +43,15 @@ namespace TTWeb.Worker.ScheduleExecutor
                 }
                 else
                 {
-                    // TODO: reads and executes job here
+                    await DoWorkAsync(jobs);
                     _logger.LogInformation("Unprocessed job found - restart immediately");
                 }
             }
+        }
+
+        private Task DoWorkAsync(List<BusinessLogic.Models.Entities.ScheduleJobModel> jobs)
+        {
+            throw new NotImplementedException();
         }
     }
 }
