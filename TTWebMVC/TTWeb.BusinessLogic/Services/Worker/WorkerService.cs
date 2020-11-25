@@ -39,7 +39,11 @@ namespace TTWeb.BusinessLogic.Services.Worker
 
         public async Task<WorkerModel> GenerateAsync()
         {
-            var worker = new Data.Models.Worker(_helperService.GetRandomString(128));
+            var worker = new Data.Models.Worker()
+                .WithSecret(_helperService.GetRandomString(128))
+                .CreatedAt(DateTime.UtcNow)
+                .WithDefaultPermissions();
+
             await _context.Workers.AddAsync(worker);
             await _context.SaveChangesAsync();
 

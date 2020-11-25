@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TTWeb.Data.Models
 {
@@ -17,17 +19,30 @@ namespace TTWeb.Data.Models
 
         public Worker()
         {
+
         }
 
-        public Worker(string secret)
+        public Worker CreatedAt(DateTime dateTime)
+        {
+            CreateAt = dateTime;
+            return this;
+        }
+
+        public Worker WithSecret(string secret)
         {
             Secret = secret;
-            CreateAt = DateTime.UtcNow;
-            WorkerPermissionMappings = new List<WorkerPermissionMapping>
-            {
-                new WorkerPermissionMapping { UserPermission = UserPermission.IsWorker },
-                new WorkerPermissionMapping { UserPermission = UserPermission.AccessOwnResources }
-            };
+            return this;
+        }
+
+        public Worker WithDefaultPermissions()
+        {
+            if (!WorkerPermissionMappings.Any(m => m.UserPermission == UserPermission.IsWorker))
+                WorkerPermissionMappings.Add(new WorkerPermissionMapping { UserPermission = UserPermission.IsWorker });
+
+            if (!WorkerPermissionMappings.Any(m => m.UserPermission == UserPermission.AccessOwnResources))
+                WorkerPermissionMappings.Add(new WorkerPermissionMapping { UserPermission = UserPermission.AccessOwnResources });
+
+            return this;
         }
     }
 }
