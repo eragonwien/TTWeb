@@ -61,12 +61,12 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            // TODO: throws exception if wrong owner
             var schedule = await BaseQuery
                 .FilterById(model.Id)
                 .SingleOrDefaultAsync();
 
             if (schedule == null) throw new ResourceNotFoundException(nameof(Data.Models.Schedule), model.Id);
+            if (schedule.OwnerId != model.OwnerId) throw new UnauthorizedAccessException();
 
             schedule = _mapper.Map(model, schedule);
             _context.Entry(schedule).Property(s => s.PlanningStatus).IsModified = false;

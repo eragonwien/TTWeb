@@ -49,9 +49,9 @@ namespace TTWeb.BusinessLogic.Services.Facebook
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            // TODO: throws exception if owner does not match
             var facebookUser = await BaseQuery.FilterById(model.Id).SingleOrDefaultAsync();
             if (facebookUser == null) throw new ResourceNotFoundException(nameof(facebookUser), model.Id.ToString());
+            if (facebookUser.OwnerId != model.OwnerId) throw new UnauthorizedAccessException();
 
             facebookUser = _mapper.Map(model, facebookUser);
             facebookUser.Password = _encryptionHelper.Encrypt(facebookUser.Password);
