@@ -6,8 +6,6 @@
         public int ScheduleJobId { get; set; }
         public ScheduleJob ScheduleJob { get; set; }
 
-        // TODO: Adds more details
-        // TODO: Adds mapping profile
-        // TODO: Updates model
+        // TODO: Adds more details, Adds mapping profile, Updates model
     }
 }
