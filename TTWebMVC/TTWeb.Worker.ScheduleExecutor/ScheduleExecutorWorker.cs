@@ -3,9 +3,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Threading;
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
+using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Worker;
 
 namespace TTWeb.Worker.ScheduleExecutor
@@ -16,6 +19,9 @@ namespace TTWeb.Worker.ScheduleExecutor
         private readonly ILogger<ScheduleExecutorWorker> _logger;
         private readonly SchedulingAppSettings _schedulingAppSettings;
         private readonly IFacebookSeleniumService _facebookService;
+
+        private List<ScheduleJobModel> jobs = new List<ScheduleJobModel>();
+        private ScheduleJobModel workingJob = null;
 
         public ScheduleExecutorWorker(IWorkerClientService workerClientService,
             ILogger<ScheduleExecutorWorker> logger,
@@ -34,7 +40,8 @@ namespace TTWeb.Worker.ScheduleExecutor
             {
                 _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
 
-                var jobs = await _workerClientService.FetchJobsAsync();
+                if (jobs.Count == 0)
+                    jobs = await _workerClientService.FetchJobsAsync();
 
                 if (jobs.Count == 0)
                 {
@@ -43,15 +50,23 @@ namespace TTWeb.Worker.ScheduleExecutor
                 }
                 else
                 {
-                    await DoWorkAsync(jobs);
-                    _logger.LogInformation("Unprocessed job found - restart immediately");
+                    await DoWorkAsync();
+                    _logger.LogInformation("Job completed - restart immediately");
                 }
             }
         }
 
-        private Task DoWorkAsync(List<BusinessLogic.Models.Entities.ScheduleJobModel> jobs)
+        private async Task DoWorkAsync()
         {
-            throw new NotImplementedException();
+            GetJob();
+            await _facebookService.ProcessAsync(workingJob);
+            workingJob = null;
+        }
+
+        private void GetJob()
+        {
+            workingJob = jobs.First();
+            jobs.Remove(workingJob);
         }
     }
 }
