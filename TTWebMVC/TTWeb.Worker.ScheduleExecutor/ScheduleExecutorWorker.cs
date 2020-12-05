@@ -18,7 +18,7 @@ namespace TTWeb.Worker.ScheduleExecutor
         private readonly IWorkerClientService _workerClientService;
         private readonly ILogger<ScheduleExecutorWorker> _logger;
         private readonly SchedulingAppSettings _schedulingAppSettings;
-        private readonly IFacebookSeleniumService _facebookService;
+        private readonly IFacebookAutomationService _facebookService;
 
         private List<ScheduleJobModel> jobs = new List<ScheduleJobModel>();
         private ScheduleJobModel workingJob = null;
@@ -26,7 +26,7 @@ namespace TTWeb.Worker.ScheduleExecutor
         public ScheduleExecutorWorker(IWorkerClientService workerClientService,
             ILogger<ScheduleExecutorWorker> logger,
             IOptions<SchedulingAppSettings> schedulingAppSettingsOptions,
-            IFacebookSeleniumService facebookService)
+            IFacebookAutomationService facebookService)
         {
             _workerClientService = workerClientService;
             _logger = logger;

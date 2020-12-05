@@ -4,7 +4,7 @@ using TTWeb.BusinessLogic.Models.Helpers;
 
 namespace TTWeb.Worker.ScheduleExecutor
 {
-    public interface IFacebookSeleniumService
+    public interface IFacebookAutomationService
     {
         Task ProcessAsync(ScheduleJobModel workingJob);
     }

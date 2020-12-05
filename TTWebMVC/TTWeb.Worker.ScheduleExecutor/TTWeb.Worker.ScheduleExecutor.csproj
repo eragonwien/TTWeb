@@ -5,6 +5,10 @@
 		<UserSecretsId>dotnet-TTWeb.Worker.ScheduleExecutor-50FB51E4-5FAA-4B5C-A184-71BEE857E2B8</UserSecretsId>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<NoWarn>CS1998</NoWarn>
+	</PropertyGroup>
+
 	<PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
 		<EnvironmentName>Development</EnvironmentName>
 	</PropertyGroup>

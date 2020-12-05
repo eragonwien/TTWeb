@@ -17,6 +17,7 @@ namespace TTWeb.Worker.ScheduleExecutor
                 .ConfigureServices((context, services) =>
                 {
                     WorkerClientService.ConfigureServices(context, services);
+                    services.AddSingleton<IFacebookAutomationService, FacebookAutomationService>();
                     services.AddHostedService<ScheduleExecutorWorker>();
                 })
                 .ConfigureLogging(WorkerClientService.ConfigureLogging);
