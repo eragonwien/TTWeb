@@ -3,7 +3,7 @@ using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 
-namespace TTWeb.Web.Api.Services.Account
+namespace TTWeb.Web.Api.Services
 {
     public interface IAccountService
     {

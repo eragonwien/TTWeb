@@ -49,7 +49,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Components\Attributes\" />
+	  <Folder Include="Components\" />
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">

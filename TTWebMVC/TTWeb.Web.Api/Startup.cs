@@ -12,7 +12,7 @@ using TTWeb.BusinessLogic.Models.AppSettings.Security;
 using TTWeb.Data.Models;
 using TTWeb.Web.Api.Extensions;
 using TTWeb.Web.Api.Middlewares;
-using TTWeb.Web.Api.Services.Account;
+using TTWeb.Web.Api.Services;
 
 namespace TTWeb.Web.Api
 {

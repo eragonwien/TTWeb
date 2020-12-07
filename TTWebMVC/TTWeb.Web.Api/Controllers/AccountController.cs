@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Models.Account;
-using TTWeb.Web.Api.Services.Account;
+using TTWeb.Web.Api.Services;
 
 namespace TTWeb.Web.Api.Controllers
 {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services;
-using TTWeb.Web.Api.Services.Account;
+using TTWeb.Web.Api.Services;
 
 namespace TTWeb.Web.Api.Controllers
 {

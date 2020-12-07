@@ -18,7 +18,7 @@ using TTWeb.BusinessLogic.Services.LoginUser;
 using TTWeb.Data.Models;
 using TTWeb.Web.Api.Extensions;
 
-namespace TTWeb.Web.Api.Services.Account
+namespace TTWeb.Web.Api.Services
 {
     public class AccountService : IAccountService
     {
