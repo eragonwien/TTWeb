@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.Entities;
 
-namespace TTWeb.BusinessLogic.Services.Worker
+namespace TTWeb.Worker.Core.Services
 {
     public interface IWorkerClientService
     {

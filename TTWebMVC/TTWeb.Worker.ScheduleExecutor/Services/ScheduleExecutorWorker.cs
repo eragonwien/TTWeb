@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Worker;
+using TTWeb.Worker.Core.Services;
 
 namespace TTWeb.Worker.ScheduleExecutor.Services
 {

@@ -12,6 +12,7 @@ using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Authentication;
+using TTWeb.Worker.Core.Services;
 
 namespace TTWeb.BusinessLogic.Services.Worker
 {

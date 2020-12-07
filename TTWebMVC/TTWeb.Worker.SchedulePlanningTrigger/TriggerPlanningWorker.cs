@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
-using TTWeb.BusinessLogic.Services.Worker;
+using TTWeb.Worker.Core.Services;
 
 namespace TTWeb.Worker.SchedulePlanningTrigger
 {
