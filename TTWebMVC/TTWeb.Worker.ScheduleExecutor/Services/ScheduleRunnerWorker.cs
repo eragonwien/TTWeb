@@ -8,23 +8,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.Entities;
-using TTWeb.BusinessLogic.Services.Worker;
 using TTWeb.Worker.Core.Services;
 
-namespace TTWeb.Worker.ScheduleExecutor.Services
+namespace TTWeb.Worker.ScheduleRunner.Services
 {
-    public class ScheduleExecutorWorker : BackgroundService
+    public class ScheduleRunnerWorker : BackgroundService
     {
         private readonly IWorkerClientService _workerClientService;
-        private readonly ILogger<ScheduleExecutorWorker> _logger;
+        private readonly ILogger<ScheduleRunnerWorker> _logger;
         private readonly SchedulingAppSettings _schedulingAppSettings;
         private readonly IFacebookAutomationService _facebookService;
 
         private List<ScheduleJobModel> jobs = new List<ScheduleJobModel>();
         private ScheduleJobModel workingJob = null;
 
-        public ScheduleExecutorWorker(IWorkerClientService workerClientService,
-            ILogger<ScheduleExecutorWorker> logger,
+        public ScheduleRunnerWorker(IWorkerClientService workerClientService,
+            ILogger<ScheduleRunnerWorker> logger,
             IOptions<SchedulingAppSettings> schedulingAppSettingsOptions,
             IFacebookAutomationService facebookService)
         {
@@ -41,7 +40,7 @@ namespace TTWeb.Worker.ScheduleExecutor.Services
                 _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
 
                 if (jobs.Count == 0)
-                    jobs = await _workerClientService.FetchJobsAsync();
+                    jobs = await _workerClientService.GetJobsAsync();
 
                 if (jobs.Count == 0)
                 {

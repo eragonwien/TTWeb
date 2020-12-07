@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppSettings", "AppSettings"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWeb.Worker.SchedulePlanningTrigger", "TTWeb.Worker.SchedulePlanningTrigger\TTWeb.Worker.SchedulePlanningTrigger.csproj", "{7E8E7D7E-DDD1-4966-98C2-6FA5A262476A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWeb.Worker.ScheduleExecutor", "TTWeb.Worker.ScheduleExecutor\TTWeb.Worker.ScheduleExecutor.csproj", "{0DCCE765-4524-4339-A6FC-20E8D681FF7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWeb.Worker.ScheduleRunner", "TTWeb.Worker.ScheduleExecutor\TTWeb.Worker.ScheduleRunner.csproj", "{0DCCE765-4524-4339-A6FC-20E8D681FF7C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTWeb.Worker.Core", "TTWeb.Worker.Core\TTWeb.Worker.Core.csproj", "{392E70A0-1B32-4C44-9F1D-1667FE9B4812}"
 EndProject

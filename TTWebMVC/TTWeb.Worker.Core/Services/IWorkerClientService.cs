@@ -8,6 +8,6 @@ namespace TTWeb.Worker.Core.Services
     {
         Task<int> TriggerPlanningAsync();
 
-        Task<List<ScheduleJobModel>> FetchJobsAsync();
+        Task<List<ScheduleJobModel>> GetJobsAsync();
     }
 }

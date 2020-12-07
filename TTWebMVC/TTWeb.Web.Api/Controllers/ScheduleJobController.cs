@@ -27,14 +27,14 @@ namespace TTWeb.Web.Api.Controllers
         }
 
         [HttpPost("peek-lock")]
-        [Authorize(Policy = Startup.RequireAccessAllResourcesPermissionPolicy)]
+        [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
         public async Task<IEnumerable<ScheduleJobModel>> PeekLock()
         {
             return await _scheduleJobService.PeekLockAsync();
         }
 
         [HttpPatch("{id}/status")]
-        [Authorize(Policy = Startup.RequireAccessAllResourcesPermissionPolicy)]
+        [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
         public async Task UpdateStatus([FromRoute] int id, [FromBody] ProcessingResult<ScheduleJobModel> result)
         {
             await _scheduleJobService.UpdateStatusAsync(id, result);

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -64,9 +65,13 @@ namespace TTWeb.BusinessLogic.Services.Worker
             logger.SetMinimumLevel(LogLevel.Information);
         }
 
-        public Task<List<ScheduleJobModel>> FetchJobsAsync()
+        public async Task<List<ScheduleJobModel>> GetJobsAsync()
         {
-            throw new NotImplementedException();
+            await _webApiClient.AuthenticateAsync();
+            var response = await _webApiClient.PostAsync(_webApiAppSettings.Routes.GetJobs);
+            response.EnsureSuccessStatusCode();
+            var jsonString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<ScheduleJobModel>>(jsonString);
         }
     }
 }

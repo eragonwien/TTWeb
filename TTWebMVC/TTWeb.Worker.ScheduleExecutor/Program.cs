@@ -1,9 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TTWeb.BusinessLogic.Services.Worker;
-using TTWeb.Worker.ScheduleExecutor.Services;
+using TTWeb.Worker.ScheduleRunner.Services;
 
-namespace TTWeb.Worker.ScheduleExecutor
+namespace TTWeb.Worker.ScheduleRunner
 {
     public class Program
     {
@@ -19,7 +19,7 @@ namespace TTWeb.Worker.ScheduleExecutor
                 {
                     WorkerClientService.ConfigureServices(context, services);
                     services.AddSingleton<IFacebookAutomationService, FacebookAutomationService>();
-                    services.AddHostedService<ScheduleExecutorWorker>();
+                    services.AddHostedService<ScheduleRunnerWorker>();
                 })
                 .ConfigureLogging(WorkerClientService.ConfigureLogging);
     }

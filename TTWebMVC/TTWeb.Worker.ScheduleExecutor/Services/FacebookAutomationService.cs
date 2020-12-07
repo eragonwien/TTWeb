@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 
-namespace TTWeb.Worker.ScheduleExecutor.Services
+namespace TTWeb.Worker.ScheduleRunner.Services
 {
     public class FacebookAutomationService : IFacebookAutomationService
     {
@@ -32,12 +32,15 @@ namespace TTWeb.Worker.ScheduleExecutor.Services
                 case Data.Models.ScheduleAction.Like:
                     await LikeAsync();
                     break;
+
                 case Data.Models.ScheduleAction.Comment:
                     await CommentAsync();
                     break;
+
                 case Data.Models.ScheduleAction.Post:
                     await PostAsync();
                     break;
+
                 default:
                     break;
             }

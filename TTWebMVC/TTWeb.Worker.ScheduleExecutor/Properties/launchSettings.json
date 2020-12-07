@@ -1,10 +1,10 @@
 ﻿{
-  "profiles": {
-    "TTWeb.Worker.ScheduleExecutor": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
+   "profiles": {
+      "TTWeb.Worker.ScheduleRunner": {
+         "commandName": "Project",
+         "environmentVariables": {
+            "DOTNET_ENVIRONMENT": "Development"
+         }
       }
-    }
-  }
+   }
 }
