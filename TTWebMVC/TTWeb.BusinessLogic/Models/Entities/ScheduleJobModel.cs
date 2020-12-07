@@ -45,12 +45,16 @@ namespace TTWeb.BusinessLogic.Models.Entities
             {
                 case ScheduleIntervalType.Once:
                     return CalculateStartTimeOnce();
+
                 case ScheduleIntervalType.Daily:
                     return CalculateStartTimeDaily();
+
                 case ScheduleIntervalType.Weekly:
                     return CalculateStartTimeWeekly();
+
                 case ScheduleIntervalType.Monthly:
                     return CalculateStartTimeMonthly();
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

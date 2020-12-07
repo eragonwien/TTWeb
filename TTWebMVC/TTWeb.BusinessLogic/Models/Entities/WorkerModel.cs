@@ -11,7 +11,6 @@ namespace TTWeb.BusinessLogic.Models.Entities
 
         public WorkerModel()
         {
-
         }
 
         public WorkerModel(int id, string secret)

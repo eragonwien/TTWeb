@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.Extensions.Hosting;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Services.Authentication;
 
-namespace TTWeb.BusinessLogic.Services.Authentication
+namespace TTWeb.BusinessLogic.Services
 {
     public class AuthenticationHelperService : IAuthenticationHelperService
     {
@@ -18,10 +19,11 @@ namespace TTWeb.BusinessLogic.Services.Authentication
         }
 
 #pragma warning disable CS1998 // TODO: Adds external provider access token validation
+
         public async Task<bool> IsExternalAccessTokenValidAsync(ExternalLoginModel loginModel)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            if (loginModel is null) throw new System.ArgumentNullException(nameof(loginModel));
+            if (loginModel is null) throw new ArgumentNullException(nameof(loginModel));
 
             if (_env.IsDevelopment()) return true;
             return false;

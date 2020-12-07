@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.Entities;
-using TTWeb.BusinessLogic.Services.Worker;
+using TTWeb.BusinessLogic.Services;
 using TTWeb.Web.Api.Services.Account;
 
 namespace TTWeb.Web.Api.Controllers

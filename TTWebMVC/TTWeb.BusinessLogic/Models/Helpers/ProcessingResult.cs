@@ -6,6 +6,7 @@ namespace TTWeb.BusinessLogic.Models.Helpers
     {
         public bool Succeed { get; set; }
         public string Message { get; set; }
+
         public string Reason
         {
             get => _reason ?? "unknown reason";

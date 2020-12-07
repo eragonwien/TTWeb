@@ -1,6 +1,6 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Data.Database;
 using TTWeb.Data.Models;
@@ -12,7 +12,7 @@ namespace TTWeb.BusinessLogic.Services.Schedule
         private readonly TTWebContext _context;
         private readonly IMapper _mapper;
 
-        public ScheduleJobResultService(TTWebContext context, 
+        public ScheduleJobResultService(TTWebContext context,
             IMapper mapper)
         {
             _context = context;

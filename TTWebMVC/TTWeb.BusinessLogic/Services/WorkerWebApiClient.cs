@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
@@ -13,7 +13,7 @@ using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Authentication;
 
-namespace TTWeb.BusinessLogic.Services.Client
+namespace TTWeb.BusinessLogic.Services
 {
     /// <summary>
     /// Serves the communication between worker client and web api
@@ -90,7 +90,7 @@ namespace TTWeb.BusinessLogic.Services.Client
 
         /// <summary>
         /// Gets new access token from server using refresh token
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         private async Task RequestRefreshTokenAsync()

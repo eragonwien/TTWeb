@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.Entities;
-using TTWeb.BusinessLogic.Models.Helpers;
 
-namespace TTWeb.Worker.ScheduleExecutor
+namespace TTWeb.Worker.ScheduleExecutor.Services
 {
     public interface IFacebookAutomationService
     {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TTWeb.BusinessLogic.Models.AppSettings.Scheduling
+﻿namespace TTWeb.BusinessLogic.Models.AppSettings.Scheduling
 {
     public class SchedulingAppSettings
     {
@@ -9,6 +7,5 @@ namespace TTWeb.BusinessLogic.Models.AppSettings.Scheduling
         public SchedulingPlanningAppSettings Planning { get; set; }
 
         public SchedulingJobAppSettings Job { get; set; }
-
     }
 }

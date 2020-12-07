@@ -7,11 +7,17 @@ namespace TTWeb.BusinessLogic.Services.Schedule
     public interface IScheduleService
     {
         Task<ScheduleModel> CreateAsync(ScheduleModel model);
+
         Task<ScheduleModel> UpdateAsync(ScheduleModel model);
+
         Task DeleteAsync(int id, int? ownerId);
+
         Task<ScheduleModel> ReadByIdAsync(int id, int? ownerId);
+
         Task<IEnumerable<ScheduleModel>> ReadAsync();
+
         Task<IEnumerable<ScheduleModel>> PeekAsync(int count);
+
         Task<int> PlanAsync(int? count, int workerId);
     }
 }

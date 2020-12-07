@@ -12,9 +12,9 @@ using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
+using TTWeb.BusinessLogic.Services;
 using TTWeb.BusinessLogic.Services.Authentication;
 using TTWeb.BusinessLogic.Services.LoginUser;
-using TTWeb.BusinessLogic.Services.Worker;
 using TTWeb.Data.Models;
 using TTWeb.Web.Api.Extensions;
 

@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using NETCore.Encrypt;
-using TTWeb.BusinessLogic.Models.AppSettings;
+using System;
 using TTWeb.BusinessLogic.Models.AppSettings.Security;
+using TTWeb.BusinessLogic.Services.Encryption;
 
-namespace TTWeb.BusinessLogic.Services.Encryption
+namespace TTWeb.BusinessLogic.Services
 {
     public class EncryptionHelper : IEncryptionHelper
     {

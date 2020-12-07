@@ -4,14 +4,13 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Intrinsics.X86;
 using System.Threading;
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services.Worker;
 
-namespace TTWeb.Worker.ScheduleExecutor
+namespace TTWeb.Worker.ScheduleExecutor.Services
 {
     public class ScheduleExecutorWorker : BackgroundService
     {
@@ -65,7 +64,8 @@ namespace TTWeb.Worker.ScheduleExecutor
 
         private void GetJob()
         {
-            workingJob = jobs.First();
+            if (workingJob != null) return;
+            workingJob = jobs.Last();
             jobs.Remove(workingJob);
         }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 
-namespace TTWeb.Worker.ScheduleExecutor
+namespace TTWeb.Worker.ScheduleExecutor.Services
 {
     public class FacebookAutomationService : IFacebookAutomationService
     {

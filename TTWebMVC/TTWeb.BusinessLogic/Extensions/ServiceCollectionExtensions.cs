@@ -14,7 +14,6 @@ using TTWeb.BusinessLogic.Services.Encryption;
 using TTWeb.BusinessLogic.Services.Facebook;
 using TTWeb.BusinessLogic.Services.LoginUser;
 using TTWeb.BusinessLogic.Services.Schedule;
-using TTWeb.BusinessLogic.Services.Worker;
 using TTWeb.Data.Database;
 
 namespace TTWeb.BusinessLogic.Extensions
@@ -35,7 +34,6 @@ namespace TTWeb.BusinessLogic.Extensions
 
         public static IServiceCollection RegisterEntityServices(this IServiceCollection services)
         {
-
             services.AddScoped<IHelperService, HelperService>();
             services.AddScoped<IEncryptionHelper, EncryptionHelper>();
             services.AddScoped<ILoginUserService, LoginUserService>();

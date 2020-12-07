@@ -1,5 +1,5 @@
-﻿using System.Net;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Net;
 
 namespace TTWeb.BusinessLogic.Models.Helpers
 {
@@ -8,12 +8,12 @@ namespace TTWeb.BusinessLogic.Models.Helpers
         [JsonProperty("status")]
         public HttpStatusCode Status { get; set; } = HttpStatusCode.InternalServerError;
 
-        [JsonProperty("code")] 
-        public int Code => (int) Status;
+        [JsonProperty("code")]
+        public int Code => (int)Status;
 
         [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
-        
+
         [JsonProperty("stack", NullValueHandling = NullValueHandling.Ignore)]
         public string Stack { get; set; }
 
