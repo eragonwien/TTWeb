@@ -23,13 +23,13 @@ namespace TTWeb.BusinessLogic.Services.Schedule
 
         public ScheduleJobService(TTWebContext context,
             IMapper mapper,
-            IOptions<SchedulingJobAppSettings> jobAppSettingsOption,
+            IOptions<SchedulingAppSettings> schedulingAppSettingsOption,
             IScheduleJobResultService scheduleJobResultService)
         {
             _context = context;
             _mapper = mapper;
             _scheduleJobResultService = scheduleJobResultService;
-            _jobAppSettings = jobAppSettingsOption.Value;
+            _jobAppSettings = schedulingAppSettingsOption.Value.Job;
         }
 
         public List<ProcessingResult<ScheduleJobModel>> PlanJob(IEnumerable<Data.Models.Schedule> schedules)

@@ -63,7 +63,7 @@ namespace TTWeb.Web.Api.Controllers
 
         [HttpPost("trigger-planning")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
-        public async Task<int> TriggerPlanning([FromQuery] int count)
+        public async Task<int> TriggerPlanning([FromQuery] int? count)
         {
             return await _scheduleService.PlanAsync(count, LoginUserId);
         }

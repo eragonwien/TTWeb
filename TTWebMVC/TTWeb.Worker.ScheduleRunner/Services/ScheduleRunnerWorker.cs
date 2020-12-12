@@ -45,7 +45,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                 if (jobs.Count == 0)
                 {
                     _logger.LogInformation($"No unprocessed job found - takes a short break of {_schedulingAppSettings.Planning.TriggerInterval.TotalMinutes} minutes");
-                    await Task.Delay(_schedulingAppSettings.Planning.TriggerInterval, stoppingToken);
+                    await Task.Delay(_schedulingAppSettings.Job.TriggerInterval, stoppingToken);
                 }
                 else
                 {

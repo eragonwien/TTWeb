@@ -1,17 +1,19 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Internal;
 using System;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.Worker.ScheduleRunner.Extensions;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
 {
     public class FacebookAutomationService : IFacebookAutomationService
     {
         private ScheduleJobModel job;
-        private ChromeDriver driver;
         private readonly IHostEnvironment environment;
         private readonly AuthenticationProvidersFacebookAppSettings facebookSettings;
 
@@ -48,8 +50,11 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         private async Task LikeAsync()
         {
-            LauchBrowser();
-            driver.Navigate().GoToUrl(facebookSettings.Mobile.Home);
+            using var driver = LauchBrowser();
+            driver.NavigateTo(facebookSettings.Mobile.Home);
+
+            driver.WaitFor(TimeSpan.FromSeconds(10));
+
         }
 
         private Task CommentAsync()
@@ -62,7 +67,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             throw new NotImplementedException();
         }
 
-        private void LauchBrowser()
+        private ChromeDriver LauchBrowser()
         {
             var options = new ChromeOptions();
             options.AddArgument("--disable-notifications");
@@ -72,7 +77,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                 options.AddArgument("--start-maximized");
             }
 
-            driver = new ChromeDriver(Environment.CurrentDirectory, options);
+            return new ChromeDriver(options);
         }
     }
 }

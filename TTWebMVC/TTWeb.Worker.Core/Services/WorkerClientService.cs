@@ -57,8 +57,7 @@ namespace TTWeb.BusinessLogic.Services.Worker
             services.AddSingleton<IWorkerClientService, WorkerClientService>();
         }
 
-        public static void ConfigureLogging(HostBuilderContext context,
-            ILoggingBuilder logger)
+        public static void ConfigureLogging(ILoggingBuilder logger)
         {
             logger.ClearProviders();
             logger.AddConsole();
