@@ -9,6 +9,7 @@ using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Worker.ScheduleRunner.Extensions;
 using static SeleniumExtras.WaitHelpers.ExpectedConditions;
+using System.Security.Cryptography;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
 {
@@ -48,32 +49,22 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private async Task LikeAsync()
         {
             driver.NavigateTo(facebookSettings.Mobile.Home);
-            driver.WaitUntil(ElementIsVisible(By.TagName("body")));
-
-            if (TryFindElement(By.Id("accept-cookie-banner-label"), out var element) && element.IsVisible())
-            {
-                element.Click();
-                driver.WaitUntil(ElementIsVisible(By.TagName("body")));
-            }
+            driver.AcceptCookieAgreement();
+            Login();
+            driver.NavigateTo("new address");
+            driver.GetPostings();
+            driver.Like();
         }
 
-        private bool TryFindElement(By by, out IWebElement element)
+        private void Login()
         {
-            try
-            {
-                element = driver.FindElement(by);
-                return true;
-            }
-            catch (NoSuchElementException)
-            {
-                element = default;
-                return false;
-            }
-        }
+            driver.WriteInput(By.Id("email"), "email");
+            driver.WriteInput(By.Id("password"), "password");
 
-        private bool IsVisible(IWebElement element)
-        {
-            return element.Displayed && element.Enabled;
+            if (driver.TryFindElement(By.Id("loginButton"), out var loginButton))
+                loginButton.Click();
+
+            driver.WaitUntilBodyVisible();
         }
 
         private Task CommentAsync()
