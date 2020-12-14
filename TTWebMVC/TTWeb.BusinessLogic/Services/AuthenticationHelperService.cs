@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.Entities;
-using TTWeb.BusinessLogic.Services.Authentication;
 
 namespace TTWeb.BusinessLogic.Services
 {

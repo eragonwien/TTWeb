@@ -1,4 +1,4 @@
-﻿namespace TTWeb.BusinessLogic.Services.Encryption
+﻿namespace TTWeb.BusinessLogic.Services
 {
     public interface IEncryptionHelper
     {

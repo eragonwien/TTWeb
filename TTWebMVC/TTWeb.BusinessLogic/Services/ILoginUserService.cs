@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.Entities;
 
-namespace TTWeb.BusinessLogic.Services.LoginUser
+namespace TTWeb.BusinessLogic.Services
 {
     public interface ILoginUserService
     {

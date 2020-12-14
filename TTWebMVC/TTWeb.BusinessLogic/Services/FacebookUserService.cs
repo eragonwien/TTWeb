@@ -1,17 +1,16 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities;
-using TTWeb.BusinessLogic.Services.Encryption;
 using TTWeb.Data.Database;
 using TTWeb.Data.Extensions;
 using TTWeb.Data.Models;
 
-namespace TTWeb.BusinessLogic.Services.Facebook
+namespace TTWeb.BusinessLogic.Services
 {
     public class FacebookUserService : IFacebookUserService
     {

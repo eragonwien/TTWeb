@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Internal;
 using System;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
@@ -18,31 +17,27 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private readonly AuthenticationProvidersFacebookAppSettings facebookSettings;
 
         public FacebookAutomationService(IHostEnvironment environment,
-            IOptions<AuthenticationAppSettings> authenticationAppSetingsOptions)
+            IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions)
         {
             this.environment = environment;
-            facebookSettings = authenticationAppSetingsOptions.Value.Providers.Facebook;
+            facebookSettings = authenticationAppSettingsOptions.Value.Providers.Facebook;
         }
 
         public async Task ProcessAsync(ScheduleJobModel workingJob)
         {
-            if (workingJob is null) throw new ArgumentNullException(nameof(workingJob));
-            job = workingJob;
+            job = workingJob ?? throw new ArgumentNullException(nameof(workingJob));
 
             switch (workingJob.Action)
             {
                 case Data.Models.ScheduleAction.Like:
                     await LikeAsync();
                     break;
-
                 case Data.Models.ScheduleAction.Comment:
                     await CommentAsync();
                     break;
-
                 case Data.Models.ScheduleAction.Post:
                     await PostAsync();
                     break;
-
                 default:
                     break;
             }
@@ -50,7 +45,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         private async Task LikeAsync()
         {
-            using var driver = LauchBrowser();
+            using var driver = LaunchBrowser();
             driver.NavigateTo(facebookSettings.Mobile.Home);
 
             driver.WaitFor(TimeSpan.FromSeconds(10));
@@ -67,7 +62,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             throw new NotImplementedException();
         }
 
-        private ChromeDriver LauchBrowser()
+        private ChromeDriver LaunchBrowser()
         {
             var options = new ChromeOptions();
             options.AddArgument("--disable-notifications");

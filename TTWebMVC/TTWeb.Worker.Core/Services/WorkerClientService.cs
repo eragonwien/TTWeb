@@ -1,21 +1,20 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
 using TTWeb.BusinessLogic.Models.Entities;
-using TTWeb.BusinessLogic.Services.Authentication;
-using TTWeb.Worker.Core.Services;
+using TTWeb.BusinessLogic.Services;
 
-namespace TTWeb.BusinessLogic.Services.Worker
+namespace TTWeb.Worker.Core.Services
 {
     public class WorkerClientService : IWorkerClientService
     {

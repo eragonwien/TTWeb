@@ -2,7 +2,6 @@
 using NETCore.Encrypt;
 using System;
 using TTWeb.BusinessLogic.Models.AppSettings.Security;
-using TTWeb.BusinessLogic.Services.Encryption;
 
 namespace TTWeb.BusinessLogic.Services
 {

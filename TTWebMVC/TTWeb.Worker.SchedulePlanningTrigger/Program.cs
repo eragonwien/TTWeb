@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using TTWeb.BusinessLogic.Services.Worker;
+using TTWeb.Worker.Core.Services;
 
 namespace TTWeb.Worker.SchedulePlanningTrigger
 {

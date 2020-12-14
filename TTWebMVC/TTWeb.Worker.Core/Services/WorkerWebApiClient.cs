@@ -1,19 +1,19 @@
-﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.AppSettings.WebApi;
 using TTWeb.BusinessLogic.Models.Entities;
-using TTWeb.BusinessLogic.Services.Authentication;
+using TTWeb.BusinessLogic.Services;
 
-namespace TTWeb.BusinessLogic.Services
+namespace TTWeb.Worker.Core.Services
 {
     /// <summary>
     /// Serves the communication between worker client and web api

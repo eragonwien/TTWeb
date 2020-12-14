@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
-using TTWeb.BusinessLogic.Services.Schedule;
+using TTWeb.BusinessLogic.Services;
 
 namespace TTWeb.Web.Api.Controllers
 {

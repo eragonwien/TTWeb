@@ -9,11 +9,6 @@ using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.AppSettings.Security;
 using TTWeb.BusinessLogic.Services;
-using TTWeb.BusinessLogic.Services.Authentication;
-using TTWeb.BusinessLogic.Services.Encryption;
-using TTWeb.BusinessLogic.Services.Facebook;
-using TTWeb.BusinessLogic.Services.LoginUser;
-using TTWeb.BusinessLogic.Services.Schedule;
 using TTWeb.Data.Database;
 
 namespace TTWeb.BusinessLogic.Extensions

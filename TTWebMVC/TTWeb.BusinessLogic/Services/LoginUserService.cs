@@ -1,13 +1,13 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Data.Database;
 
-namespace TTWeb.BusinessLogic.Services.LoginUser
+namespace TTWeb.BusinessLogic.Services
 {
     public class LoginUserService : ILoginUserService
     {

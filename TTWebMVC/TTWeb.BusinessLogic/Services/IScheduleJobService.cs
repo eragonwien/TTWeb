@@ -4,7 +4,7 @@ using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.Data.Models;
 
-namespace TTWeb.BusinessLogic.Services.Schedule
+namespace TTWeb.BusinessLogic.Services
 {
     public interface IScheduleJobService
     {

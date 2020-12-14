@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.Entities;
 
-namespace TTWeb.BusinessLogic.Services.Schedule
+namespace TTWeb.BusinessLogic.Services
 {
     public interface IScheduleService
     {
