@@ -4,12 +4,9 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
-using SeleniumExtras.WaitHelpers;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Worker.ScheduleRunner.Extensions;
-using static SeleniumExtras.WaitHelpers.ExpectedConditions;
-using System.Security.Cryptography;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
 {
