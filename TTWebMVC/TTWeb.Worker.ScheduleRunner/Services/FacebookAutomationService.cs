@@ -34,32 +34,32 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             switch (workingJob.Action)
             {
                 case Data.Models.ScheduleAction.Like:
-                    await LikeAsync();
+                    Like();
                     break;
                 case Data.Models.ScheduleAction.Comment:
-                    await CommentAsync();
+                    Comment();
                     break;
                 case Data.Models.ScheduleAction.Post:
-                    await PostAsync();
+                    Post();
                     break;
             }
             driver.Close();
         }
 
-        private async Task LikeAsync()
+        private void Like()
         {
             driver.NavigateTo(facebookSettings.Mobile.Home);
             driver.AcceptCookieAgreement();
-            Login();
+            Login(job.Sender);
             driver.NavigateTo("new address");
             driver.GetPostings();
             driver.Like();
         }
 
-        private void Login()
+        private void Login(ScheduleFacebookUserModel user)
         {
-            driver.WriteInput(By.Id("email"), "email");
-            driver.WriteInput(By.Id("password"), "password");
+            driver.WriteInput(By.Id("email"), user.Username);
+            driver.WriteInput(By.Id("password"), user.Password);
 
             if (driver.TryFindElement(By.Id("loginButton"), out var loginButton))
                 loginButton.Click();
@@ -67,12 +67,12 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             driver.WaitUntilBodyVisible();
         }
 
-        private Task CommentAsync()
+        private void Comment()
         {
             throw new NotImplementedException();
         }
 
-        private Task PostAsync()
+        private void Post()
         {
             throw new NotImplementedException();
         }
