@@ -1,12 +1,14 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Internal;
 using System;
 using System.Threading.Tasks;
+using OpenQA.Selenium;
+using SeleniumExtras.WaitHelpers;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Worker.ScheduleRunner.Extensions;
+using static SeleniumExtras.WaitHelpers.ExpectedConditions;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
 {
@@ -15,6 +17,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private ScheduleJobModel job;
         private readonly IHostEnvironment environment;
         private readonly AuthenticationProvidersFacebookAppSettings facebookSettings;
+        private ChromeDriver driver;
 
         public FacebookAutomationService(IHostEnvironment environment,
             IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions)
@@ -26,7 +29,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         public async Task ProcessAsync(ScheduleJobModel workingJob)
         {
             job = workingJob ?? throw new ArgumentNullException(nameof(workingJob));
-
+            driver = LaunchBrowser();
             switch (workingJob.Action)
             {
                 case Data.Models.ScheduleAction.Like:
@@ -38,18 +41,39 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                 case Data.Models.ScheduleAction.Post:
                     await PostAsync();
                     break;
-                default:
-                    break;
             }
+            driver.Close();
         }
 
         private async Task LikeAsync()
         {
-            using var driver = LaunchBrowser();
             driver.NavigateTo(facebookSettings.Mobile.Home);
+            driver.WaitUntil(ElementIsVisible(By.TagName("body")));
 
-            driver.WaitFor(TimeSpan.FromSeconds(10));
+            if (TryFindElement(By.Id("accept-cookie-banner-label"), out var element) && element.IsVisible())
+            {
+                element.Click();
+                driver.WaitUntil(ElementIsVisible(By.TagName("body")));
+            }
+        }
 
+        private bool TryFindElement(By by, out IWebElement element)
+        {
+            try
+            {
+                element = driver.FindElement(by);
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                element = default;
+                return false;
+            }
+        }
+
+        private bool IsVisible(IWebElement element)
+        {
+            return element.Displayed && element.Enabled;
         }
 
         private Task CommentAsync()
