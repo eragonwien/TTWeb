@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Hosting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.Entities;
 

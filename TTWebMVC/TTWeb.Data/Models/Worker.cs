@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,11 +15,6 @@ namespace TTWeb.Data.Models
         public ICollection<WorkerPermissionMapping> WorkerPermissionMappings { get; set; }
 
         public ICollection<Schedule> WorkingSchedules { get; set; }
-
-        public Worker()
-        {
-
-        }
 
         public Worker CreatedAt(DateTime dateTime)
         {

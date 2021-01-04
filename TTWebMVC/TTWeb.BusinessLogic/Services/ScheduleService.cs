@@ -61,7 +61,7 @@ namespace TTWeb.BusinessLogic.Services
                 .FilterById(model.Id)
                 .SingleOrDefaultAsync();
 
-            if (schedule == null) throw new ResourceNotFoundException(nameof(Data.Models.Schedule), model.Id);
+            if (schedule == null) throw new ResourceNotFoundException(nameof(Schedule), model.Id);
             if (schedule.OwnerId != model.OwnerId) throw new UnauthorizedAccessException();
 
             schedule = _mapper.Map(model, schedule);

@@ -1,6 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System;
+﻿using System;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TTWeb.BusinessLogic.Extensions
 {

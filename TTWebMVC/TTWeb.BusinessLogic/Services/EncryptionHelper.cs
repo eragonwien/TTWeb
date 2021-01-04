@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System;
+using Microsoft.Extensions.Options;
 using NETCore.Encrypt;
-using System;
 using TTWeb.BusinessLogic.Models.AppSettings.Security;
 
 namespace TTWeb.BusinessLogic.Services

@@ -40,7 +40,7 @@ namespace TTWeb.Worker.Core.Services
         {
             configuration
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile($"appsettings.json", optional: true)
+                .AddJsonFile("appsettings.json", optional: true)
                 .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: false);
         }
 

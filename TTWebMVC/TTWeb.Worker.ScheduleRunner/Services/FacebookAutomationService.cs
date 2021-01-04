@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Worker.ScheduleRunner.Extensions;

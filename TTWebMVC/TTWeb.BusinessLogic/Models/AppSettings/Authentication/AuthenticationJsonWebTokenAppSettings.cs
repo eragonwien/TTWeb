@@ -1,5 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System;
+﻿using System;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TTWeb.BusinessLogic.Models.AppSettings.Authentication
 {
