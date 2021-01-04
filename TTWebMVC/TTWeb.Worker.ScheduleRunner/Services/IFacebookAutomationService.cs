@@ -1,11 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Models.Helpers;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
 {
     public interface IFacebookAutomationService
     {
-        Task<bool> ProcessAsync(ScheduleJobModel workingJob, CancellationToken cancellationToken);
+        Task<ProcessingResult<ScheduleJobModel>> ProcessAsync(ScheduleJobModel job, CancellationToken cancellationToken);
     }
 }

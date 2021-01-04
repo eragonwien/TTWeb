@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -7,6 +8,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.Worker.ScheduleRunner.Extensions;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
@@ -25,11 +27,11 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             facebookSettings = authenticationAppSettingsOptions.Value.Providers.Facebook;
         }
 
-        public async Task<bool> ProcessAsync(ScheduleJobModel workingJob, CancellationToken cancellationToken)
+        public async Task<ProcessingResult<ScheduleJobModel>> ProcessAsync(ScheduleJobModel job, CancellationToken cancellationToken)
         {
-            job = workingJob ?? throw new ArgumentNullException(nameof(workingJob));
+            this.job = job ?? throw new ArgumentNullException(nameof(job));
             driver = LaunchBrowser();
-            switch (workingJob.Action)
+            switch (job.Action)
             {
                 case Data.Models.ScheduleAction.Like:
                     Like();
@@ -42,7 +44,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                     break;
             }
             driver.Close();
-            return true;
+            return new ProcessingResult<ScheduleJobModel>(succeed: true, result: job);
         }
 
         private void Like()
