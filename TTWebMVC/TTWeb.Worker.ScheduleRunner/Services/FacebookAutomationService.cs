@@ -4,11 +4,9 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
-using SeleniumExtras.WaitHelpers;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Worker.ScheduleRunner.Extensions;
-using static SeleniumExtras.WaitHelpers.ExpectedConditions;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
 {
@@ -33,55 +31,45 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             switch (workingJob.Action)
             {
                 case Data.Models.ScheduleAction.Like:
-                    await LikeAsync();
+                    Like();
                     break;
                 case Data.Models.ScheduleAction.Comment:
-                    await CommentAsync();
+                    Comment();
                     break;
                 case Data.Models.ScheduleAction.Post:
-                    await PostAsync();
+                    Post();
                     break;
             }
             driver.Close();
         }
 
-        private async Task LikeAsync()
+        private void Like()
         {
             driver.NavigateTo(facebookSettings.Mobile.Home);
-            driver.WaitUntil(ElementIsVisible(By.TagName("body")));
-
-            if (TryFindElement(By.Id("accept-cookie-banner-label"), out var element) && element.IsVisible())
-            {
-                element.Click();
-                driver.WaitUntil(ElementIsVisible(By.TagName("body")));
-            }
+            driver.AcceptCookieAgreement();
+            Login(job.Sender);
+            driver.NavigateTo("new address");
+            driver.GetPostings();
+            driver.Like();
         }
 
-        private bool TryFindElement(By by, out IWebElement element)
+        private void Login(ScheduleFacebookUserModel user)
         {
-            try
-            {
-                element = driver.FindElement(by);
-                return true;
-            }
-            catch (NoSuchElementException)
-            {
-                element = default;
-                return false;
-            }
+            driver.WriteInput(By.Id("email"), user.Username);
+            driver.WriteInput(By.Id("password"), user.Password);
+
+            if (driver.TryFindElement(By.Id("loginButton"), out var loginButton))
+                loginButton.Click();
+
+            driver.WaitUntilBodyVisible();
         }
 
-        private bool IsVisible(IWebElement element)
-        {
-            return element.Displayed && element.Enabled;
-        }
-
-        private Task CommentAsync()
+        private void Comment()
         {
             throw new NotImplementedException();
         }
 
-        private Task PostAsync()
+        private void Post()
         {
             throw new NotImplementedException();
         }
