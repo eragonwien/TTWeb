@@ -88,21 +88,6 @@ namespace TTWeb.BusinessLogic.Services
                 .ToListAsync();
         }
 
-        public async Task<ICollection<ScheduleJobModel>> PeekLockAsync(CancellationToken cancellationToken)
-        {
-            var jobs = await  _context.ScheduleJobs
-                .Include(j => j.Sender)
-                .Include(j => j.Receiver)
-                .FilterOpenJobs()
-                .ToListAsync(cancellationToken);
-
-            var now = DateTime.UtcNow;
-            jobs.ForEach(j => j.Lock(now, _jobAppSettings.LockDuration));
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return jobs.Select(j => _mapper.Map<ScheduleJobModel>(j)).ToList();
-        }
-
         public async Task UpdateStatusAsync(int id, ProcessingResult<ScheduleJobModel> result)
         {
             _context.ScheduleJobs.Attach(new ScheduleJob

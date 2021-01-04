@@ -27,13 +27,6 @@ namespace TTWeb.Web.Api.Controllers
             return await _scheduleJobService.PeekAsync();
         }
 
-        [HttpPost("peek-lock")]
-        [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
-        public async Task<IEnumerable<ScheduleJobModel>> PeekLock(CancellationToken cancellationToken)
-        {
-            return await _scheduleJobService.PeekLockAsync(cancellationToken);
-        }
-
         [HttpPatch("{id}/status")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
         public async Task UpdateStatus([FromRoute] int id, [FromBody] ProcessingResult<ScheduleJobModel> result)

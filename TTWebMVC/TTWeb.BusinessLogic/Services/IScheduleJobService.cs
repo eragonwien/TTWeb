@@ -15,8 +15,6 @@ namespace TTWeb.BusinessLogic.Services
 
         Task<ICollection<ScheduleJobModel>> PeekAsync();
 
-        Task<ICollection<ScheduleJobModel>> PeekLockAsync(CancellationToken cancellationToken);
-
         Task UpdateStatusAsync(int id, ProcessingResult<ScheduleJobModel> result);
     }
 }
