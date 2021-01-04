@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,9 +29,9 @@ namespace TTWeb.Web.Api.Controllers
 
         [HttpPost("peek-lock")]
         [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
-        public async Task<IEnumerable<ScheduleJobModel>> PeekLock()
+        public async Task<IEnumerable<ScheduleJobModel>> PeekLock(CancellationToken cancellationToken)
         {
-            return await _scheduleJobService.PeekLockAsync();
+            return await _scheduleJobService.PeekLockAsync(cancellationToken);
         }
 
         [HttpPatch("{id}/status")]

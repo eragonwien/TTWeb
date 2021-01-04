@@ -1,46 +1,58 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
-using TTWeb.Worker.Core.Services;
+using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.Data.Database;
+using TTWeb.Data.Extensions;
 
 namespace TTWeb.Worker.SchedulePlanningTrigger
 {
     public class TriggerPlanningWorker : BackgroundService
     {
-        private readonly IWorkerClientService _workerClientService;
         private readonly ILogger<TriggerPlanningWorker> _logger;
-        private readonly SchedulingAppSettings _schedulingAppSettings;
+        private readonly SchedulingAppSettings settings;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public TriggerPlanningWorker(IWorkerClientService workerClientService,
-            ILogger<TriggerPlanningWorker> logger,
-            IOptions<SchedulingAppSettings> schedulingAppSettingsOptions)
+        public TriggerPlanningWorker(ILogger<TriggerPlanningWorker> logger,
+            IOptions<SchedulingAppSettings> schedulingAppSettingsOptions, 
+            IServiceScopeFactory scopeFactory)
         {
-            _workerClientService = workerClientService;
             _logger = logger;
-            _schedulingAppSettings = schedulingAppSettingsOptions.Value;
+            _scopeFactory = scopeFactory;
+            settings = schedulingAppSettingsOptions.Value;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
-                var planCount = await _workerClientService.TriggerPlanningAsync();
-                _logger.LogInformation($"{planCount} schedules triggered successfully at {DateTimeOffset.Now}");
 
-                if (planCount == 0)
+                using (var scope = _scopeFactory.CreateScope())
                 {
-                    _logger.LogInformation($"No unprocessed schedule found - takes a short break of {_schedulingAppSettings.Planning.TriggerInterval.TotalMinutes} minutes");
-                    await Task.Delay(_schedulingAppSettings.Planning.TriggerInterval, stoppingToken);
+                    var context = scope.ServiceProvider.GetRequiredService<TTWebContext>();
+
+                    var jobs = await  context.ScheduleJobs
+                        .Include(j => j.Sender)
+                        .Include(j => j.Receiver)
+                        .FilterOpenJobs()
+                        .ToListAsync(cancellationToken);
+
+                    var now = DateTime.UtcNow;
+                    jobs.ForEach(j => j.Lock(now, settings.Job.LockDuration));
+                    await context.SaveChangesAsync(cancellationToken);
                 }
-                else
-                {
-                    _logger.LogInformation("Unprocessed schedule found - restart immediately");
-                }
+
+                _logger.LogInformation($"Schedules triggered successfully at {DateTimeOffset.Now}");
+                await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
             }
         }
     }

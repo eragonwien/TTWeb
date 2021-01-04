@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
@@ -8,13 +9,13 @@ namespace TTWeb.BusinessLogic.Services
 {
     public interface IScheduleJobService
     {
-        List<ProcessingResult<ScheduleJobModel>> PlanJob(IEnumerable<Data.Models.Schedule> schedules);
+        List<ProcessingResult<ScheduleJobModel>> PlanJob(IEnumerable<Schedule> schedules);
 
         Task<IEnumerable<ScheduleJob>> CreateAsync(IEnumerable<ScheduleJobModel> models);
 
-        Task<IEnumerable<ScheduleJobModel>> PeekAsync();
+        Task<ICollection<ScheduleJobModel>> PeekAsync();
 
-        Task<IEnumerable<ScheduleJobModel>> PeekLockAsync();
+        Task<ICollection<ScheduleJobModel>> PeekLockAsync(CancellationToken cancellationToken);
 
         Task UpdateStatusAsync(int id, ProcessingResult<ScheduleJobModel> result);
     }

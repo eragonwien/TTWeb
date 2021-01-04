@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -77,7 +78,7 @@ namespace TTWeb.BusinessLogic.Services
             return jobs;
         }
 
-        public async Task<IEnumerable<ScheduleJobModel>> PeekAsync()
+        public async Task<ICollection<ScheduleJobModel>> PeekAsync()
         {
             return await BaseQuery
                 .AsNoTracking()
@@ -87,18 +88,19 @@ namespace TTWeb.BusinessLogic.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ScheduleJobModel>> PeekLockAsync()
+        public async Task<ICollection<ScheduleJobModel>> PeekLockAsync(CancellationToken cancellationToken)
         {
-            var jobs = await BaseQuery
+            var jobs = await  _context.ScheduleJobs
+                .Include(j => j.Sender)
+                .Include(j => j.Receiver)
                 .FilterOpenJobs()
-                .Take(_jobAppSettings.CountPerRequest)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             var now = DateTime.UtcNow;
             jobs.ForEach(j => j.Lock(now, _jobAppSettings.LockDuration));
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
-            return jobs.Select(j => _mapper.Map<ScheduleJobModel>(j));
+            return jobs.Select(j => _mapper.Map<ScheduleJobModel>(j)).ToList();
         }
 
         public async Task UpdateStatusAsync(int id, ProcessingResult<ScheduleJobModel> result)
