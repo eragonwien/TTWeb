@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using OpenQA.Selenium.Chrome;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
@@ -24,7 +25,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             facebookSettings = authenticationAppSettingsOptions.Value.Providers.Facebook;
         }
 
-        public async Task ProcessAsync(ScheduleJobModel workingJob)
+        public async Task<bool> ProcessAsync(ScheduleJobModel workingJob, CancellationToken cancellationToken)
         {
             job = workingJob ?? throw new ArgumentNullException(nameof(workingJob));
             driver = LaunchBrowser();
@@ -41,6 +42,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                     break;
             }
             driver.Close();
+            return true;
         }
 
         private void Like()

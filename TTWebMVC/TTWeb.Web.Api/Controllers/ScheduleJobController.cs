@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Models.Entities;
-using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.BusinessLogic.Services;
 
 namespace TTWeb.Web.Api.Controllers
@@ -25,13 +23,6 @@ namespace TTWeb.Web.Api.Controllers
         public async Task<IEnumerable<ScheduleJobModel>> Peek()
         {
             return await _scheduleJobService.PeekAsync();
-        }
-
-        [HttpPatch("{id}/status")]
-        [Authorize(Policy = Startup.RequireWorkerPermissionPolicy)]
-        public async Task UpdateStatus([FromRoute] int id, [FromBody] ProcessingResult<ScheduleJobModel> result)
-        {
-            await _scheduleJobService.UpdateStatusAsync(id, result);
         }
     }
 }

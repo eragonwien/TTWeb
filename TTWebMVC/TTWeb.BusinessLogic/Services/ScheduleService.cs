@@ -19,9 +19,8 @@ namespace TTWeb.BusinessLogic.Services
         private readonly TTWebContext _context;
         private readonly IMapper _mapper;
         private readonly SchedulingPlanningAppSettings _planningAppSettings;
-        private readonly IScheduleJobService _scheduleJobService;
 
-        private IQueryable<Data.Models.Schedule> BaseQuery =>
+        private IQueryable<Schedule> BaseQuery =>
             _context.Schedules
                 .Include(s => s.Owner)
                 .Include(s => s.Sender)
@@ -34,12 +33,10 @@ namespace TTWeb.BusinessLogic.Services
 
         public ScheduleService(TTWebContext context,
             IMapper mapper,
-            IOptions<SchedulingAppSettings> schedulingAppSettings,
-            IScheduleJobService scheduleJobService)
+            IOptions<SchedulingAppSettings> schedulingAppSettings)
         {
             _context = context;
             _mapper = mapper;
-            _scheduleJobService = scheduleJobService;
             _planningAppSettings = schedulingAppSettings.Value.Planning;
         }
 
@@ -47,7 +44,7 @@ namespace TTWeb.BusinessLogic.Services
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            var schedule = _mapper.Map<Data.Models.Schedule>(model);
+            var schedule = _mapper.Map<Schedule>(model);
             await _context.Schedules.AddAsync(schedule);
             await _context.SaveChangesAsync();
 
@@ -116,46 +113,6 @@ namespace TTWeb.BusinessLogic.Services
                 .Take(count > 0 ? count : _planningAppSettings.CountPerRequest)
                 .Select(s => _mapper.Map<ScheduleModel>(s))
                 .ToListAsync();
-        }
-
-        public async Task<int> PlanAsync(int? count, int workerId)
-        {
-            var utcNow = DateTime.UtcNow;
-
-            var schedules = await BaseQuery
-                .FilterOpenSchedules(utcNow)
-                .Take(count ?? _planningAppSettings.CountPerRequest)
-                .OrderBy(s => s.Id)
-                .ToListAsync();
-
-            if (schedules.Count == 0) return schedules.Count;
-
-            schedules.ForEach(s => s.Lock(utcNow, _planningAppSettings.LockDuration).SetWorkerId(workerId));
-            await _context.SaveChangesAsync();
-
-            var planningResults = _scheduleJobService.PlanJob(schedules);
-
-            var successPlannedJobs = await _scheduleJobService.CreateAsync(planningResults.Where(r => r.Succeed).Select(r => r.Result));
-
-            await UpdateScheduleStatus(schedules, successPlannedJobs.ToList());
-
-            return schedules.Count;
-        }
-
-        private async Task UpdateScheduleStatus(List<Data.Models.Schedule> schedules,
-            IReadOnlyCollection<ScheduleJob> successPlannedJobs)
-        {
-            if (schedules == null) throw new ArgumentNullException(nameof(schedules));
-            if (successPlannedJobs == null) throw new ArgumentNullException(nameof(successPlannedJobs));
-
-            foreach (var schedule in schedules)
-            {
-                schedule.PlanningStatus = successPlannedJobs.Any(j => j.ScheduleId == schedule.Id)
-                    ? ProcessingStatus.Completed
-                    : ProcessingStatus.Error;
-            }
-
-            await _context.SaveChangesAsync();
         }
     }
 }
