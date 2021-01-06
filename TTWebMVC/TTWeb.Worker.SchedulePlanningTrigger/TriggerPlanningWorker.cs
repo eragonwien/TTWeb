@@ -47,7 +47,6 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                 using var context = scope.ServiceProvider.GetRequiredService<TTWebContext>();
                 using var transaction = await context.Database.BeginTransactionAsync();
 
-
                 var schedules = await context.Schedules
                     .Include(s => s.ScheduleReceiverMappings)
                     .Include(s => s.ScheduleWeekdayMappings)
@@ -65,12 +64,17 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                     continue;
                 }
 
-                schedules.ForEach(s => s.Lock(planningStartTime, settings.Planning.LockDuration).SetStatus(ProcessingStatus.InProgress));
+                foreach (var schedule in schedules)
+                    schedule
+                        .Lock(planningStartTime, settings.Planning.LockDuration)
+                        .SetStatus(ProcessingStatus.InProgress);
+
                 await context.SaveChangesAsync(cancellationToken);
 
                 var planningResults = CalculateJobStartTime(schedules);
-                var successPlannedJobs = await AddPlannedJobsAsync(planningResults.Where(r => r.Succeed).Select(r => r.Result), context, cancellationToken);
-                await UpdateScheduleStatusAsync(schedules, successPlannedJobs.ToList(), context, cancellationToken);
+                var successResults = planningResults.Where(r => r.Succeed).Select(r => r.Result);
+                var scheduleJobs = await AddScheduleJobsAsync(successResults, context, cancellationToken);
+                await UpdateScheduleStatusAsync(schedules, scheduleJobs, context, cancellationToken);
 
                 await transaction.CommitAsync(cancellationToken);
 
@@ -119,7 +123,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             return results;
         }
 
-        public async Task<IEnumerable<ScheduleJob>> AddPlannedJobsAsync(
+        public async Task<List<ScheduleJob>> AddScheduleJobsAsync(
             IEnumerable<ScheduleJobModel> models,
             TTWebContext context,
             CancellationToken cancellationToken)
@@ -134,18 +138,18 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
 
         private async Task UpdateScheduleStatusAsync(
             List<Schedule> schedules,
-            List<ScheduleJob> successPlannedJobs,
+            List<ScheduleJob> scheduleJobs,
             TTWebContext context,
             CancellationToken cancellationToken)
         {
             if (schedules == null) throw new ArgumentNullException(nameof(schedules));
-            if (successPlannedJobs == null) throw new ArgumentNullException(nameof(successPlannedJobs));
+            if (scheduleJobs == null) throw new ArgumentNullException(nameof(scheduleJobs));
 
             var completionDate = DateTime.UtcNow;
 
             foreach (var schedule in schedules)
             {
-                bool succeed = successPlannedJobs.Any(j => j.ScheduleId == schedule.Id);
+                bool succeed = scheduleJobs.Any(j => j.ScheduleId == schedule.Id);
                 schedule.PlanningStatus = succeed ? ProcessingStatus.Completed : ProcessingStatus.Error;
 
                 if (succeed)
