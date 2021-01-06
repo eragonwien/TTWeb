@@ -36,6 +36,8 @@ namespace TTWeb.BusinessLogic.Models.Entities
 
         public DateTime? StartDate { get; set; }
 
+        public DateTime? StartTime { get; set; }
+
         private readonly DateTime _currentDateTime = DateTime.UtcNow;
         private readonly Random _random = new Random();
 
@@ -90,14 +92,15 @@ namespace TTWeb.BusinessLogic.Models.Entities
             if (!From.HasValue) throw new ArgumentException(nameof(From));
             if (!To.HasValue) throw new ArgumentException(nameof(To));
 
-            var startDate = _currentDateTime.Date.Add(From.Value);
-            var endDate = _currentDateTime.Date.Add(To.Value);
+            var startTime = _currentDateTime.Date.Add(From.Value);
+            var endTime = _currentDateTime.Date.Add(To.Value);
 
             // End date goes to the next day if it is smaller then start date
-            if (endDate < startDate)
-                endDate = endDate.AddDays(1);
+            if (endTime < startTime)
+                endTime = endTime.AddDays(1);
 
-            StartDate = RandomizeStartDate(startDate, endDate);
+            StartTime = RandomizeStartTime(startTime, endTime);
+            StartDate = StartTime.Value.Date;
             return this;
         }
 
@@ -112,12 +115,12 @@ namespace TTWeb.BusinessLogic.Models.Entities
             throw new NotImplementedException();
         }
 
-        private DateTime RandomizeStartDate(DateTime startDate, DateTime endDate)
+        private DateTime RandomizeStartTime(DateTime startTime, DateTime endTime)
         {
-            if (endDate < startDate) throw new ArgumentException($"Start date of {startDate} should be smaller then end date of {endDate}");
-            var diff = endDate - startDate;
+            if (endTime < startTime) throw new ArgumentException($"Start date of {startTime} should be smaller then end date of {endTime}");
+            var diff = endTime - startTime;
             var randomDiff = new TimeSpan(0, _random.Next(0, (int)diff.TotalMinutes), 0);
-            return startDate + randomDiff;
+            return startTime + randomDiff;
         }
     }
 }

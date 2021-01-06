@@ -15,9 +15,11 @@ namespace TTWeb.Data.Models
 
         public int ReceiverId { get; set; }
 
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
-        public DateTime? EndDate { get; set; }
+        public DateTime? StartTime { get; set; }
+
+        public DateTime? EndTime { get; set; }
 
         public ProcessingStatus Status { get; set; }
 

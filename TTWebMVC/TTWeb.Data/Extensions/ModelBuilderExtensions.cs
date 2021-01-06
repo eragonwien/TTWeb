@@ -230,10 +230,6 @@ namespace TTWeb.Data.Extensions
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<ScheduleJob>()
-                .Property(m => m.StartDate)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<ScheduleJob>()
                 .HasOne(m => m.Schedule)
                 .WithMany(u => u.ScheduleJobs)
                 .HasForeignKey(m => m.ScheduleId)
