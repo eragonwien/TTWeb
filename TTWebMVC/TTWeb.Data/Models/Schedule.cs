@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TTWeb.Data.Models
 {
-    public class Schedule : IUserOwnedEntity, IHasIdEntity, IHasWorkerEntity
+    public class Schedule : IUserOwnedEntity, IHasIdEntity
     {
         public int Id { get; set; }
 
@@ -34,8 +34,6 @@ namespace TTWeb.Data.Models
         public FacebookUser Sender { get; set; }
 
         public LoginUser Owner { get; set; }
-
-        public Worker Worker { get; set; }
 
         public ICollection<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
 

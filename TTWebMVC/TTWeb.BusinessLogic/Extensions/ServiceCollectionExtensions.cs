@@ -37,7 +37,6 @@ namespace TTWeb.BusinessLogic.Extensions
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<IScheduleJobService, ScheduleJobService>();
             services.AddScoped<IScheduleJobResultService, ScheduleJobResultService>();
-            services.AddScoped<IWorkerService, WorkerService>();
             return services;
         }
 

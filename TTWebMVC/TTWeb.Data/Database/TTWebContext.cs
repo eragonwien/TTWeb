@@ -18,7 +18,6 @@ namespace TTWeb.Data.Database
         public DbSet<ScheduleTimeFrame> ScheduleTimeFrames { get; set; }
         public DbSet<ScheduleJob> ScheduleJobs { get; set; }
         public DbSet<ScheduleJobResult> ScheduleJobsResults { get; set; }
-        public DbSet<Worker> Workers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,8 +32,6 @@ namespace TTWeb.Data.Database
                 .ConfigureSchedule()
                 .ConfigureScheduleJob()
                 .ConfigureScheduleJobResult()
-                .ConfigureWorker()
-                .ConfigureWorkerPermissionMapping()
                 .SeedLoginUser()
                 .SeedLoginUserPermissionMapping()
                 .SeedFacebookUser()
@@ -43,9 +40,7 @@ namespace TTWeb.Data.Database
                 .SeedScheduleWeekdayMapping()
                 .SeedTimeFrame()
                 .SeedScheduleJob()
-                .SeedScheduleJobResult()
-                .SeedWorker()
-                .SeedWorkerPermissionMapping();
+                .SeedScheduleJobResult();
         }
     }
 }
