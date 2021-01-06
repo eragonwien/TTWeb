@@ -60,6 +60,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                 if (schedules.Count == 0)
                 {
                     _logger.LogInformation($"No open schedule found at {planningStartTime}");
+                    _logger.LogInformation($"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}");
                     await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
                     continue;
                 }
@@ -73,7 +74,8 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
 
                 await transaction.CommitAsync(cancellationToken);
 
-                _logger.LogInformation($"Planning at {planningStartTime} is completed ");
+                _logger.LogInformation($"Planning at {planningStartTime} is completed");
+                _logger.LogInformation($"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}");
                 await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
             }
         }
