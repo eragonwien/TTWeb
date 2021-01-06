@@ -29,6 +29,8 @@ namespace TTWeb.Data.Models
 
         public DateTime? LockAt { get; set; }
 
+        public DateTime? CompletedAt { get; set; }
+
         public FacebookUser Sender { get; set; }
 
         public LoginUser Owner { get; set; }
