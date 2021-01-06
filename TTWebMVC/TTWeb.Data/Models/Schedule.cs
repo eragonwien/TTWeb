@@ -49,7 +49,12 @@ namespace TTWeb.Data.Models
         {
             LockAt = lockDate;
             LockedUntil = lockDate.Add(lockDuration);
-            PlanningStatus = ProcessingStatus.InProgress;
+            return this;
+        }
+
+        public Schedule SetStatus(ProcessingStatus status)
+        {
+            PlanningStatus = status;
             return this;
         }
 
