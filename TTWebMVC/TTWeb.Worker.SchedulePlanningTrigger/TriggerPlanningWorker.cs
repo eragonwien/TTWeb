@@ -139,11 +139,15 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             if (schedules == null) throw new ArgumentNullException(nameof(schedules));
             if (successPlannedJobs == null) throw new ArgumentNullException(nameof(successPlannedJobs));
 
+            var completionDate = DateTime.UtcNow;
+
             foreach (var schedule in schedules)
             {
-                schedule.PlanningStatus = successPlannedJobs.Any(j => j.ScheduleId == schedule.Id)
-                    ? ProcessingStatus.Completed
-                    : ProcessingStatus.Error;
+                bool succeed = successPlannedJobs.Any(j => j.ScheduleId == schedule.Id);
+                schedule.PlanningStatus = succeed ? ProcessingStatus.Completed : ProcessingStatus.Error;
+
+                if (succeed)
+                    schedule.CompletedAt = completionDate;
             }
 
             await context.SaveChangesAsync(cancellationToken);
