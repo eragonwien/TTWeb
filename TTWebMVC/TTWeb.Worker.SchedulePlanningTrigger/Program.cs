@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
-using TTWeb.Worker.Core.Services;
+using TTWeb.Worker.Core;
 
 namespace TTWeb.Worker.SchedulePlanningTrigger
 {
@@ -15,7 +15,8 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(WorkerClientService.ConfigureAppConfiguration)
+                .ConfigureWorkerAppConfiguration()
+                .ConfigureWorkerLogging()
                 .ConfigureServices((context, services) =>
                 {
                     services
@@ -23,7 +24,6 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                         .RegisterAutoMapper()
                         .Configure<SchedulingAppSettings>(context.Configuration.GetSection(SchedulingAppSettings.Section))
                         .AddHostedService<TriggerPlanningWorker>();
-                })
-                .ConfigureLogging(WorkerClientService.ConfigureLogging);
+                });
     }
 }
