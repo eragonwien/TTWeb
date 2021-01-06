@@ -26,7 +26,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
         private readonly IMapper _mapper;
 
         public TriggerPlanningWorker(ILogger<TriggerPlanningWorker> logger,
-            IOptions<SchedulingAppSettings> schedulingAppSettingsOptions, 
+            IOptions<SchedulingAppSettings> schedulingAppSettingsOptions,
             IServiceScopeFactory scopeFactory,
             IMapper mapper)
         {
@@ -40,29 +40,39 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
+                var planningStartTime = DateTime.UtcNow;
+                _logger.LogInformation($"Worker running at: {planningStartTime}");
 
                 using var scope = _scopeFactory.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<TTWebContext>();
+                using var context = scope.ServiceProvider.GetRequiredService<TTWebContext>();
+                using var transaction = await context.Database.BeginTransactionAsync();
 
-                var utcNow = DateTime.UtcNow;
 
                 var schedules = await context.Schedules
                     .Include(s => s.ScheduleReceiverMappings)
                     .Include(s => s.ScheduleWeekdayMappings)
                     .Include(s => s.TimeFrames)
-                    .FilterOpenSchedules(utcNow)
+                    .FilterOpenSchedules(planningStartTime)
                     .OrderBy(s => s.Id)
                     .ToListAsync(cancellationToken);
 
-                schedules.ForEach(s => s.Lock(utcNow, settings.Planning.LockDuration));
+                if (schedules.Count == 0)
+                {
+                    _logger.LogInformation($"No open schedule found at {planningStartTime}");
+                    await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
+                    continue;
+                }
+
+                schedules.ForEach(s => s.Lock(planningStartTime, settings.Planning.LockDuration).SetStatus(ProcessingStatus.InProgress));
                 await context.SaveChangesAsync(cancellationToken);
 
                 var planningResults = CalculateJobStartTime(schedules);
-                var successPlannedJobs = await AddPlannedJobsAsync(context, planningResults.Where(r => r.Succeed).Select(r => r.Result));
-                await UpdateScheduleStatusAsync(context, schedules, successPlannedJobs.ToList());
+                var successPlannedJobs = await AddPlannedJobsAsync(planningResults.Where(r => r.Succeed).Select(r => r.Result), context, cancellationToken);
+                await UpdateScheduleStatusAsync(schedules, successPlannedJobs.ToList(), context, cancellationToken);
 
-                _logger.LogInformation($"Schedules triggered successfully at {DateTimeOffset.Now}");
+                await transaction.CommitAsync(cancellationToken);
+
+                _logger.LogInformation($"Planning at {planningStartTime} is completed ");
                 await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
             }
         }
@@ -78,7 +88,11 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                 var result = new ProcessingResult<ScheduleJobModel>();
                 try
                 {
-                    var receiverIds = schedule.ScheduleReceiverMappings.Select(m => m.ReceiverId).Distinct().ToList();
+                    var receiverIds = schedule.ScheduleReceiverMappings
+                        .Select(m => m.ReceiverId)
+                        .Distinct()
+                        .ToList();
+
                     var receiverTimeFrames = receiverIds.Zip(schedule.TimeFrames, Tuple.Create);
                     foreach (var (receiverId, timeFrame) in receiverTimeFrames)
                     {
@@ -102,20 +116,24 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             return results;
         }
 
-        public async Task<IEnumerable<ScheduleJob>> AddPlannedJobsAsync(TTWebContext context,
-            IEnumerable<ScheduleJobModel> models)
+        public async Task<IEnumerable<ScheduleJob>> AddPlannedJobsAsync(
+            IEnumerable<ScheduleJobModel> models,
+            TTWebContext context,
+            CancellationToken cancellationToken)
         {
             if (models == null) throw new ArgumentNullException(nameof(models));
 
             var jobs = models.Select(m => _mapper.Map<ScheduleJob>(m).WithStatus(ProcessingStatus.New)).ToList();
             await context.ScheduleJobs.AddRangeAsync(jobs);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
             return jobs;
         }
 
-        private async Task UpdateScheduleStatusAsync(TTWebContext context, 
+        private async Task UpdateScheduleStatusAsync(
             List<Schedule> schedules,
-            List<ScheduleJob> successPlannedJobs)
+            List<ScheduleJob> successPlannedJobs,
+            TTWebContext context,
+            CancellationToken cancellationToken)
         {
             if (schedules == null) throw new ArgumentNullException(nameof(schedules));
             if (successPlannedJobs == null) throw new ArgumentNullException(nameof(successPlannedJobs));
@@ -127,7 +145,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                     : ProcessingStatus.Error;
             }
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 }
