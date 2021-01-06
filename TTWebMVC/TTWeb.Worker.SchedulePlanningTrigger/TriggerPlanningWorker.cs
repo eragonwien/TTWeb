@@ -52,6 +52,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                     .Include(s => s.ScheduleReceiverMappings)
                     .Include(s => s.ScheduleWeekdayMappings)
                     .Include(s => s.TimeFrames)
+                    .Include(s => s.Sender)
                     .FilterOpenSchedules(planningStartTime)
                     .OrderBy(s => s.Id)
                     .ToListAsync(cancellationToken);

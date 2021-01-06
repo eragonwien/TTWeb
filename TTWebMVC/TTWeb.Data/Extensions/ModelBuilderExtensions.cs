@@ -230,6 +230,10 @@ namespace TTWeb.Data.Extensions
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<ScheduleJob>()
+                .HasIndex(m => new { m.ScheduleId, m.StartDate, m.Action, m.ReceiverId, m.SenderId })
+                .IsUnique();
+
+            modelBuilder.Entity<ScheduleJob>()
                 .HasOne(m => m.Schedule)
                 .WithMany(u => u.ScheduleJobs)
                 .HasForeignKey(m => m.ScheduleId)
