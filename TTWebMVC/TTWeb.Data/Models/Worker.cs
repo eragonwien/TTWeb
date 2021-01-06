@@ -10,7 +10,7 @@ namespace TTWeb.Data.Models
 
         public string Secret { get; set; }
 
-        public DateTime CreateAt { get; set; }
+        public DateTime? CreateAt { get; set; }
 
         public ICollection<WorkerPermissionMapping> WorkerPermissionMappings { get; set; }
 

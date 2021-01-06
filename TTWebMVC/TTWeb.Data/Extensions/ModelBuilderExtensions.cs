@@ -29,10 +29,6 @@ namespace TTWeb.Data.Extensions
                 .HasKey(m => m.Id);
 
             modelBuilder.Entity<LoginUser>()
-                .Property(m => m.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<LoginUser>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
@@ -89,10 +85,6 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<FacebookUser>()
                 .HasKey(u => u.Id);
-
-            modelBuilder.Entity<FacebookUser>()
-                .Property(m => m.Id)
-                .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<FacebookUser>()
                 .HasIndex(u => u.Username)
@@ -179,10 +171,6 @@ namespace TTWeb.Data.Extensions
                 .HasKey(u => u.Id);
 
             modelBuilder.Entity<Schedule>()
-                .Property(m => m.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Schedule>()
                 .Property(e => e.Action)
                 .IsRequired()
                 .HasMaxLength(MaxLengthMediumString)
@@ -226,10 +214,6 @@ namespace TTWeb.Data.Extensions
                 .HasKey(m => m.Id);
 
             modelBuilder.Entity<ScheduleJob>()
-                .Property(m => m.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<ScheduleJob>()
                 .HasIndex(m => new { m.ScheduleId, m.StartDate, m.Action, m.ReceiverId, m.SenderId })
                 .IsUnique();
 
@@ -260,10 +244,6 @@ namespace TTWeb.Data.Extensions
                 .HasKey(m => m.Id);
 
             modelBuilder.Entity<ScheduleJobResult>()
-                .Property(m => m.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<ScheduleJobResult>()
                 .HasOne(m => m.ScheduleJob)
                 .WithMany(u => u.Results)
                 .HasForeignKey(m => m.ScheduleJobId)
@@ -278,17 +258,9 @@ namespace TTWeb.Data.Extensions
                 .HasKey(m => m.Id);
 
             modelBuilder.Entity<Worker>()
-                .Property(m => m.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Worker>()
                 .Property(m => m.Secret)
                 .ValueGeneratedOnAdd()
                 .IsRequired();
-
-            modelBuilder.Entity<Worker>()
-               .Property(m => m.CreateAt)
-               .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Worker>()
                 .HasMany(e => e.WorkingSchedules)
