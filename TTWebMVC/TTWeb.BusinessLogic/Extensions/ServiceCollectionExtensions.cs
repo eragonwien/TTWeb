@@ -43,7 +43,7 @@ namespace TTWeb.BusinessLogic.Extensions
         public static IServiceCollection RegisterDbContext(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddDbContext<TTWebContext>(o => o.UseNpgsql(configuration.GetConnectionString("TTWeb")));
+            services.AddDbContext<TTWebContext>(o => o.UseMySQL(configuration.GetConnectionString("TTWeb")));
             return services;
         }
 
