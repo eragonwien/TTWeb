@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -38,7 +39,7 @@ namespace TTWeb.BusinessLogic.Extensions
         public static IServiceCollection RegisterDbContext(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddDbContext<TTWebContext>(o => o.UseMySQL(configuration.GetConnectionString("TTWeb")));
+            services.AddDbContext<TTWebContext>(o => o.UseNpgsql(configuration.GetConnectionString("TTWeb")));
             return services;
         }
 
@@ -55,11 +56,6 @@ namespace TTWeb.BusinessLogic.Extensions
         {
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "TTWeb API", Version = "V1"}); });
 
-            return services;
-        }
-
-        public static IServiceCollection ConfigureJsonOptions(this IServiceCollection services)
-        {
             return services;
         }
     }
