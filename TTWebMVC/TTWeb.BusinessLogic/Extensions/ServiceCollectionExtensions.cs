@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Runtime.CompilerServices;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,13 +35,14 @@ namespace TTWeb.BusinessLogic.Extensions
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<IScheduleJobService, ScheduleJobService>();
             services.AddScoped<IScheduleJobResultService, ScheduleJobResultService>();
+            services.AddScoped<IConfigurationEntryService, ConfigurationEntryService>();
             return services;
         }
 
         public static IServiceCollection RegisterDbContext(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddDbContext<TTWebContext>(o => o.UseNpgsql(configuration.GetConnectionString("TTWeb")));
+            services.AddDbContext<TTWebContext>(builder => TTWebContext.UseDbContext(builder, configuration));
             return services;
         }
 

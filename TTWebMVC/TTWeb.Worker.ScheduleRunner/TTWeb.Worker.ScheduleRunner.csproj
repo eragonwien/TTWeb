@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<UserSecretsId>dotnet-TTWeb.Worker.ScheduleRunner-50FB51E4-5FAA-4B5C-A184-71BEE857E2B8</UserSecretsId>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
+using TTWeb.BusinessLogic.Extensions;
+using TTWeb.BusinessLogic.Services;
 using TTWeb.Data.Database;
 using TTWeb.Web.Api.Extensions;
 
@@ -37,6 +39,11 @@ namespace TTWeb.Web.Api
         {
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
+                .ConfigureAppConfiguration((context, configuration) =>
+                {
+                    var localConfiguration = configuration.Build();
+                    configuration.AddDbContextConfiguration(b => TTWebContext.UseDbContext(b, localConfiguration));
+                })
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();

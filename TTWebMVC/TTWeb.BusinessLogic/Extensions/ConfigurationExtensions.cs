@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using TTWeb.BusinessLogic.Configurations;
 
 namespace TTWeb.BusinessLogic.Extensions
 {
@@ -12,6 +15,14 @@ namespace TTWeb.BusinessLogic.Extensions
             var setting = new T();
             configuration.GetSection(section).Bind(setting);
             return setting;
+        }
+
+        public static IConfigurationBuilder AddDbContextConfiguration(
+            this IConfigurationBuilder configurationBuilder,
+            Action<DbContextOptionsBuilder> builderAction)
+        {
+            configurationBuilder.Add(new DbContextConfigurationSource(builderAction));
+            return configurationBuilder;
         }
     }
 }

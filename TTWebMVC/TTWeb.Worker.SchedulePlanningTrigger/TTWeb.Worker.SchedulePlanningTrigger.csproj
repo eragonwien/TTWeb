@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<UserSecretsId>dotnet-TTWeb.Worker.SchedulePlanningTrigger-1CDD64F9-0AA9-422C-A19D-60DEBC0BF945</UserSecretsId>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

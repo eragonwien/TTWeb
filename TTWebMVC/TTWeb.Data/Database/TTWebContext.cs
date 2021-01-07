@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using TTWeb.Data.Extensions;
 using TTWeb.Data.Models;
 
@@ -43,6 +44,11 @@ namespace TTWeb.Data.Database
                 .SeedTimeFrame()
                 .SeedScheduleJob()
                 .SeedScheduleJobResult();
+        }
+
+        public static void UseDbContext(DbContextOptionsBuilder builder, IConfiguration configuration)
+        {
+            builder.UseNpgsql(configuration.GetConnectionString("TTWeb"));
         }
     }
 }
