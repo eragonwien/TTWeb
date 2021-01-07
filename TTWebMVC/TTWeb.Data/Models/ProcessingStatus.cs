@@ -1,6 +1,6 @@
 ﻿namespace TTWeb.Data.Models
 {
-    public enum ProcessingStatus
+    public enum ProcessingStatus : ushort
     {
         New = 1,
         InProgress = 2,

@@ -62,7 +62,7 @@ namespace TTWeb.Data.Extensions
                 // Entry queued for retry
                 || s.PlanningStatus == ProcessingStatus.Retry
 
-                // Schedule stucks in in-progress
+                // Schedule stuck in in-progress
                 || (s.PlanningStatus == ProcessingStatus.InProgress
                     && s.LockedUntil.Value < planningStartTime)
 

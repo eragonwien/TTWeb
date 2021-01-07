@@ -309,7 +309,9 @@ namespace TTWeb.Data.Extensions
                     Action = ScheduleAction.Like,
                     IntervalType = ScheduleIntervalType.Daily,
                     SenderId = 1,
-                    OwnerId = 1
+                    OwnerId = 1,
+                    LockAt = DateTime.UtcNow,
+                    LockedUntil = DateTime.UtcNow.AddMinutes(5)
                 });
 
             return modelBuilder;
