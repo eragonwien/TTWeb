@@ -44,8 +44,8 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                 _logger.LogInformation($"Worker running at: {planningStartTime}");
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<TTWebContext>();
-                using var transaction = await context.Database.BeginTransactionAsync();
+                await using var context = scope.ServiceProvider.GetRequiredService<TTWebContext>();
+                await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
                 var schedules = await context.Schedules
                     .Include(s => s.ScheduleReceiverMappings)
@@ -86,7 +86,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             }
         }
 
-        private List<ProcessingResult<ScheduleJobModel>> CalculateJobStartTime(List<Schedule> schedules)
+        private IEnumerable<ProcessingResult<ScheduleJobModel>> CalculateJobStartTime(List<Schedule> schedules)
         {
             if (schedules == null) throw new ArgumentNullException(nameof(schedules));
 
@@ -134,7 +134,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             if (models == null) throw new ArgumentNullException(nameof(models));
 
             var jobs = models.Select(m => _mapper.Map<ScheduleJob>(m).WithStatus(ProcessingStatus.New)).ToList();
-            await context.ScheduleJobs.AddRangeAsync(jobs);
+            await context.ScheduleJobs.AddRangeAsync(jobs, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
             return jobs;
         }
