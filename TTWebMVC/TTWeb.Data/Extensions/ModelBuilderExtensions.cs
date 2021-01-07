@@ -29,6 +29,10 @@ namespace TTWeb.Data.Extensions
                 .HasKey(m => m.Id);
 
             modelBuilder.Entity<LoginUser>()
+                .Property(m => m.Id)
+                .UseIdentityColumn();
+
+            modelBuilder.Entity<LoginUser>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
@@ -85,6 +89,10 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<FacebookUser>()
                 .HasKey(u => u.Id);
+
+            modelBuilder.Entity<FacebookUser>()
+                .Property(m => m.Id)
+                .UseIdentityColumn();
 
             modelBuilder.Entity<FacebookUser>()
                 .HasIndex(u => u.Username)
@@ -171,6 +179,10 @@ namespace TTWeb.Data.Extensions
                 .HasKey(u => u.Id);
 
             modelBuilder.Entity<Schedule>()
+                .Property(m => m.Id)
+                .UseIdentityColumn();
+
+            modelBuilder.Entity<Schedule>()
                 .Property(e => e.Action)
                 .IsRequired()
                 .HasMaxLength(MaxLengthMediumString)
@@ -214,6 +226,10 @@ namespace TTWeb.Data.Extensions
                 .HasKey(m => m.Id);
 
             modelBuilder.Entity<ScheduleJob>()
+                .Property(m => m.Id)
+                .UseIdentityColumn();
+
+            modelBuilder.Entity<ScheduleJob>()
                 .HasIndex(m => new {m.ScheduleId, m.StartDate, m.Action, m.ReceiverId, m.SenderId})
                 .IsUnique();
 
@@ -242,6 +258,10 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<ScheduleJobResult>()
                 .HasKey(m => m.Id);
+
+            modelBuilder.Entity<ScheduleJobResult>()
+                .Property(m => m.Id)
+                .UseIdentityColumn();
 
             modelBuilder.Entity<ScheduleJobResult>()
                 .HasOne(m => m.ScheduleJob)
