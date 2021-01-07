@@ -15,9 +15,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Remove="Components\**" />
 		<Compile Remove="temp\**" />
+		<Content Remove="Components\**" />
 		<Content Remove="temp\**" />
+		<EmbeddedResource Remove="Components\**" />
 		<EmbeddedResource Remove="temp\**" />
+		<None Remove="Components\**" />
 		<None Remove="temp\**" />
 	</ItemGroup>
 
@@ -47,10 +51,6 @@
 		<Content Update="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Components\" />
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
