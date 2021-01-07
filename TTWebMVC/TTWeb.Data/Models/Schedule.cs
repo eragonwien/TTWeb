@@ -6,22 +6,13 @@ namespace TTWeb.Data.Models
 {
     public class Schedule : IUserOwnedEntity, IHasIdEntity
     {
-        public int Id { get; set; }
+        [Required] public ScheduleAction Action { get; set; }
 
-        [Required]
-        public ScheduleAction Action { get; set; }
+        [Required] public ScheduleIntervalType IntervalType { get; set; }
 
-        [Required]
-        public ScheduleIntervalType IntervalType { get; set; }
+        [Required] public ProcessingStatus PlanningStatus { get; set; }
 
-        [Required]
-        public ProcessingStatus PlanningStatus { get; set; }
-
-        [Required]
-        public int? SenderId { get; set; }
-
-        [Required]
-        public int OwnerId { get; set; }
+        [Required] public int? SenderId { get; set; }
 
         public DateTime? LockedUntil { get; set; }
 
@@ -31,8 +22,6 @@ namespace TTWeb.Data.Models
 
         public FacebookUser Sender { get; set; }
 
-        public LoginUser Owner { get; set; }
-
         public ICollection<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
 
         public ICollection<ScheduleWeekdayMapping> ScheduleWeekdayMappings { get; set; }
@@ -40,6 +29,11 @@ namespace TTWeb.Data.Models
         public ICollection<ScheduleTimeFrame> TimeFrames { get; set; }
 
         public ICollection<ScheduleJob> ScheduleJobs { get; set; }
+        public int Id { get; set; }
+
+        [Required] public int OwnerId { get; set; }
+
+        public LoginUser Owner { get; set; }
 
         public Schedule Lock(DateTime lockDate, TimeSpan lockDuration)
         {

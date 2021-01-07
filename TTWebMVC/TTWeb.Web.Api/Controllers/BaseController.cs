@@ -12,12 +12,12 @@ namespace TTWeb.Web.Api.Controllers
     public class BaseController : ControllerBase
     {
         protected int LoginUserId => int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
-        protected int? OwnerId => !User.IsInRole(UserPermission.ManageUsers) ? LoginUserId : (int?)null;
+        protected int? OwnerId => !User.IsInRole(UserPermission.ManageUsers) ? LoginUserId : (int?) null;
 
         protected IEnumerable<UserPermission> LoginUserPermissions =>
             User.FindAll(ClaimTypes.Role)
                 .Where(c => Enum.TryParse(c.Value, out UserPermission parsedValue))
-                .Select(c => (UserPermission)Enum.Parse(typeof(UserPermission), c.Value))
+                .Select(c => (UserPermission) Enum.Parse(typeof(UserPermission), c.Value))
                 .AsEnumerable();
 
         protected void ThrowExceptionOnWrongOwner(int? ownerId)

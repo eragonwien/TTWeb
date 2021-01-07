@@ -5,8 +5,6 @@ namespace TTWeb.Data.Models
 {
     public class ScheduleJob : IHasIdEntity
     {
-        public int Id { get; set; }
-
         public int ScheduleId { get; set; }
 
         public ScheduleAction Action { get; set; }
@@ -34,6 +32,7 @@ namespace TTWeb.Data.Models
         public FacebookUser Receiver { get; set; }
 
         public ICollection<ScheduleJobResult> Results { get; set; }
+        public int Id { get; set; }
 
         public ScheduleJob WithStatus(ProcessingStatus status)
         {

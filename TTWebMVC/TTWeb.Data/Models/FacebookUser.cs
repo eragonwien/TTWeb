@@ -4,10 +4,8 @@ namespace TTWeb.Data.Models
 {
     public class FacebookUser : IUserOwnedEntity, IHasIdEntity
     {
-        public int Id { get; set; }
-
         public string Username { get; set; }
-        
+
         public string Password { get; set; }
 
         public string HomeAddress { get; set; }
@@ -16,8 +14,6 @@ namespace TTWeb.Data.Models
 
         public bool Enabled { get; set; }
 
-        public int OwnerId { get; set; }
-
         public ICollection<Schedule> SenderSchedules { get; set; }
 
         public ICollection<ScheduleJob> SenderScheduleJobs { get; set; }
@@ -25,6 +21,9 @@ namespace TTWeb.Data.Models
         public ICollection<ScheduleJob> ReceiverScheduleJobs { get; set; }
 
         public ICollection<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
+        public int Id { get; set; }
+
+        public int OwnerId { get; set; }
 
         public LoginUser Owner { get; set; }
     }

@@ -20,17 +20,6 @@ namespace TTWeb.BusinessLogic.Services
         private readonly IMapper _mapper;
         private readonly SchedulingPlanningAppSettings _planningAppSettings;
 
-        private IQueryable<Schedule> BaseQuery =>
-            _context.Schedules
-                .Include(s => s.Owner)
-                .Include(s => s.Sender)
-                .Include(s => s.ScheduleReceiverMappings)
-                    .ThenInclude(m => m.Receiver)
-                .Include(s => s.ScheduleWeekdayMappings)
-                .Include(s => s.TimeFrames)
-                .Include(s => s.ScheduleJobs)
-                    .ThenInclude(j => j.Results);
-
         public ScheduleService(TTWebContext context,
             IMapper mapper,
             IOptions<SchedulingAppSettings> schedulingAppSettings)
@@ -39,6 +28,17 @@ namespace TTWeb.BusinessLogic.Services
             _mapper = mapper;
             _planningAppSettings = schedulingAppSettings.Value.Planning;
         }
+
+        private IQueryable<Schedule> BaseQuery =>
+            _context.Schedules
+                .Include(s => s.Owner)
+                .Include(s => s.Sender)
+                .Include(s => s.ScheduleReceiverMappings)
+                .ThenInclude(m => m.Receiver)
+                .Include(s => s.ScheduleWeekdayMappings)
+                .Include(s => s.TimeFrames)
+                .Include(s => s.ScheduleJobs)
+                .ThenInclude(j => j.Results);
 
         public async Task<ScheduleModel> CreateAsync(ScheduleModel model)
         {

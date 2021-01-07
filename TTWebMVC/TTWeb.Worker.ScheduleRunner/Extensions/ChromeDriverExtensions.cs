@@ -29,6 +29,16 @@ namespace TTWeb.Worker.ScheduleRunner.Extensions
             }
         }
 
+        #region Form
+
+        public static void WriteInput(this ChromeDriver driver, By by, string value)
+        {
+            if (driver.TryFindElement(by, out var input))
+                input.SendKeys(value);
+        }
+
+        #endregion
+
         #region Facebook
 
         public static void AcceptCookieAgreement(this ChromeDriver driver)
@@ -39,22 +49,10 @@ namespace TTWeb.Worker.ScheduleRunner.Extensions
 
         public static void GetPostings(this ChromeDriver driver)
         {
-
         }
 
         public static void Like(this ChromeDriver driver)
         {
-
-        }
-
-        #endregion
-
-        #region Form
-
-        public static void WriteInput(this ChromeDriver driver, By by, string value)
-        {
-            if (driver.TryFindElement(by, out var input))
-                input.SendKeys(value);
         }
 
         #endregion

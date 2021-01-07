@@ -9,10 +9,8 @@ namespace TTWeb.BusinessLogic.Models.Account
 
         public DateTime ExpirationDateUtc { get; set; }
 
-        [JsonIgnore]
-        public bool IsEmpty => string.IsNullOrWhiteSpace(Token);
+        [JsonIgnore] public bool IsEmpty => string.IsNullOrWhiteSpace(Token);
 
-        [JsonIgnore]
-        public bool Expired => ExpirationDateUtc < DateTime.UtcNow;
+        [JsonIgnore] public bool Expired => ExpirationDateUtc < DateTime.UtcNow;
     }
 }

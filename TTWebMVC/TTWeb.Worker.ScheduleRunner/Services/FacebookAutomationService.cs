@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -15,10 +14,10 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 {
     public class FacebookAutomationService : IFacebookAutomationService
     {
-        private ScheduleJobModel job;
         private readonly IHostEnvironment environment;
         private readonly AuthenticationProvidersFacebookAppSettings facebookSettings;
         private ChromeDriver driver;
+        private ScheduleJobModel job;
 
         public FacebookAutomationService(IHostEnvironment environment,
             IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions)
@@ -27,7 +26,8 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             facebookSettings = authenticationAppSettingsOptions.Value.Providers.Facebook;
         }
 
-        public async Task<ProcessingResult<ScheduleJobModel>> ProcessAsync(ScheduleJobModel job, CancellationToken cancellationToken)
+        public async Task<ProcessingResult<ScheduleJobModel>> ProcessAsync(ScheduleJobModel job,
+            CancellationToken cancellationToken)
         {
             this.job = job ?? throw new ArgumentNullException(nameof(job));
             driver = LaunchBrowser();
@@ -43,6 +43,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                     Post();
                     break;
             }
+
             driver.Close();
             return new ProcessingResult<ScheduleJobModel>(succeed: true, result: job);
         }
@@ -83,10 +84,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             var options = new ChromeOptions();
             options.AddArgument("--disable-notifications");
 
-            if (environment.IsDevelopment())
-            {
-                options.AddArgument("--start-maximized");
-            }
+            if (environment.IsDevelopment()) options.AddArgument("--start-maximized");
 
             return new ChromeDriver(options);
         }

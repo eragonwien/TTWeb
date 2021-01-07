@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace TTWeb.Worker.Core
 {
@@ -18,8 +18,8 @@ namespace TTWeb.Worker.Core
                     .AddJsonFile("appsettings.json", optional: true)
                     .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true);
             });
-
         }
+
         public static IHostBuilder ConfigureWorkerAppConfiguration(this IHostBuilder hostBuilder)
         {
             return hostBuilder.ConfigureLogging(c =>

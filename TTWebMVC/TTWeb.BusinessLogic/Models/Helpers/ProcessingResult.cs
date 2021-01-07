@@ -4,19 +4,7 @@ namespace TTWeb.BusinessLogic.Models.Helpers
 {
     public class ProcessingResult<TResult>
     {
-        public bool Succeed { get; set; }
-        public string Message { get; set; }
-
-        public string Reason
-        {
-            get => _reason ?? "unknown reason";
-            set => _reason = value ?? _reason;
-        }
-
         private string _reason;
-
-        public Exception Exception { get; set; }
-        public TResult Result { get; set; }
 
         public ProcessingResult(string reason = null,
             bool succeed = false,
@@ -30,6 +18,18 @@ namespace TTWeb.BusinessLogic.Models.Helpers
             Exception = exception;
             Result = result;
         }
+
+        public bool Succeed { get; set; }
+        public string Message { get; set; }
+
+        public string Reason
+        {
+            get => _reason ?? "unknown reason";
+            set => _reason = value ?? _reason;
+        }
+
+        public Exception Exception { get; set; }
+        public TResult Result { get; set; }
 
         public ProcessingResult<TResult> WithReason(string reason)
         {
@@ -50,6 +50,7 @@ namespace TTWeb.BusinessLogic.Models.Helpers
                 Succeed = false;
                 Reason = "result is empty";
             }
+
             Result = result;
             return this;
         }

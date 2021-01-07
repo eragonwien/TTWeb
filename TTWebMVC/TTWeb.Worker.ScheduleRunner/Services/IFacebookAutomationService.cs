@@ -7,6 +7,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 {
     public interface IFacebookAutomationService
     {
-        Task<ProcessingResult<ScheduleJobModel>> ProcessAsync(ScheduleJobModel job, CancellationToken cancellationToken);
+        Task<ProcessingResult<ScheduleJobModel>>
+            ProcessAsync(ScheduleJobModel job, CancellationToken cancellationToken);
     }
 }

@@ -18,6 +18,13 @@ namespace TTWeb.Web.Api
 {
     public class Startup
     {
+        private const string AllowSpecificOriginsPolicy = "AllowSpecificOrigins";
+        public const string RequireManageDeploymentPermissionPolicy = "RequireManageDeploymentPermission";
+        public const string RequireManageUsersPermissionPolicy = "RequireManageUsersPermission";
+        public const string RequireAccessAllResourcesPermissionPolicy = "RequireAccessAllResourcesPermission";
+        public const string RequireWorkerPermissionPolicy = "RequireIsWorkerPermission";
+        public const string RequireManageWorkerPermissionPolicy = "RequireManageWorkerPermission";
+
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
@@ -26,13 +33,6 @@ namespace TTWeb.Web.Api
 
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
-
-        private const string AllowSpecificOriginsPolicy = "AllowSpecificOrigins";
-        public const string RequireManageDeploymentPermissionPolicy = "RequireManageDeploymentPermission";
-        public const string RequireManageUsersPermissionPolicy = "RequireManageUsersPermission";
-        public const string RequireAccessAllResourcesPermissionPolicy = "RequireAccessAllResourcesPermission";
-        public const string RequireWorkerPermissionPolicy = "RequireIsWorkerPermission";
-        public const string RequireManageWorkerPermissionPolicy = "RequireManageWorkerPermission";
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -45,7 +45,8 @@ namespace TTWeb.Web.Api
 
             services.AddScoped<IAccountService, AccountService>();
 
-            var authenticationAppSettings = Configuration.GetSectionValue<AuthenticationAppSettings>(AuthenticationAppSettings.Section);
+            var authenticationAppSettings =
+                Configuration.GetSectionValue<AuthenticationAppSettings>(AuthenticationAppSettings.Section);
 
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -53,28 +54,26 @@ namespace TTWeb.Web.Api
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(RequireManageDeploymentPermissionPolicy, p => p.RequireRole(UserPermission.ManageDeployment));
+                options.AddPolicy(RequireManageDeploymentPermissionPolicy,
+                    p => p.RequireRole(UserPermission.ManageDeployment));
                 options.AddPolicy(RequireManageUsersPermissionPolicy, p => p.RequireRole(UserPermission.ManageUsers));
-                options.AddPolicy(RequireAccessAllResourcesPermissionPolicy, p => p.RequireRole(UserPermission.AccessAllResources));
-                options.AddPolicy(RequireWorkerPermissionPolicy, p => p.RequireRole(UserPermission.IsWorker, UserPermission.ManageWorker));
+                options.AddPolicy(RequireAccessAllResourcesPermissionPolicy,
+                    p => p.RequireRole(UserPermission.AccessAllResources));
+                options.AddPolicy(RequireWorkerPermissionPolicy,
+                    p => p.RequireRole(UserPermission.IsWorker, UserPermission.ManageWorker));
                 options.AddPolicy(RequireManageWorkerPermissionPolicy, p => p.RequireRole(UserPermission.ManageWorker));
             });
 
             var securityAppSettings = Configuration.GetSectionValue<SecurityAppSettings>(SecurityAppSettings.Section);
             services.AddCors(options =>
             {
-                options.AddPolicy(AllowSpecificOriginsPolicy, b =>
-                {
-                    b.WithOrigins(securityAppSettings.Cors.Origins);
-                });
+                options.AddPolicy(AllowSpecificOriginsPolicy,
+                    b => { b.WithOrigins(securityAppSettings.Cors.Origins); });
             });
 
             services
                 .AddControllers()
-                .AddNewtonsoftJson(o =>
-                {
-                    o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                });
+                .AddNewtonsoftJson(o => { o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,10 +89,7 @@ namespace TTWeb.Web.Api
             app.UseRouting();
             app.UseCors(AllowSpecificOriginsPolicy);
             app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers().RequireAuthorization();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers().RequireAuthorization(); });
         }
 
         private static void ConfigureJwtBearerOptions(JwtBearerOptions options,
@@ -105,7 +101,9 @@ namespace TTWeb.Web.Api
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidIssuer = authenticationAppSettings.JsonWebToken.Issuer,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationAppSettings.JsonWebToken.AccessToken.Key))
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(authenticationAppSettings.JsonWebToken.AccessToken.Key))
             };
         }
     }

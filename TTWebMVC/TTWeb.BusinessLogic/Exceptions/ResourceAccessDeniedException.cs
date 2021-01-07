@@ -5,6 +5,8 @@ namespace TTWeb.BusinessLogic.Exceptions
     [Serializable]
     public class ResourceAccessDeniedException : Exception, IBadRequestException
     {
+        private const string DefaultMessage = "This user does not have access to this resource";
+
         public ResourceAccessDeniedException()
             : base(DefaultMessage)
         {
@@ -19,7 +21,5 @@ namespace TTWeb.BusinessLogic.Exceptions
             : base(input, innerException)
         {
         }
-
-        private const string DefaultMessage = "This user does not have access to this resource";
     }
 }

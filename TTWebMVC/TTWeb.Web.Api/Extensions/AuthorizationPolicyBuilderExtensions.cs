@@ -6,7 +6,8 @@ namespace TTWeb.Web.Api.Extensions
 {
     public static class AuthorizationPolicyBuilderExtensions
     {
-        public static AuthorizationPolicyBuilder RequireRole<T>(this AuthorizationPolicyBuilder builder, params T[] roles)
+        public static AuthorizationPolicyBuilder RequireRole<T>(this AuthorizationPolicyBuilder builder,
+            params T[] roles)
             where T : struct, IConvertible
         {
             if (!typeof(T).IsEnum) throw new ArgumentException(nameof(roles));

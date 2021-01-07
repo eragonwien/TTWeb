@@ -4,8 +4,6 @@ namespace TTWeb.BusinessLogic.Models.Entities
 {
     public class ScheduleTimeFrameMappingModel : ScheduleTimeFrameModel, IHasScheduleIdModel
     {
-        public int ScheduleId { get; set; }
-
         public ScheduleTimeFrameMappingModel(int scheduleId, ScheduleTimeFrameModel model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
@@ -13,5 +11,7 @@ namespace TTWeb.BusinessLogic.Models.Entities
             From = model.From;
             To = model.To;
         }
+
+        public int ScheduleId { get; set; }
     }
 }

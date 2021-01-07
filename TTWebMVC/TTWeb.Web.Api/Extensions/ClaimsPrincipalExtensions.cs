@@ -20,7 +20,7 @@ namespace TTWeb.Web.Api.Extensions
                 if (typeof(T).IsEnum)
                     return (T) Enum.Parse(typeof(T), stringValue, true);
 
-                return (T)Convert.ChangeType(stringValue, typeof(T));
+                return (T) Convert.ChangeType(stringValue, typeof(T));
             }
             catch (Exception)
             {

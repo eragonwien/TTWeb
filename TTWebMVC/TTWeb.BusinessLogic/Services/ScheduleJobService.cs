@@ -15,8 +15,8 @@ namespace TTWeb.BusinessLogic.Services
     public class ScheduleJobService : IScheduleJobService
     {
         private readonly TTWebContext _context;
-        private readonly IMapper _mapper;
         private readonly SchedulingJobAppSettings _jobAppSettings;
+        private readonly IMapper _mapper;
 
         public ScheduleJobService(TTWebContext context,
             IMapper mapper,
@@ -27,6 +27,11 @@ namespace TTWeb.BusinessLogic.Services
             _jobAppSettings = schedulingAppSettingsOption.Value.Job;
         }
 
+        private IQueryable<ScheduleJob> BaseQuery =>
+            _context.ScheduleJobs
+                .Include(j => j.Sender)
+                .Include(j => j.Receiver);
+
         public async Task<ICollection<ScheduleJobModel>> PeekAsync()
         {
             return await BaseQuery
@@ -36,10 +41,5 @@ namespace TTWeb.BusinessLogic.Services
                 .Select(j => _mapper.Map<ScheduleJobModel>(j))
                 .ToListAsync();
         }
-
-        private IQueryable<ScheduleJob> BaseQuery =>
-            _context.ScheduleJobs
-            .Include(j => j.Sender)
-            .Include(j => j.Receiver);
     }
 }

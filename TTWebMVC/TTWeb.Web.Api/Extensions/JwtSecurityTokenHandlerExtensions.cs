@@ -37,8 +37,8 @@ namespace TTWeb.Web.Api.Extensions
             try
             {
                 result.TokenUser = tokenHandler.ValidateToken(accessToken.Token,
-                     tokenValidationParameters,
-                     out var token);
+                    tokenValidationParameters,
+                    out var token);
                 result.Token = token;
                 result.Succeed = true;
             }

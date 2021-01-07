@@ -5,23 +5,20 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
-using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Account;
-using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.BusinessLogic.Services;
-using TTWeb.Data.Models;
 using TTWeb.Web.Api.Extensions;
 
 namespace TTWeb.Web.Api.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly AuthenticationAppSettings _authSettings;
         private readonly IAuthenticationHelperService _authHelperService;
+        private readonly AuthenticationAppSettings _authSettings;
         private readonly ILoginUserService _loginUserService;
         private readonly IMapper _mapper;
         private readonly JwtSecurityTokenHandler _tokenHandler;
@@ -60,6 +57,41 @@ namespace TTWeb.Web.Api.Services
             return BuildLoginTokenModel(userClaims, _authSettings.JsonWebToken);
         }
 
+        public async Task<LoginTokenModel> RefreshAccessToken(LoginTokenModel loginTokenModel)
+        {
+            var accessTokenValidation = _tokenHandler.ValidateToken(loginTokenModel.AccessToken,
+                _authSettings.JsonWebToken.TokenValidationDefaultParameters
+                    .WithKey(_authSettings.JsonWebToken.AccessToken.Key).ValidateLifeTime(false));
+
+            if (!accessTokenValidation.Succeed) throw new UnauthorizedAccessException();
+
+            var refreshTokenValidation = _tokenHandler.ValidateToken(loginTokenModel.RefreshToken,
+                _authSettings.JsonWebToken.TokenValidationDefaultParameters.WithKey(_authSettings.JsonWebToken
+                    .RefreshToken.Key));
+
+            if (!refreshTokenValidation.Succeed) throw new UnauthorizedAccessException();
+
+            var loginUser =
+                await _loginUserService.GetByIdAsync(
+                    accessTokenValidation.TokenUser.FindFirstValue<int>(ClaimTypes.NameIdentifier));
+            if (loginUser == null) throw new UnauthorizedAccessException();
+
+            var accessToken =
+                _tokenHandler.CreateAccessToken(_authSettings.JsonWebToken, accessTokenValidation.TokenUser.Claims);
+            loginTokenModel.AccessToken.Token = _tokenHandler.WriteToken(accessToken);
+            loginTokenModel.AccessToken.ExpirationDateUtc = accessToken.ValidTo;
+
+            if (_authHelperService.IsAlmostExpired(refreshTokenValidation.Token.ValidTo,
+                _authSettings.JsonWebToken.RefreshToken.Duration))
+            {
+                var refreshToken = _tokenHandler.CreateRefreshToken(_authSettings.JsonWebToken);
+                loginTokenModel.RefreshToken.Token = _tokenHandler.WriteToken(refreshToken);
+                loginTokenModel.RefreshToken.ExpirationDateUtc = refreshToken.ValidTo;
+            }
+
+            return loginTokenModel;
+        }
+
         private LoginTokenModel BuildLoginTokenModel(IEnumerable<Claim> userClaims,
             AuthenticationJsonWebTokenAppSettings jwtSettings)
         {
@@ -74,35 +106,6 @@ namespace TTWeb.Web.Api.Services
             var refreshToken = _tokenHandler.CreateRefreshToken(jwtSettings);
             loginTokenModel.RefreshToken.Token = _tokenHandler.WriteToken(refreshToken);
             loginTokenModel.RefreshToken.ExpirationDateUtc = refreshToken.ValidTo;
-
-            return loginTokenModel;
-        }
-
-        public async Task<LoginTokenModel> RefreshAccessToken(LoginTokenModel loginTokenModel)
-        {
-            var accessTokenValidation = _tokenHandler.ValidateToken(loginTokenModel.AccessToken,
-                _authSettings.JsonWebToken.TokenValidationDefaultParameters.WithKey(_authSettings.JsonWebToken.AccessToken.Key).ValidateLifeTime(false));
-
-            if (!accessTokenValidation.Succeed) throw new UnauthorizedAccessException();
-
-            var refreshTokenValidation = _tokenHandler.ValidateToken(loginTokenModel.RefreshToken,
-                _authSettings.JsonWebToken.TokenValidationDefaultParameters.WithKey(_authSettings.JsonWebToken.RefreshToken.Key));
-
-            if (!refreshTokenValidation.Succeed) throw new UnauthorizedAccessException();
-
-            var loginUser = await _loginUserService.GetByIdAsync(accessTokenValidation.TokenUser.FindFirstValue<int>(ClaimTypes.NameIdentifier));
-            if (loginUser == null) throw new UnauthorizedAccessException();
-
-            var accessToken = _tokenHandler.CreateAccessToken(_authSettings.JsonWebToken, accessTokenValidation.TokenUser.Claims);
-            loginTokenModel.AccessToken.Token = _tokenHandler.WriteToken(accessToken);
-            loginTokenModel.AccessToken.ExpirationDateUtc = accessToken.ValidTo;
-
-            if (_authHelperService.IsAlmostExpired(refreshTokenValidation.Token.ValidTo, _authSettings.JsonWebToken.RefreshToken.Duration))
-            {
-                var refreshToken = _tokenHandler.CreateRefreshToken(_authSettings.JsonWebToken);
-                loginTokenModel.RefreshToken.Token = _tokenHandler.WriteToken(refreshToken);
-                loginTokenModel.RefreshToken.ExpirationDateUtc = refreshToken.ValidTo;
-            }
 
             return loginTokenModel;
         }

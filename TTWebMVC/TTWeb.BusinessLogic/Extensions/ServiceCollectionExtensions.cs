@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using TTWeb.BusinessLogic.MappingProfiles;
-using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.AppSettings.Security;
@@ -17,10 +15,7 @@ namespace TTWeb.BusinessLogic.Extensions
     {
         public static IServiceCollection RegisterAutoMapper(this IServiceCollection services)
         {
-            var mapperConfig = new MapperConfiguration(c =>
-            {
-                c.AddProfile<MappingProfile>();
-            });
+            var mapperConfig = new MapperConfiguration(c => { c.AddProfile<MappingProfile>(); });
 
             services.AddSingleton(s => mapperConfig.CreateMapper());
 
@@ -58,7 +53,7 @@ namespace TTWeb.BusinessLogic.Extensions
 
         public static IServiceCollection RegisterSwagger(this IServiceCollection services)
         {
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "TTWeb API", Version = "V1" }); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "TTWeb API", Version = "V1"}); });
 
             return services;
         }

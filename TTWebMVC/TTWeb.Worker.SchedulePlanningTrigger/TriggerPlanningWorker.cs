@@ -21,9 +21,9 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
     public class TriggerPlanningWorker : BackgroundService
     {
         private readonly ILogger<TriggerPlanningWorker> _logger;
-        private readonly SchedulingAppSettings settings;
-        private readonly IServiceScopeFactory _scopeFactory;
         private readonly IMapper _mapper;
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly SchedulingAppSettings settings;
 
         public TriggerPlanningWorker(ILogger<TriggerPlanningWorker> logger,
             IOptions<SchedulingAppSettings> schedulingAppSettingsOptions,
@@ -59,7 +59,8 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                 if (schedules.Count == 0)
                 {
                     _logger.LogInformation($"No open schedule found at {planningStartTime}");
-                    _logger.LogInformation($"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}");
+                    _logger.LogInformation(
+                        $"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}");
                     await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
                     continue;
                 }
@@ -79,7 +80,8 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                 await transaction.CommitAsync(cancellationToken);
 
                 _logger.LogInformation($"Planning at {planningStartTime} is completed");
-                _logger.LogInformation($"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}");
+                _logger.LogInformation(
+                    $"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}");
                 await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
             }
         }
@@ -117,6 +119,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                     result.Exception = ex;
                     result.Message = $"Error occurs during calculation of schedule {schedule.Id}";
                 }
+
                 results.Add(result);
             }
 
@@ -149,7 +152,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
 
             foreach (var schedule in schedules)
             {
-                bool succeed = scheduleJobs.Any(j => j.ScheduleId == schedule.Id);
+                var succeed = scheduleJobs.Any(j => j.ScheduleId == schedule.Id);
                 schedule.PlanningStatus = succeed ? ProcessingStatus.Completed : ProcessingStatus.Error;
 
                 if (succeed)

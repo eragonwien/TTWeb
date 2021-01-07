@@ -13,8 +13,9 @@ namespace TTWeb.Worker.ScheduleRunner
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWorkerAppConfiguration()
                 .ConfigureWorkerLogging()
                 .ConfigureServices((context, services) =>
@@ -25,5 +26,6 @@ namespace TTWeb.Worker.ScheduleRunner
                         .AddSingleton<IFacebookAutomationService, FacebookAutomationService>()
                         .AddHostedService<ScheduleRunnerWorker>();
                 });
+        }
     }
 }

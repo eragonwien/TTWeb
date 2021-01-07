@@ -24,7 +24,8 @@ namespace TTWeb.Web.Api.Controllers
         {
             var authenticationResult = await _accountService.AuthenticateExternalAsync(loginModel);
 
-            if (!authenticationResult.Succeed) throw new UnauthorizedAccessException($"Authentication failed due to {authenticationResult.Reason}");
+            if (!authenticationResult.Succeed)
+                throw new UnauthorizedAccessException($"Authentication failed due to {authenticationResult.Reason}");
             return _accountService.GenerateAccessToken(authenticationResult.Result);
         }
 

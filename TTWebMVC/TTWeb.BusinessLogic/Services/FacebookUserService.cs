@@ -15,12 +15,8 @@ namespace TTWeb.BusinessLogic.Services
     public class FacebookUserService : IFacebookUserService
     {
         private readonly TTWebContext _context;
-        private readonly IMapper _mapper;
         private readonly IEncryptionHelper _encryptionHelper;
-
-        private IQueryable<FacebookUser> BaseQuery =>
-            _context.FacebookUsers
-            .Include(u => u.Owner);
+        private readonly IMapper _mapper;
 
         public FacebookUserService(TTWebContext context, IMapper mapper, IEncryptionHelper encryptionHelper)
         {
@@ -28,6 +24,10 @@ namespace TTWeb.BusinessLogic.Services
             _mapper = mapper;
             _encryptionHelper = encryptionHelper;
         }
+
+        private IQueryable<FacebookUser> BaseQuery =>
+            _context.FacebookUsers
+                .Include(u => u.Owner);
 
         public async Task<FacebookUserModel> CreateAsync(FacebookUserModel model)
         {
@@ -64,7 +64,7 @@ namespace TTWeb.BusinessLogic.Services
 
         public async Task DeleteAsync(int id, int? ownerId)
         {
-            var facebookUser = new FacebookUser { Id = id };
+            var facebookUser = new FacebookUser {Id = id};
             if (ownerId.HasValue)
                 facebookUser.OwnerId = ownerId.Value;
 

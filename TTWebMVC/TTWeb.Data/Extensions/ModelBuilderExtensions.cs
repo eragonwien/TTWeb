@@ -65,7 +65,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureLoginUserPermissionMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginUserPermissionMapping>()
-                .HasKey(m => new { m.LoginUserId, m.UserPermission });
+                .HasKey(m => new {m.LoginUserId, m.UserPermission});
 
             modelBuilder.Entity<LoginUserPermissionMapping>()
                 .HasOne(m => m.LoginUser)
@@ -121,7 +121,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureFacebookUserReceiverMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleReceiverMapping>()
-                .HasKey(m => new { m.ScheduleId, m.ReceiverId });
+                .HasKey(m => new {m.ScheduleId, m.ReceiverId});
 
             modelBuilder.Entity<ScheduleReceiverMapping>()
                 .HasOne(m => m.Schedule)
@@ -141,7 +141,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureScheduleWeekdayMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleWeekdayMapping>()
-                .HasKey(m => new { m.ScheduleId, m.Weekday });
+                .HasKey(m => new {m.ScheduleId, m.Weekday});
 
             modelBuilder.Entity<ScheduleWeekdayMapping>()
                 .HasOne(m => m.Schedule)
@@ -160,7 +160,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder ConfigureTimeFrame(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleTimeFrame>()
-                .HasKey(m => new { m.ScheduleId, m.From, m.To });
+                .HasKey(m => new {m.ScheduleId, m.From, m.To});
 
             return modelBuilder;
         }
@@ -214,7 +214,7 @@ namespace TTWeb.Data.Extensions
                 .HasKey(m => m.Id);
 
             modelBuilder.Entity<ScheduleJob>()
-                .HasIndex(m => new { m.ScheduleId, m.StartDate, m.Action, m.ReceiverId, m.SenderId })
+                .HasIndex(m => new {m.ScheduleId, m.StartDate, m.Action, m.ReceiverId, m.SenderId})
                 .IsUnique();
 
             modelBuilder.Entity<ScheduleJob>()
@@ -274,11 +274,13 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<LoginUserPermissionMapping>()
                 .HasData(
-                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.AccessOwnResources },
-                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.AccessAllResources },
-                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageUsers },
-                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageDeployment },
-                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageWorker });
+                    new LoginUserPermissionMapping
+                        {LoginUserId = 1, UserPermission = UserPermission.AccessOwnResources},
+                    new LoginUserPermissionMapping
+                        {LoginUserId = 1, UserPermission = UserPermission.AccessAllResources},
+                    new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.ManageUsers},
+                    new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.ManageDeployment},
+                    new LoginUserPermissionMapping {LoginUserId = 1, UserPermission = UserPermission.ManageWorker});
 
             return modelBuilder;
         }
@@ -316,7 +318,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedFacebookUserReceiverMapping(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleReceiverMapping>()
-                .HasData(new ScheduleReceiverMapping { ReceiverId = 1, ScheduleId = 1 });
+                .HasData(new ScheduleReceiverMapping {ReceiverId = 1, ScheduleId = 1});
 
             return modelBuilder;
         }
@@ -325,9 +327,9 @@ namespace TTWeb.Data.Extensions
         {
             modelBuilder.Entity<ScheduleWeekdayMapping>()
                 .HasData(
-                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Monday },
-                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Wednesday },
-                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Friday });
+                    new ScheduleWeekdayMapping {ScheduleId = 1, Weekday = DayOfWeek.Monday},
+                    new ScheduleWeekdayMapping {ScheduleId = 1, Weekday = DayOfWeek.Wednesday},
+                    new ScheduleWeekdayMapping {ScheduleId = 1, Weekday = DayOfWeek.Friday});
 
             return modelBuilder;
         }
@@ -364,7 +366,7 @@ namespace TTWeb.Data.Extensions
         public static ModelBuilder SeedScheduleJobResult(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScheduleJobResult>()
-                .HasData(new ScheduleJobResult { Id = 1, ScheduleJobId = 1 });
+                .HasData(new ScheduleJobResult {Id = 1, ScheduleJobId = 1});
 
             return modelBuilder;
         }

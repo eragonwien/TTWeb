@@ -13,8 +13,9 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWorkerAppConfiguration()
                 .ConfigureWorkerLogging()
                 .ConfigureServices((context, services) =>
@@ -22,8 +23,10 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                     services
                         .RegisterDbContext(context.Configuration)
                         .RegisterAutoMapper()
-                        .Configure<SchedulingAppSettings>(context.Configuration.GetSection(SchedulingAppSettings.Section))
+                        .Configure<SchedulingAppSettings>(
+                            context.Configuration.GetSection(SchedulingAppSettings.Section))
                         .AddHostedService<TriggerPlanningWorker>();
                 });
+        }
     }
 }

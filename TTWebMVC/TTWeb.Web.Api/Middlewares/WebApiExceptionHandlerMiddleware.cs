@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -11,8 +10,8 @@ namespace TTWeb.Web.Api.Middlewares
 {
     public class WebApiExceptionHandlerMiddleware
     {
-        private readonly RequestDelegate _next;
         private readonly IHostEnvironment _env;
+        private readonly RequestDelegate _next;
 
         public WebApiExceptionHandlerMiddleware(RequestDelegate next,
             IHostEnvironment env)
@@ -58,8 +57,9 @@ namespace TTWeb.Web.Api.Middlewares
             async Task WriteResponseAsync()
             {
                 httpContext.Response.ContentType = "application/json; charset=utf-8";
-                httpContext.Response.StatusCode = (int)statusCode;
-                await httpContext.Response.WriteAsync(new ErrorResponseModel(statusCode, message, stackTrace).ToJsonString());
+                httpContext.Response.StatusCode = (int) statusCode;
+                await httpContext.Response.WriteAsync(new ErrorResponseModel(statusCode, message, stackTrace)
+                    .ToJsonString());
             }
 
             void HandleInnerException()

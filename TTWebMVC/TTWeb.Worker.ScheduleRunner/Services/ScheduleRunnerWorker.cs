@@ -20,11 +20,11 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 {
     public class ScheduleRunnerWorker : BackgroundService
     {
-        private readonly ILogger<ScheduleRunnerWorker> _logger;
-        private readonly SchedulingAppSettings _schedulingAppSettings;
         private readonly IFacebookAutomationService _facebookService;
-        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly ILogger<ScheduleRunnerWorker> _logger;
         private readonly IMapper _mapper;
+        private readonly SchedulingAppSettings _schedulingAppSettings;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public ScheduleRunnerWorker(ILogger<ScheduleRunnerWorker> logger,
             IOptions<SchedulingAppSettings> schedulingAppSettingsOptions,
@@ -97,13 +97,13 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             return _mapper.Map(dbJob, job);
         }
 
-        private static async Task CreateScheduleJobResultAsync(TTWebContext context, 
+        private static async Task CreateScheduleJobResultAsync(TTWebContext context,
             ScheduleJobModel job,
             CancellationToken cancellationToken)
         {
             if (job == null) throw new ArgumentNullException(nameof(job));
 
-            var jobResult = new ScheduleJobResult { ScheduleJobId = job.Id };
+            var jobResult = new ScheduleJobResult {ScheduleJobId = job.Id};
             await context.ScheduleJobsResults.AddAsync(jobResult, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
         }

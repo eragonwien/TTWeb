@@ -4,8 +4,6 @@ namespace TTWeb.Data.Models
 {
     public class LoginUser : IHasIdEntity
     {
-        public int Id { get; set; }
-
         public string Email { get; set; }
 
         public string FirstName { get; set; }
@@ -17,5 +15,6 @@ namespace TTWeb.Data.Models
         public ICollection<FacebookUser> OwnedFacebookUsers { get; set; }
 
         public ICollection<Schedule> OwnedSchedules { get; set; }
+        public int Id { get; set; }
     }
 }

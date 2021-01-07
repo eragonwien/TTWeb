@@ -8,36 +8,28 @@ namespace TTWeb.BusinessLogic.Models.Entities
 {
     public class ScheduleJobModel : BaseUserOwnedModel
     {
-        [Required]
-        public int ScheduleId { get; set; }
+        private readonly DateTime _currentDateTime = DateTime.UtcNow;
+        private readonly Random _random = new Random();
 
-        [Required]
-        public ScheduleAction Action { get; set; }
+        [Required] public int ScheduleId { get; set; }
 
-        [Required]
-        public ScheduleIntervalType IntervalType { get; set; }
+        [Required] public ScheduleAction Action { get; set; }
 
-        [Required]
-        public ScheduleFacebookUserModel Sender { get; set; }
+        [Required] public ScheduleIntervalType IntervalType { get; set; }
 
-        [Required]
-        public ScheduleFacebookUserModel Receiver { get; set; }
+        [Required] public ScheduleFacebookUserModel Sender { get; set; }
 
-        [Required]
-        public IEnumerable<DayOfWeek> Weekdays { get; set; }
+        [Required] public ScheduleFacebookUserModel Receiver { get; set; }
 
-        [Required]
-        public TimeSpan? From { get; set; }
+        [Required] public IEnumerable<DayOfWeek> Weekdays { get; set; }
 
-        [Required]
-        public TimeSpan? To { get; set; }
+        [Required] public TimeSpan? From { get; set; }
+
+        [Required] public TimeSpan? To { get; set; }
 
         public DateTime? StartDate { get; set; }
 
         public DateTime? StartTime { get; set; }
-
-        private readonly DateTime _currentDateTime = DateTime.UtcNow;
-        private readonly Random _random = new Random();
 
         public ScheduleJobModel CalculateStartTime()
         {
@@ -115,9 +107,10 @@ namespace TTWeb.BusinessLogic.Models.Entities
 
         private DateTime RandomizeStartTime(DateTime startTime, DateTime endTime)
         {
-            if (endTime < startTime) throw new ArgumentException($"Start date of {startTime} should be smaller then end date of {endTime}");
+            if (endTime < startTime)
+                throw new ArgumentException($"Start date of {startTime} should be smaller then end date of {endTime}");
             var diff = endTime - startTime;
-            var randomDiff = new TimeSpan(0, _random.Next(0, (int)diff.TotalMinutes), 0);
+            var randomDiff = new TimeSpan(0, _random.Next(0, (int) diff.TotalMinutes), 0);
             return startTime + randomDiff;
         }
     }
