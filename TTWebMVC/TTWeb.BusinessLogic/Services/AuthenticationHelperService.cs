@@ -45,13 +45,5 @@ namespace TTWeb.BusinessLogic.Services
             foreach (var permission in loginUserModel.Permissions)
                 yield return new Claim(ClaimTypes.Role, permission.ToString());
         }
-
-        public IEnumerable<Claim> GenerateClaims(WorkerModel workerModel)
-        {
-            yield return new Claim(ClaimTypes.NameIdentifier, workerModel.Id.ToString());
-
-            foreach (var permission in workerModel.Permissions)
-                yield return new Claim(ClaimTypes.Role, permission.ToString());
-        }
     }
 }

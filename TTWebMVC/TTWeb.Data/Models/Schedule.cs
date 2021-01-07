@@ -23,8 +23,6 @@ namespace TTWeb.Data.Models
         [Required]
         public int OwnerId { get; set; }
 
-        public int? WorkerId { get; set; }
-
         public DateTime? LockedUntil { get; set; }
 
         public DateTime? LockAt { get; set; }
@@ -53,12 +51,6 @@ namespace TTWeb.Data.Models
         public Schedule SetStatus(ProcessingStatus status)
         {
             PlanningStatus = status;
-            return this;
-        }
-
-        public Schedule SetWorkerId(int workerId)
-        {
-            WorkerId = workerId;
             return this;
         }
     }

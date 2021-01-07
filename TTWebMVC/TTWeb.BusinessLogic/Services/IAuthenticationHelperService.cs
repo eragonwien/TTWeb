@@ -14,7 +14,5 @@ namespace TTWeb.BusinessLogic.Services
         bool IsAlmostExpired(DateTime expirationDate, TimeSpan maxDuration);
 
         IEnumerable<Claim> GenerateClaims(LoginUserModel loginUserModel);
-
-        IEnumerable<Claim> GenerateClaims(WorkerModel workerModel);
     }
 }

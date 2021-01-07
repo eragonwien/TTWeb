@@ -26,7 +26,5 @@ namespace TTWeb.BusinessLogic.Models.Entities
         public List<ScheduleTimeFrameModel> TimeFrames { get; set; }
 
         public ProcessingStatus PlanningStatus { get; set; }
-
-        public int? WorkerId { get; set; }
     }
 }

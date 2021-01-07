@@ -66,7 +66,6 @@ namespace TTWeb.BusinessLogic.Services
 
             schedule = _mapper.Map(model, schedule);
             _context.Entry(schedule).Property(s => s.PlanningStatus).IsModified = false;
-            _context.Entry(schedule).Property(s => s.WorkerId).IsModified = false;
             await _context.SaveChangesAsync();
 
             await _context.Entry(schedule).Reference(s => s.Sender).LoadAsync();

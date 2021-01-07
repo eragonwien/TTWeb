@@ -22,39 +22,20 @@ namespace TTWeb.Web.Api.Services
     {
         private readonly AuthenticationAppSettings _authSettings;
         private readonly IAuthenticationHelperService _authHelperService;
-        private readonly WorkerAppSettings _workerAppSettings;
-        private readonly IWorkerService _workerService;
         private readonly ILoginUserService _loginUserService;
         private readonly IMapper _mapper;
         private readonly JwtSecurityTokenHandler _tokenHandler;
-        private readonly AuthenticationJsonWebTokenAppSettings _workerJsonWebTokenAppSettings;
 
         public AccountService(IOptions<AuthenticationAppSettings> authenticationAppSettings,
             IAuthenticationHelperService authHelperService,
             ILoginUserService loginUserService,
-            IMapper mapper,
-            IWorkerService workerService,
-            IOptions<WorkerAppSettings> workerAppSettingsOptions)
+            IMapper mapper)
         {
             _authSettings = authenticationAppSettings.Value;
             _authHelperService = authHelperService;
             _loginUserService = loginUserService;
             _mapper = mapper;
-            _workerService = workerService;
-            _workerAppSettings = workerAppSettingsOptions.Value;
-            _workerJsonWebTokenAppSettings = _authSettings.JsonWebToken.ExtendTokenDuration(_workerAppSettings.TokenLifeTimeMultiplier);
             _tokenHandler = new JwtSecurityTokenHandler();
-        }
-
-        public async Task<ProcessingResult<WorkerModel>> AuthenticateWorkerAsync(WorkerModel workerModel)
-        {
-            var result = new ProcessingResult<WorkerModel>();
-
-            var worker = await _workerService.FindAsync(workerModel.Id, workerModel.Secret);
-
-            if (worker == null) throw new ResourceNotFoundException(nameof(Worker), workerModel.Id.ToString());
-
-            return result.WithSuccess().WithResult(worker);
         }
 
         public async Task<ProcessingResult<LoginUserModel>> AuthenticateExternalAsync(ExternalLoginModel loginModel)
@@ -77,15 +58,6 @@ namespace TTWeb.Web.Api.Services
             var userClaims = _authHelperService.GenerateClaims(user);
 
             return BuildLoginTokenModel(userClaims, _authSettings.JsonWebToken);
-        }
-
-        public LoginTokenModel GenerateAccessToken(WorkerModel worker)
-        {
-            if (worker == null) throw new ArgumentNullException(nameof(worker));
-
-            var userClaims = _authHelperService.GenerateClaims(worker);
-
-            return BuildLoginTokenModel(userClaims, _workerJsonWebTokenAppSettings);
         }
 
         private LoginTokenModel BuildLoginTokenModel(IEnumerable<Claim> userClaims,

@@ -32,8 +32,6 @@ namespace TTWeb.BusinessLogic.Models.Entities
         [Required]
         public TimeSpan? To { get; set; }
 
-        public int? WorkerId { get; set; }
-
         public DateTime? StartDate { get; set; }
 
         public DateTime? StartTime { get; set; }
