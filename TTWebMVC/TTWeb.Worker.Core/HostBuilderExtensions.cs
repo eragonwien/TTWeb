@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TTWeb.BusinessLogic.Extensions;
+using TTWeb.Data.Database;
 
 namespace TTWeb.Worker.Core
 {
@@ -11,12 +13,13 @@ namespace TTWeb.Worker.Core
         {
             return hostBuilder.ConfigureAppConfiguration((context, configuration) =>
             {
-                // TODO: appsettings.json contains only connection-string, loads other settings from database 
-                // ref: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.2#custom-configuration-provider-1
                 configuration
                     .SetBasePath(AppContext.BaseDirectory)
-                    .AddJsonFile("appsettings.json", optional: true)
-                    .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true);
+                    .AddJsonFile("appsettings.json", true)
+                    .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", true);
+
+                var localConfiguration = configuration.Build();
+                configuration.AddDbContextConfiguration(b => TTWebContext.UseDbContext(b, localConfiguration));
             });
         }
 
