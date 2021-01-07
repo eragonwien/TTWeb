@@ -277,6 +277,10 @@ namespace TTWeb.Data.Extensions
             modelBuilder.Entity<ConfigurationEntry>()
                 .HasKey(m => m.Key);
 
+            modelBuilder.Entity<ConfigurationEntry>()
+                .Property(m => m.Key)
+                .IsRequired();
+
             return modelBuilder;
         }
 
