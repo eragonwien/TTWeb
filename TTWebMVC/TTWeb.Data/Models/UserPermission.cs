@@ -1,6 +1,6 @@
 ﻿namespace TTWeb.Data.Models
 {
-    public enum UserPermission
+    public enum UserPermission : ushort
     {
         AccessOwnResources = 1,
         AccessAllResources = 2,

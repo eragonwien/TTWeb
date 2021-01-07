@@ -1,6 +1,6 @@
 ﻿namespace TTWeb.Data.Models
 {
-    public enum ScheduleAction
+    public enum ScheduleAction : ushort
     {
         Like = 1,
         Comment = 2,

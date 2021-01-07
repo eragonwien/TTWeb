@@ -1,6 +1,6 @@
 ﻿namespace TTWeb.Data.Models
 {
-    public enum ScheduleIntervalType
+    public enum ScheduleIntervalType : ushort
     {
         Once = 1,
         Daily = 2,
