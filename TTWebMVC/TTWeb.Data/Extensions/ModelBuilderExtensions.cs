@@ -272,6 +272,14 @@ namespace TTWeb.Data.Extensions
             return modelBuilder;
         }
 
+        public static ModelBuilder ConfigureConfigurationEntry(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ConfigurationEntry>()
+                .HasKey(m => m.Key);
+
+            return modelBuilder;
+        }
+
         #endregion
 
         #region Seeding
