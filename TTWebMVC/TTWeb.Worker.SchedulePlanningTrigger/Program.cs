@@ -23,8 +23,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
                     services
                         .RegisterDbContext(context.Configuration)
                         .RegisterAutoMapper()
-                        .Configure<SchedulingAppSettings>(
-                            context.Configuration.GetSection(SchedulingAppSettings.Section))
+                        .Configure<SchedulingAppSettings>(context.Configuration.GetSection(SchedulingAppSettings.Section))
                         .AddHostedService<TriggerPlanningWorker>();
                 });
         }

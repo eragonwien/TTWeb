@@ -41,7 +41,7 @@ namespace TTWeb.Worker.ScheduleRunner
 
         protected async override Task DoContinuousWorkAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
+            _logger.LogInformation($"Worker running at: {DateTime.UtcNow}");
 
             using var context = GetRequiredService<TTWebContext>();
             var queue = await EnqueueJobsAsync(context, cancellationToken);
