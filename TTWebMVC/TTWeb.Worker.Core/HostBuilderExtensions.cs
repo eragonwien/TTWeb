@@ -27,9 +27,7 @@ namespace TTWeb.Worker.Core
         {
             return hostBuilder.ConfigureLogging(c =>
             {
-                c.ClearProviders();
                 c.AddConsole();
-                c.SetMinimumLevel(LogLevel.Debug);
             });
         }
     }

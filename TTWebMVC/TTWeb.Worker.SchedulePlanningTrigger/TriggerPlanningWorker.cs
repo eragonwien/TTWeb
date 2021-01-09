@@ -35,7 +35,6 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             _mapper = mapper;
             settings = schedulingAppSettingsOptions.Value;
         }
-
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
@@ -45,43 +44,64 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
 
                 using var scope = _scopeFactory.CreateScope();
                 await using var context = scope.ServiceProvider.GetRequiredService<TTWebContext>();
-                await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
-                var schedules = await context.Schedules
-                    .Include(s => s.ScheduleReceiverMappings)
-                    .Include(s => s.ScheduleWeekdayMappings)
-                    .Include(s => s.TimeFrames)
-                    .Include(s => s.Sender)
-                    .FilterOpenSchedules(planningStartTime)
-                    .OrderBy(s => s.Id)
-                    .ToListAsync(cancellationToken);
+                // Queries schedules that require planning
+                var schedules = await LoadOpenSchedulesAsync(planningStartTime, context, cancellationToken);
 
                 if (schedules.Count == 0)
                 {
-                    _logger.LogInformation($"No open schedule found at {planningStartTime}");
-                    _logger.LogInformation($"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}");
-                    await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
+                    _logger.LogInformation($"No open schedule found at {planningStartTime}.");
+                    _logger.LogInformation($"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}.");
+                    await PauseAsync(cancellationToken);
                     continue;
                 }
 
-                foreach (var schedule in schedules)
-                    schedule
-                        .Lock(planningStartTime, settings.Planning.LockDuration)
-                        .SetStatus(ProcessingStatus.InProgress);
+                // Locks schedules as working
+                await LockSchedulesAsync(schedules, planningStartTime, context, cancellationToken);
 
-                await context.SaveChangesAsync(cancellationToken);
+                await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
                 var planningResults = CalculateJobStartTime(schedules);
-                var successResults = planningResults.Where(r => r.Succeed).Select(r => r.Result);
+                var successResults = planningResults.Where(r => r.Succeed).Select(r => r.Result).ToArray();
                 var scheduleJobs = await AddScheduleJobsAsync(successResults, context, cancellationToken);
+
                 await UpdateScheduleStatusAsync(schedules, scheduleJobs, context, cancellationToken);
 
                 await transaction.CommitAsync(cancellationToken);
 
-                _logger.LogInformation($"Planning at {planningStartTime} is completed");
-                _logger.LogInformation($"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}");
-                await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
+                _logger.LogInformation($"Planning at {planningStartTime} is completed.");
+                _logger.LogInformation($"{successResults.Length} schedules were planned.");
+                _logger.LogInformation($"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}.");
+
+                await PauseAsync(cancellationToken);
             }
+        }
+
+        private async Task LockSchedulesAsync(List<Schedule> schedules, DateTime planningStartTime, TTWebContext context, CancellationToken cancellationToken)
+        {
+            foreach (var schedule in schedules)
+                schedule
+                    .Lock(planningStartTime, settings.Planning.LockDuration)
+                    .SetStatus(ProcessingStatus.InProgress);
+
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
+        private async Task PauseAsync(CancellationToken cancellationToken)
+        {
+            await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
+        }
+
+        private async Task<List<Schedule>> LoadOpenSchedulesAsync(DateTime planningStartTime, TTWebContext context, CancellationToken cancellationToken)
+        {
+            return await context.Schedules
+                .Include(s => s.ScheduleReceiverMappings)
+                .Include(s => s.ScheduleWeekdayMappings)
+                .Include(s => s.TimeFrames)
+                .Include(s => s.Sender)
+                .FilterOpenSchedules(planningStartTime)
+                .OrderBy(s => s.Id)
+                .ToListAsync(cancellationToken);
         }
 
         private IEnumerable<ProcessingResult<ScheduleJobModel>> CalculateJobStartTime(List<Schedule> schedules)
