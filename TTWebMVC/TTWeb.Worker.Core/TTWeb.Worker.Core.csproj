@@ -13,4 +13,8 @@
 		<ProjectReference Include="..\TTWeb.BusinessLogic\TTWeb.BusinessLogic.csproj" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<NoWarn>CS1998</NoWarn>
+	</PropertyGroup>
+
 </Project>

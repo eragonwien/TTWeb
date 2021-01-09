@@ -22,7 +22,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\TTWeb.Worker.Core\TTWeb.Worker.Core.csproj" />
+		<ProjectReference Include="..\TTWeb.Worker.Core\TTWeb.Worker.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -34,4 +34,8 @@
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="copy &quot;$(SolutionDir)\AppSettings\appsettings.*.json&quot;  &quot;$(MSBuildProjectDirectory)&quot;" />
 	</Target>
+
+	<PropertyGroup>
+		<NoWarn>CS1998</NoWarn>
+	</PropertyGroup>
 </Project>

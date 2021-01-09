@@ -15,49 +15,45 @@ using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.Data.Database;
 using TTWeb.Data.Extensions;
 using TTWeb.Data.Models;
+using TTWeb.Worker.Core;
+using TTWeb.Worker.ScheduleRunner.Services;
 
-namespace TTWeb.Worker.ScheduleRunner.Services
+namespace TTWeb.Worker.ScheduleRunner
 {
-    public class ScheduleRunnerWorker : BackgroundService
+    public class ScheduleRunnerWorker : BaseWorker
     {
         private readonly IFacebookAutomationService _facebookService;
         private readonly ILogger<ScheduleRunnerWorker> _logger;
         private readonly IMapper _mapper;
         private readonly SchedulingAppSettings _schedulingAppSettings;
-        private readonly IServiceScopeFactory _scopeFactory;
 
         public ScheduleRunnerWorker(ILogger<ScheduleRunnerWorker> logger,
             IOptions<SchedulingAppSettings> schedulingAppSettingsOptions,
             IFacebookAutomationService facebookService,
             IServiceScopeFactory scopeFactory,
-            IMapper mapper)
+            IMapper mapper) : base(scopeFactory)
         {
             _logger = logger;
             _schedulingAppSettings = schedulingAppSettingsOptions.Value;
             _facebookService = facebookService;
-            _scopeFactory = scopeFactory;
             _mapper = mapper;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+        protected async override Task DoContinuousWorkAsync(CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
+
+            using var context = GetRequiredService<TTWebContext>();
+            var queue = await EnqueueJobsAsync(context, cancellationToken);
+
+            while (queue.TryDequeue(out var job) && !cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
-
-                using var scope = _scopeFactory.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<TTWebContext>();
-                var queue = await EnqueueJobsAsync(context, cancellationToken);
-
-                while (queue.TryDequeue(out var job) && !cancellationToken.IsCancellationRequested)
-                {
-                    var result = await _facebookService.ProcessAsync(job, cancellationToken);
-                    job = await UpdateStatusAsync(context, job, result, cancellationToken);
-                    await CreateScheduleJobResultAsync(context, job, cancellationToken);
-                }
-
-                await Task.Delay(_schedulingAppSettings.Job.TriggerInterval, cancellationToken);
+                var result = await _facebookService.ProcessAsync(job, cancellationToken);
+                job = await UpdateStatusAsync(context, job, result, cancellationToken);
+                await CreateScheduleJobResultAsync(context, job, cancellationToken);
             }
+
+            await Task.Delay(_schedulingAppSettings.Job.TriggerInterval, cancellationToken);
         }
 
         private async Task<Queue<ScheduleJobModel>> EnqueueJobsAsync(TTWebContext context,
@@ -103,7 +99,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         {
             if (job == null) throw new ArgumentNullException(nameof(job));
 
-            var jobResult = new ScheduleJobResult {ScheduleJobId = job.Id};
+            var jobResult = new ScheduleJobResult { ScheduleJobId = job.Id };
             await context.ScheduleJobsResults.AddAsync(jobResult, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
         }
