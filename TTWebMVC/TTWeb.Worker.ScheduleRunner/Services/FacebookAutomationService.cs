@@ -30,21 +30,36 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             CancellationToken cancellationToken)
         {
             this.job = job ?? throw new ArgumentNullException(nameof(job));
-            driver = LaunchBrowser();
-            switch (job.Action)
+            var result = new ProcessingResult<ScheduleJobModel>(result: job);
+
+            try
             {
-                case Data.Models.ScheduleAction.Like:
-                    Like();
-                    break;
-                case Data.Models.ScheduleAction.Comment:
-                    Comment();
-                    break;
-                case Data.Models.ScheduleAction.Post:
-                    Post();
-                    break;
+                driver = LaunchBrowser();
+                switch (job.Action)
+                {
+                    case Data.Models.ScheduleAction.Like:
+                        Like();
+                        break;
+                    case Data.Models.ScheduleAction.Comment:
+                        Comment();
+                        break;
+                    case Data.Models.ScheduleAction.Post:
+                        Post();
+                        break;
+                }
+
+                result.Succeed = true;
+            }
+            catch (Exception ex)
+            {
+                result.Succeed = false;
+                result.Reason = $"{ex}";
+            }
+            finally
+            {
+                driver?.Close();
             }
 
-            driver.Close();
             return new ProcessingResult<ScheduleJobModel>(succeed: true, result: job);
         }
 
@@ -53,17 +68,17 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             driver.NavigateTo(facebookSettings.Mobile.Home);
             driver.AcceptCookieAgreement();
             Login(job.Sender);
-            driver.NavigateTo("new address");
+            driver.NavigateTo(job.Receiver.ProfileAddress);
             driver.GetPostings();
             driver.Like();
         }
 
         private void Login(ScheduleFacebookUserModel user)
         {
-            driver.WriteInput(By.Id("email"), user.Username);
-            driver.WriteInput(By.Id("password"), user.Password);
+            driver.WriteInput(By.Id("m_login_email"), user.Username);
+            driver.WriteInput(By.Id("m_login_password"), user.Password);
 
-            if (driver.TryFindElement(By.Id("loginButton"), out var loginButton))
+            if (driver.TryFindElement(By.XPath("//button[contains(@data-sigil, 'm_login_button')]"), out var loginButton))
                 loginButton.Click();
 
             driver.WaitUntilBodyVisible();

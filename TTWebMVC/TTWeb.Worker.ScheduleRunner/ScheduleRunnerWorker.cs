@@ -48,15 +48,19 @@ namespace TTWeb.Worker.ScheduleRunner
 
             while (queue.TryDequeue(out var job) && !cancellationToken.IsCancellationRequested)
             {
-                var result = await _facebookService.ProcessAsync(job, cancellationToken);
-                job = await UpdateStatusAsync(context, job, result, cancellationToken);
+                using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+
+                var result = await _facebookService.ProcessAsync(_mapper.Map<ScheduleJobModel>(job), cancellationToken);
+                await UpdateStatusAsync(context, job, result, cancellationToken);
                 await CreateScheduleJobResultAsync(context, job, cancellationToken);
+
+                await transaction.CommitAsync(cancellationToken);
             }
 
             await Task.Delay(_schedulingAppSettings.Job.TriggerInterval, cancellationToken);
         }
 
-        private async Task<Queue<ScheduleJobModel>> EnqueueJobsAsync(TTWebContext context,
+        private async Task<Queue<ScheduleJob>> EnqueueJobsAsync(TTWebContext context,
             CancellationToken cancellationToken)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
@@ -70,31 +74,33 @@ namespace TTWeb.Worker.ScheduleRunner
             jobs.ForEach(j => j.Lock(now, _schedulingAppSettings.Job.LockDuration));
             await context.SaveChangesAsync(cancellationToken);
 
-            return new Queue<ScheduleJobModel>(jobs.Select(j => _mapper.Map<ScheduleJobModel>(j)));
+            return new Queue<ScheduleJob>(jobs);
         }
 
-        private async Task<ScheduleJobModel> UpdateStatusAsync(TTWebContext context,
-            ScheduleJobModel job,
+        private async Task UpdateStatusAsync(TTWebContext context,
+            ScheduleJob job,
             ProcessingResult<ScheduleJobModel> result,
             CancellationToken cancellationToken)
         {
             if (job == null) throw new ArgumentNullException(nameof(job));
             if (result == null) throw new ArgumentNullException(nameof(result));
 
-            var dbJob = new ScheduleJob
+            try
             {
-                Id = job.Id,
-                Status = result.Succeed ? ProcessingStatus.Completed : ProcessingStatus.Error
-            };
+                job.Status = result.Succeed ? ProcessingStatus.Completed : ProcessingStatus.Error;
+                job.EndTime = DateTime.UtcNow;
 
-            context.ScheduleJobs.Attach(dbJob);
-            await context.SaveChangesAsync(cancellationToken);
-
-            return _mapper.Map(dbJob, job);
+                await context.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
         }
 
         private static async Task CreateScheduleJobResultAsync(TTWebContext context,
-            ScheduleJobModel job,
+            ScheduleJob job,
             CancellationToken cancellationToken)
         {
             if (job == null) throw new ArgumentNullException(nameof(job));
