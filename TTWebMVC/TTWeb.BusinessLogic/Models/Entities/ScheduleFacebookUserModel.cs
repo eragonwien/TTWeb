@@ -6,7 +6,7 @@
 
         public string Password { get; set; }
 
-        public string HomeAddress { get; set; }
+        public string SeedCode { get; set; }
 
         public string ProfileAddress { get; set; }
     }

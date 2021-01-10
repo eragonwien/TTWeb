@@ -14,15 +14,28 @@ namespace TTWeb.Worker.ScheduleRunner.Services
     {
         private readonly IHostEnvironment _environment;
         private readonly AuthenticationProvidersFacebookAppSettings _facebookSettings;
+        private readonly ITwoFactorAuthenticationService _twoFactorAuthenticationService;
         private ChromeDriver driver;
 
         private static readonly TimeSpan maxWaitingTime = TimeSpan.FromSeconds(20);
 
+        #region By-paths
+
+        private readonly By _loginEmailInput = By.Id("m_login_email");
+        private readonly By _loginPasswordInput = By.Id("m_login_password");
+        private readonly By _loginButton = By.XPath("//button[contains(@data-sigil, 'm_login_button')]");
+        private readonly By _twoFactorAuthenticationCodeInput = By.Id("approvals_code");
+        private readonly By _twoFactorAuthenticationButton = By.Id("checkpointSubmitButton-actual-button");
+
+        #endregion
+
         public FacebookChromeDriverService(IHostEnvironment environment,
-            IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions)
+            IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions,
+            ITwoFactorAuthenticationService twoFactorAuthenticationService)
         {
             _environment = environment;
             _facebookSettings = authenticationAppSettingsOptions.Value.Providers.Facebook;
+            _twoFactorAuthenticationService = twoFactorAuthenticationService;
         }
 
         public void AcceptCookieAgreement()
@@ -59,10 +72,10 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void Login(ScheduleFacebookUserModel sender)
         {
-            WriteInput(By.Id("m_login_email"), sender.Username);
-            WriteInput(By.Id("m_login_password"), sender.Password);
+            WriteInput(_loginEmailInput, sender.Username);
+            WriteInput(_loginPasswordInput, sender.Password);
 
-            if (TryFindElement(By.XPath("//button[contains(@data-sigil, 'm_login_button')]"), out var loginButton))
+            if (TryFindElement(_loginButton, out var loginButton))
                 loginButton.Click();
 
             WaitUntilBodyVisible();
@@ -108,6 +121,19 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         public void OpenStartPage()
         {
             NavigateTo(_facebookSettings.Mobile.Home);
+        }
+
+        public void ByPassTwoFactorAuthentication(ScheduleFacebookUserModel sender)
+        {
+            WaitUntilBodyVisible();
+
+            if (!TryFindElement(_twoFactorAuthenticationCodeInput, out var codeInput))
+                return;
+
+            if (!TryFindElement(_twoFactorAuthenticationButton, out var sendButton))
+                return;
+
+
         }
     }
 }

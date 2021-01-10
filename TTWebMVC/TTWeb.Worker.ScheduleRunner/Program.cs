@@ -34,6 +34,7 @@ namespace TTWeb.Worker.ScheduleRunner
                         .AddSingleton<IFacebookChromeDriverService, FacebookChromeDriverService>()
                         .AddSingleton<IFacebookAutomationService, FacebookAutomationService>()
                         .AddSingleton<IEncryptionHelper, EncryptionHelper>()
+                        .AddSingleton<ITwoFactorAuthenticationService, TwoFactorAuthenticationService>()
                         .AddHostedService<ScheduleRunnerWorker>();
                 });
         }

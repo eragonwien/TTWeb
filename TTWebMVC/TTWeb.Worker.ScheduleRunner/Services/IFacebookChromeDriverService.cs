@@ -19,5 +19,6 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         void WaitUntil(Func<IWebDriver, IWebElement> waitCondition);
         void WaitUntilBodyVisible();
         bool TryFindElement(By by, out IWebElement element);
+        void ByPassTwoFactorAuthentication(ScheduleFacebookUserModel sender);
     }
 }

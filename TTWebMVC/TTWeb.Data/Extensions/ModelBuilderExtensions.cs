@@ -108,7 +108,7 @@ namespace TTWeb.Data.Extensions
                 .HasMaxLength(MaxLengthLongString);
 
             modelBuilder.Entity<FacebookUser>()
-                .Property(u => u.HomeAddress)
+                .Property(u => u.SeedCode)
                 .HasMaxLength(MaxLengthLongString);
 
             modelBuilder.Entity<FacebookUser>()

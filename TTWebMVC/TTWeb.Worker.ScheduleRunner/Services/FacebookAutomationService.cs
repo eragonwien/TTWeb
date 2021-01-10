@@ -63,6 +63,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             _browser.OpenStartPage();
             _browser.AcceptCookieAgreement();
             _browser.Login(job.Sender);
+            _browser.ByPassTwoFactorAuthentication(job.Sender);
             _browser.NavigateTo(job.Receiver.ProfileAddress);
             _browser.GetPostings();
             _browser.Like();
