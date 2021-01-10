@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
+using TTWeb.BusinessLogic.Services;
 using TTWeb.Data.Database;
 using TTWeb.Data.Extensions;
 using TTWeb.Data.Models;
@@ -23,6 +24,7 @@ namespace TTWeb.Worker.ScheduleRunner
     public class ScheduleRunnerWorker : BaseWorker
     {
         private readonly IFacebookAutomationService _facebookService;
+        private readonly IEncryptionHelper _encryptionHelper;
         private readonly ILogger<ScheduleRunnerWorker> _logger;
         private readonly IMapper _mapper;
         private readonly SchedulingAppSettings _schedulingAppSettings;
@@ -31,12 +33,15 @@ namespace TTWeb.Worker.ScheduleRunner
             IOptions<SchedulingAppSettings> schedulingAppSettingsOptions,
             IFacebookAutomationService facebookService,
             IServiceScopeFactory scopeFactory,
-            IMapper mapper) : base(scopeFactory)
+            IMapper mapper,
+            IEncryptionHelper encryptionHelper)
+            : base(scopeFactory)
         {
             _logger = logger;
             _schedulingAppSettings = schedulingAppSettingsOptions.Value;
             _facebookService = facebookService;
             _mapper = mapper;
+            _encryptionHelper = encryptionHelper;
         }
 
         protected async override Task DoContinuousWorkAsync(CancellationToken cancellationToken)
@@ -50,7 +55,11 @@ namespace TTWeb.Worker.ScheduleRunner
             {
                 using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
-                var result = await _facebookService.ProcessAsync(_mapper.Map<ScheduleJobModel>(job), cancellationToken);
+                var scheduleJobModel = _mapper.Map<ScheduleJobModel>(job);
+                scheduleJobModel.Sender.Password = _encryptionHelper.Decrypt(scheduleJobModel.Sender.Password);
+                scheduleJobModel.Receiver.Password = _encryptionHelper.Decrypt(scheduleJobModel.Receiver.Password);
+
+                var result = await _facebookService.ProcessAsync(scheduleJobModel, cancellationToken);
                 await UpdateStatusAsync(context, job, result, cancellationToken);
                 await CreateScheduleJobResultAsync(context, job, cancellationToken);
 
@@ -60,7 +69,8 @@ namespace TTWeb.Worker.ScheduleRunner
             await Task.Delay(_schedulingAppSettings.Job.TriggerInterval, cancellationToken);
         }
 
-        private async Task<Queue<ScheduleJob>> EnqueueJobsAsync(TTWebContext context,
+        private async Task<Queue<ScheduleJob>> EnqueueJobsAsync(
+            TTWebContext context,
             CancellationToken cancellationToken)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
@@ -77,7 +87,8 @@ namespace TTWeb.Worker.ScheduleRunner
             return new Queue<ScheduleJob>(jobs);
         }
 
-        private async Task UpdateStatusAsync(TTWebContext context,
+        private async Task UpdateStatusAsync(
+            TTWebContext context,
             ScheduleJob job,
             ProcessingResult<ScheduleJobModel> result,
             CancellationToken cancellationToken)
@@ -99,7 +110,8 @@ namespace TTWeb.Worker.ScheduleRunner
             }
         }
 
-        private static async Task CreateScheduleJobResultAsync(TTWebContext context,
+        private static async Task CreateScheduleJobResultAsync(
+            TTWebContext context,
             ScheduleJob job,
             CancellationToken cancellationToken)
         {

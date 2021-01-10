@@ -1,8 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OpenQA.Selenium.Chrome;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
+using TTWeb.BusinessLogic.Models.AppSettings.Security;
+using TTWeb.BusinessLogic.Services;
 using TTWeb.Worker.Core;
 using TTWeb.Worker.ScheduleRunner.Services;
 
@@ -27,7 +30,10 @@ namespace TTWeb.Worker.ScheduleRunner
                         .RegisterAutoMapper()
                         .Configure<AuthenticationAppSettings>(context.Configuration.GetSection(AuthenticationAppSettings.Section))
                         .Configure<SchedulingAppSettings>(context.Configuration.GetSection(SchedulingAppSettings.Section))
+                        .Configure<SecurityAppSettings>(context.Configuration.GetSection(SecurityAppSettings.Section))
+                        .AddSingleton<IFacebookChromeDriverService, FacebookChromeDriverService>()
                         .AddSingleton<IFacebookAutomationService, FacebookAutomationService>()
+                        .AddSingleton<IEncryptionHelper, EncryptionHelper>()
                         .AddHostedService<ScheduleRunnerWorker>();
                 });
         }

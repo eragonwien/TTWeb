@@ -14,31 +14,26 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 {
     public class FacebookAutomationService : IFacebookAutomationService
     {
-        private readonly IHostEnvironment environment;
-        private readonly AuthenticationProvidersFacebookAppSettings facebookSettings;
-        private ChromeDriver driver;
-        private ScheduleJobModel job;
+        private readonly IFacebookChromeDriverService _browser;
 
-        public FacebookAutomationService(IHostEnvironment environment,
-            IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions)
+        public FacebookAutomationService(IFacebookChromeDriverService browser)
         {
-            this.environment = environment;
-            facebookSettings = authenticationAppSettingsOptions.Value.Providers.Facebook;
+            _browser = browser;
         }
 
         public async Task<ProcessingResult<ScheduleJobModel>> ProcessAsync(ScheduleJobModel job,
             CancellationToken cancellationToken)
         {
-            this.job = job ?? throw new ArgumentNullException(nameof(job));
+            if (job is null) throw new ArgumentNullException(nameof(job));
             var result = new ProcessingResult<ScheduleJobModel>(result: job);
 
             try
             {
-                driver = LaunchBrowser();
+                _browser.Launch();
                 switch (job.Action)
                 {
                     case Data.Models.ScheduleAction.Like:
-                        Like();
+                        Like(job);
                         break;
                     case Data.Models.ScheduleAction.Comment:
                         Comment();
@@ -57,31 +52,20 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             }
             finally
             {
-                driver?.Close();
+                _browser.Close();
             }
 
             return new ProcessingResult<ScheduleJobModel>(succeed: true, result: job);
         }
 
-        private void Like()
+        private void Like(ScheduleJobModel job)
         {
-            driver.NavigateTo(facebookSettings.Mobile.Home);
-            driver.AcceptCookieAgreement();
-            Login(job.Sender);
-            driver.NavigateTo(job.Receiver.ProfileAddress);
-            driver.GetPostings();
-            driver.Like();
-        }
-
-        private void Login(ScheduleFacebookUserModel user)
-        {
-            driver.WriteInput(By.Id("m_login_email"), user.Username);
-            driver.WriteInput(By.Id("m_login_password"), user.Password);
-
-            if (driver.TryFindElement(By.XPath("//button[contains(@data-sigil, 'm_login_button')]"), out var loginButton))
-                loginButton.Click();
-
-            driver.WaitUntilBodyVisible();
+            _browser.OpenStartPage();
+            _browser.AcceptCookieAgreement();
+            _browser.Login(job.Sender);
+            _browser.NavigateTo(job.Receiver.ProfileAddress);
+            _browser.GetPostings();
+            _browser.Like();
         }
 
         private void Comment()
@@ -92,16 +76,6 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private void Post()
         {
             throw new NotImplementedException();
-        }
-
-        private ChromeDriver LaunchBrowser()
-        {
-            var options = new ChromeOptions();
-            options.AddArgument("--disable-notifications");
-
-            if (environment.IsDevelopment()) options.AddArgument("--start-maximized");
-
-            return new ChromeDriver(options);
         }
     }
 }
