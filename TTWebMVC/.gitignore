@@ -5,6 +5,7 @@ packages
 temp
 logs
 *.csproj.user
-appsettings.*.json
 .config
 _ReSharper.Caches
+appsettings.*.json
+debug.log
