@@ -11,21 +11,21 @@ namespace TTWeb.BusinessLogic.Models.Entities
         private readonly DateTime _currentDateTime = DateTime.UtcNow;
         private readonly Random _random = new Random();
 
-        [Required] public int ScheduleId { get; set; }
+        public int ScheduleId { get; set; }
 
-        [Required] public ScheduleAction Action { get; set; }
+        public ScheduleAction Action { get; set; }
 
-        [Required] public ScheduleIntervalType IntervalType { get; set; }
+        public ScheduleIntervalType IntervalType { get; set; }
 
-        [Required] public ScheduleFacebookUserModel Sender { get; set; }
+        public FacebookUserModel Sender { get; set; }
 
-        [Required] public ScheduleFacebookUserModel Receiver { get; set; }
+        public FacebookUserModel Receiver { get; set; }
 
-        [Required] public IEnumerable<DayOfWeek> Weekdays { get; set; }
+        public IEnumerable<DayOfWeek> Weekdays { get; set; }
 
-        [Required] public TimeSpan? From { get; set; }
+        public TimeSpan? From { get; set; }
 
-        [Required] public TimeSpan? To { get; set; }
+        public TimeSpan? To { get; set; }
 
         public DateTime? StartDate { get; set; }
 
@@ -54,7 +54,7 @@ namespace TTWeb.BusinessLogic.Models.Entities
 
         public ScheduleJobModel WithReceiver(int receiverId)
         {
-            if (Receiver == null) Receiver = new ScheduleFacebookUserModel();
+            if (Receiver == null) Receiver = new FacebookUserModel();
 
             Receiver.Id = receiverId;
 
@@ -110,7 +110,7 @@ namespace TTWeb.BusinessLogic.Models.Entities
             if (endTime < startTime)
                 throw new ArgumentException($"Start date of {startTime} should be smaller then end date of {endTime}");
             var diff = endTime - startTime;
-            var randomDiff = new TimeSpan(0, _random.Next(0, (int) diff.TotalMinutes), 0);
+            var randomDiff = new TimeSpan(0, _random.Next(0, (int)diff.TotalMinutes), 0);
             return startTime + randomDiff;
         }
     }

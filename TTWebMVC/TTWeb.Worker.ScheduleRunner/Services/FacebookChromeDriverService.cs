@@ -70,7 +70,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             throw new NotImplementedException();
         }
 
-        public void Login(ScheduleFacebookUserModel sender)
+        public void Login(FacebookUserModel sender)
         {
             WriteInput(_loginEmailInput, sender.Username);
             WriteInput(_loginPasswordInput, sender.Password);
@@ -123,7 +123,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             NavigateTo(_facebookSettings.Mobile.Home);
         }
 
-        public void ByPassTwoFactorAuthentication(ScheduleFacebookUserModel sender)
+        public void ByPassTwoFactorAuthentication(FacebookUserModel sender)
         {
             WaitUntilBodyVisible();
 
