@@ -10,7 +10,7 @@ namespace TTWeb.Data.Models
 
         public string SeedCode { get; set; }
 
-        public string ProfileAddress { get; set; }
+        public string UserCode { get; set; }
 
         public bool Enabled { get; set; }
 
