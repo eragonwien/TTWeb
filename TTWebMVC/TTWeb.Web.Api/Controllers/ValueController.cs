@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Globalization;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NETCore.Encrypt;
+using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services;
 using TTWeb.Helper.Otp;
@@ -31,7 +33,7 @@ namespace TTWeb.Web.Api.Controllers
         [Authorize]
         public string GetOptCode([FromQuery] string seed)
         {
-            return _otp.GetCode(seed);
+            return _otp.GetCode(seed?.RemoveWhiteSpace().ToUpper(CultureInfo.InvariantCulture));
         }
     }
 }

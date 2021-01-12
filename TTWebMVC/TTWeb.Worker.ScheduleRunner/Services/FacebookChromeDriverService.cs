@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Threading;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.Helper.Otp;
 using TTWeb.Worker.ScheduleRunner.Extensions;
@@ -81,12 +83,14 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void ByPassTwoFactorAuthentication(string seedCode)
         {
+            if (string.IsNullOrWhiteSpace(seedCode)) return;
+
             for (var i = 0; i < maxRetryCount; i++)
             {
                 if (!TryFindElement(_twoFactorAuthenticationCodeInput, out var codeInput))
                     return;
 
-                var approvalCode = _otp.GetCode(seedCode);
+                var approvalCode = _otp.GetCode(seedCode.RemoveWhiteSpace().ToUpper());
                 codeInput.SendKeys(approvalCode);
                 ClickAndWaitForPageLoad(_twoFactorAuthenticationSendButton);
             }
@@ -95,6 +99,12 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         public void NavigateToUserProfile(string userCode)
         {
             NavigateTo($"{_facebookSettings}/{userCode}");
+        }
+
+        public void Sleep(TimeSpan? duration = null)
+        {
+            duration ??= TimeSpan.FromSeconds(1);
+            Thread.Sleep(duration.Value);
         }
 
         private void NavigateTo(string url)

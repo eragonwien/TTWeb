@@ -57,8 +57,14 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             _browser.OpenStartPage();
             _browser.AcceptCookieAgreement();
             _browser.Login(job.Sender.Username, job.Sender.Password);
+            _browser.Sleep();
+
             _browser.ByPassTwoFactorAuthentication(job.Sender.SeedCode);
+            _browser.Sleep();
+           
             _browser.NavigateToUserProfile(job.Receiver.UserCode);
+            _browser.Sleep();
+
             _browser.Like(1, 5);
         }
 
