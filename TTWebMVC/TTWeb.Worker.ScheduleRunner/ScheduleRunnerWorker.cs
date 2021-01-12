@@ -51,6 +51,7 @@ namespace TTWeb.Worker.ScheduleRunner
             while (queue.TryDequeue(out var job) && !cancellationToken.IsCancellationRequested)
                 await ProcessJobAsync(job, cancellationToken);
 
+            _logger.LogInformation($"Worker completed the queue at: {DateTime.UtcNow}");
             _logger.LogInformation($"Worker restarts in {_schedulingAppSettings.Job.TriggerInterval.TotalSeconds}s.");
             await Task.Delay(_schedulingAppSettings.Job.TriggerInterval, cancellationToken);
         }
