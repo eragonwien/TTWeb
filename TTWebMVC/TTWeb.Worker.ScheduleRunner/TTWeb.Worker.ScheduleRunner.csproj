@@ -32,7 +32,6 @@
 
 
 	<ItemGroup>
-		<ProjectReference Include="..\TTWeb.Helper.Otp\TTWeb.Helper.Otp.csproj" />
 		<ProjectReference Include="..\TTWeb.Worker.Core\TTWeb.Worker.Core.csproj" />
 	</ItemGroup>
 

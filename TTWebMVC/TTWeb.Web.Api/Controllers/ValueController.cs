@@ -1,12 +1,10 @@
 ﻿using System.Globalization;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NETCore.Encrypt;
 using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services;
-using TTWeb.Helper.Otp;
 
 namespace TTWeb.Web.Api.Controllers
 {
@@ -14,11 +12,11 @@ namespace TTWeb.Web.Api.Controllers
     [ApiController]
     public class ValueController : BaseController
     {
-        private readonly IOtpHelperService _otp;
+        private readonly IHelperService _helper;
 
-        public ValueController(IOtpHelperService otp)
+        public ValueController(IHelperService helper)
         {
-            _otp = otp;
+            _helper = helper;
         }
 
         [HttpGet("aes")]
@@ -33,7 +31,7 @@ namespace TTWeb.Web.Api.Controllers
         [Authorize]
         public string GetOptCode([FromQuery] string seed)
         {
-            return _otp.GetCode(seed?.RemoveWhiteSpace().ToUpper(CultureInfo.InvariantCulture));
+            return _helper.GetOtpCode(seed);
         }
     }
 }

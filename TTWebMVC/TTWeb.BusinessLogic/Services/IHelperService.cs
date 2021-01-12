@@ -3,5 +3,6 @@
     public interface IHelperService
     {
         string GetRandomString(int length);
+        string GetOtpCode(string seed);
     }
 }

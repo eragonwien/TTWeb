@@ -9,7 +9,6 @@ using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.AppSettings.Security;
 using TTWeb.BusinessLogic.Services;
 using TTWeb.Data.Database;
-using TTWeb.Helper.Otp;
 
 namespace TTWeb.BusinessLogic.Extensions
 {
@@ -35,7 +34,7 @@ namespace TTWeb.BusinessLogic.Extensions
             services.AddScoped<IScheduleJobService, ScheduleJobService>();
             services.AddScoped<IScheduleJobResultService, ScheduleJobResultService>();
             services.AddScoped<IConfigurationEntryService, ConfigurationEntryService>();
-            services.AddScoped<IOtpHelperService, OtpHelperService>();
+            services.AddScoped<IHelperService, HelperService>();
             return services;
         }
 
@@ -57,7 +56,7 @@ namespace TTWeb.BusinessLogic.Extensions
 
         public static IServiceCollection RegisterSwagger(this IServiceCollection services)
         {
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "TTWeb API", Version = "V1"}); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "TTWeb API", Version = "V1" }); });
 
             return services;
         }

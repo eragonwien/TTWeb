@@ -19,12 +19,12 @@
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.9" />
 		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.5.0" />
 		<PackageReference Include="NETCore.Encrypt" Version="2.0.9" />
+		<PackageReference Include="Otp.NET" Version="1.2.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\TTWeb.Data\TTWeb.Data.csproj" />
-		<ProjectReference Include="..\TTWeb.Helper.Otp\TTWeb.Helper.Otp.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>

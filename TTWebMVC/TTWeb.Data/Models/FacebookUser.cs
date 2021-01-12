@@ -21,6 +21,7 @@ namespace TTWeb.Data.Models
         public ICollection<ScheduleJob> ReceiverScheduleJobs { get; set; }
 
         public ICollection<ScheduleReceiverMapping> ScheduleReceiverMappings { get; set; }
+
         public int Id { get; set; }
 
         public int OwnerId { get; set; }
