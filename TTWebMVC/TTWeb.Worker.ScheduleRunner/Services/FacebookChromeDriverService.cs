@@ -5,7 +5,6 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
-using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Helper.Otp;
 using TTWeb.Worker.ScheduleRunner.Extensions;
 
@@ -19,6 +18,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private ChromeDriver driver;
 
         private static readonly TimeSpan maxWaitingTime = TimeSpan.FromSeconds(20);
+        private const int maxRetryCount = 5;
 
         #region By-paths
 
@@ -50,11 +50,6 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             driver?.Close();
         }
 
-        public void GetPostings()
-        {
-            throw new NotImplementedException();
-        }
-
         public void Launch()
         {
             var options = new ChromeOptions();
@@ -66,15 +61,15 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             driver = new ChromeDriver(options);
         }
 
-        public void Like()
+        public void Like(int likeCount, int maxPostCount)
         {
             throw new NotImplementedException();
         }
 
-        public void Login(FacebookUserModel sender)
+        public void Login(string username, string password)
         {
-            WriteInput(_loginEmailInput, sender.Username);
-            WriteInput(_loginPasswordInput, sender.Password);
+            WriteInput(_loginEmailInput, username);
+            WriteInput(_loginPasswordInput, password);
 
             if (TryFindElement(_loginButton, out var loginButton))
                 loginButton.Click();
@@ -82,30 +77,58 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             WaitUntilBodyVisible();
         }
 
-        public void NavigateTo(string url)
+        public void OpenStartPage()
+        {
+            NavigateTo(_facebookSettings.Mobile.Home);
+        }
+
+        public void ByPassTwoFactorAuthentication(string seedCode)
+        {
+            for (var i = 0; i < maxRetryCount; i++)
+            {
+                WaitUntilBodyVisible();
+
+                if (!TryFindElement(_twoFactorAuthenticationCodeInput, out var codeInput))
+                    return;
+
+                if (!TryFindElement(_twoFactorAuthenticationButton, out var sendButton))
+                    return;
+
+                var approvalCode = _otp.GetCode(seedCode);
+                codeInput.SendKeys(approvalCode);
+                sendButton.Click();
+            }
+        }
+
+        public void NavigateToUserProfile(string userCode)
+        {
+            NavigateTo($"{_facebookSettings}/{userCode}");
+        }
+
+        private void NavigateTo(string url)
         {
             driver.Navigate().GoToUrl(url);
             WaitUntilBodyVisible();
         }
 
-        public void WaitUntil(Func<IWebDriver, IWebElement> waitCondition)
+        private void WaitUntil(Func<IWebDriver, IWebElement> waitCondition)
         {
             var wait = new WebDriverWait(driver, maxWaitingTime);
             wait.Until(d => waitCondition);
         }
 
-        public void WaitUntilBodyVisible()
+        private void WaitUntilBodyVisible()
         {
             WaitUntil(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.TagName("body")));
         }
 
-        public void WriteInput(By by, string inputValue)
+        private void WriteInput(By by, string inputValue)
         {
             if (TryFindElement(by, out var input))
                 input.SendKeys(inputValue);
         }
 
-        public bool TryFindElement(By by, out IWebElement element)
+        private bool TryFindElement(By by, out IWebElement element)
         {
             try
             {
@@ -117,22 +140,6 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                 element = default;
                 return false;
             }
-        }
-
-        public void OpenStartPage()
-        {
-            NavigateTo(_facebookSettings.Mobile.Home);
-        }
-
-        public void ByPassTwoFactorAuthentication(FacebookUserModel sender)
-        {
-            WaitUntilBodyVisible();
-
-            if (!TryFindElement(_twoFactorAuthenticationCodeInput, out var codeInput))
-                return;
-
-            if (!TryFindElement(_twoFactorAuthenticationButton, out var sendButton))
-                return;
         }
     }
 }

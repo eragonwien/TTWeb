@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
-using TTWeb.Worker.ScheduleRunner.Extensions;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
 {
@@ -62,11 +56,10 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         {
             _browser.OpenStartPage();
             _browser.AcceptCookieAgreement();
-            _browser.Login(job.Sender);
-            _browser.ByPassTwoFactorAuthentication(job.Sender);
-            _browser.NavigateTo(job.Receiver.UserCode);
-            _browser.GetPostings();
-            _browser.Like();
+            _browser.Login(job.Sender.Username, job.Sender.Password);
+            _browser.ByPassTwoFactorAuthentication(job.Sender.SeedCode);
+            _browser.NavigateToUserProfile(job.Receiver.UserCode);
+            _browser.Like(1, 5);
         }
 
         private void Comment()
