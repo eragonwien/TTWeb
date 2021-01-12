@@ -98,6 +98,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                     break;
 
                 counter++;
+                Sleep();
             } while (counter < maxRetryCount);
 
             void Enter2ApprovalCode(IWebElement codeInput)
@@ -115,7 +116,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void Sleep(TimeSpan? duration = null)
         {
-            duration ??= TimeSpan.FromSeconds(2);
+            duration ??= TimeSpan.FromSeconds(3);
             Thread.Sleep(duration.Value);
         }
 
