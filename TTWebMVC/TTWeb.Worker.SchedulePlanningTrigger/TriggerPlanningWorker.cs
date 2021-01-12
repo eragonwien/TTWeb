@@ -38,7 +38,8 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             var planningStartTime = DateTime.UtcNow;
             _logger.LogInformation($"Worker running at: {planningStartTime}");
 
-            using var context = GetRequiredService<TTWebContext>();
+            using var scope = _scopeFactory.ServiceProvider.CreateScope();
+            await using var context = scope.ServiceProvider.GetRequiredService<TTWebContext>();
 
             // Queries schedules that require planning
             var schedules = await LoadOpenSchedulesAsync(planningStartTime, context, cancellationToken);

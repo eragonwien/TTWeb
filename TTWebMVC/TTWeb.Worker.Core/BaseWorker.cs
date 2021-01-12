@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,29 +8,32 @@ namespace TTWeb.Worker.Core
 {
     public abstract class BaseWorker : BackgroundService
     {
-        protected readonly IServiceScope _scope;
+        protected readonly IServiceScope _scopeFactory;
 
         protected BaseWorker(IServiceScopeFactory scopeFactory)
         {
-            _scope = scopeFactory.CreateScope();
+            _scopeFactory = scopeFactory.CreateScope();
         }
 
         protected async override Task ExecuteAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                await DoContinuousWorkAsync(cancellationToken);
+                try
+                {
+                    await DoContinuousWorkAsync(cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"{ex}");
+                    throw;
+                }
             }
-        }
-
-        protected TDbContext GetRequiredService<TDbContext>() where TDbContext : DbContext
-        {
-            return _scope.ServiceProvider.GetRequiredService<TDbContext>();
         }
 
         public async override Task StopAsync(CancellationToken cancellationToken)
         {
-            _scope.Dispose();
+            _scopeFactory.Dispose();
         }
 
         protected abstract Task DoContinuousWorkAsync(CancellationToken cancellationToken);

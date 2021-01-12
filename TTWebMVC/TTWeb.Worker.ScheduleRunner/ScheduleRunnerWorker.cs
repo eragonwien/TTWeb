@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
@@ -48,32 +46,19 @@ namespace TTWeb.Worker.ScheduleRunner
         {
             _logger.LogInformation($"Worker running at: {DateTime.UtcNow}");
 
-            await using var context = GetRequiredService<TTWebContext>();
-            var queue = await EnqueueJobsAsync(context, cancellationToken);
+            var queue = await EnqueueLockJobsAsync(cancellationToken);
 
             while (queue.TryDequeue(out var job) && !cancellationToken.IsCancellationRequested)
-            {
-                await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+                await ProcessJobAsync(job, cancellationToken);
 
-                var scheduleJobModel = _mapper.Map<ScheduleJobModel>(job);
-                scheduleJobModel.Sender.Password = _encryptionHelper.Decrypt(scheduleJobModel.Sender.Password);
-                scheduleJobModel.Receiver.Password = _encryptionHelper.Decrypt(scheduleJobModel.Receiver.Password);
-
-                var result = await _facebookService.ProcessAsync(scheduleJobModel, cancellationToken);
-                await UpdateStatusAsync(context, job, result, cancellationToken);
-                await CreateScheduleJobResultAsync(context, job, cancellationToken);
-
-                await transaction.CommitAsync(cancellationToken);
-            }
-
+            _logger.LogInformation($"Worker restarts in {_schedulingAppSettings.Job.TriggerInterval.TotalSeconds}s.");
             await Task.Delay(_schedulingAppSettings.Job.TriggerInterval, cancellationToken);
         }
 
-        private async Task<Queue<ScheduleJob>> EnqueueJobsAsync(
-            TTWebContext context,
-            CancellationToken cancellationToken)
+        private async Task<Queue<ScheduleJob>> EnqueueLockJobsAsync(CancellationToken cancellationToken)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            using var scope = _scopeFactory.ServiceProvider.CreateScope();
+            await using var context = scope.ServiceProvider.GetRequiredService<TTWebContext>();
             var jobs = await context.ScheduleJobs
                 .Include(j => j.Sender)
                 .Include(j => j.Receiver)
@@ -85,6 +70,23 @@ namespace TTWeb.Worker.ScheduleRunner
             await context.SaveChangesAsync(cancellationToken);
 
             return new Queue<ScheduleJob>(jobs);
+        }
+
+        private async Task ProcessJobAsync(ScheduleJob job, CancellationToken cancellationToken)
+        {
+            using var scope = _scopeFactory.ServiceProvider.CreateScope();
+            await using var context = scope.ServiceProvider.GetRequiredService<TTWebContext>();
+            await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+
+            var scheduleJobModel = _mapper.Map<ScheduleJobModel>(job);
+            scheduleJobModel.Sender.Password = _encryptionHelper.Decrypt(scheduleJobModel.Sender.Password);
+            scheduleJobModel.Receiver.Password = _encryptionHelper.Decrypt(scheduleJobModel.Receiver.Password);
+
+            var result = await _facebookService.ProcessAsync(scheduleJobModel, cancellationToken);
+            await UpdateStatusAsync(context, job, result, cancellationToken);
+            await CreateScheduleJobResultAsync(context, job, cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
         }
 
         private async Task UpdateStatusAsync(
