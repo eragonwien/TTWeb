@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
-using TTWeb.BusinessLogic.Extensions;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Services;
 using TTWeb.Worker.ScheduleRunner.Extensions;
@@ -28,7 +27,8 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private readonly By _loginPasswordInput = By.Id("m_login_password");
         private readonly By _loginButton = By.XPath("//button[contains(@data-sigil, 'm_login_button')]");
         private readonly By _twoFactorAuthenticationCodeInput = By.Id("approvals_code");
-        private readonly By _twoFactorAuthenticationSendButton = By.Id("checkpointSubmitButton-actual-button");
+        private readonly By _checkpointSubmitActualButton = By.Id("checkpointSubmitButton-actual-button");
+        private readonly By _checkpointSubmitButton = By.Id("checkpointSubmitButton");
 
         #endregion
 
@@ -85,25 +85,37 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         {
             if (string.IsNullOrWhiteSpace(seedCode)) return;
 
-            for (var i = 0; i < maxRetryCount; i++)
+            var counter = 0;
+            do
             {
-                if (!TryFindElement(_twoFactorAuthenticationCodeInput, out var codeInput))
-                    return;
+                if (TryFindElement(_twoFactorAuthenticationCodeInput, out var codeInput))
+                    Enter2ApprovalCode(codeInput);
+                else if (TryFindElement(_checkpointSubmitButton, out var checkpointSubmitButton))
+                    ClickAndWaitForPageLoad(checkpointSubmitButton);
+                else if (TryFindElement(_checkpointSubmitActualButton, out var checkpointSubmitActualButton))
+                    ClickAndWaitForPageLoad(checkpointSubmitActualButton);
+                else
+                    break;
 
+                counter++;
+            } while (counter < maxRetryCount);
+
+            void Enter2ApprovalCode(IWebElement codeInput)
+            {
                 var approvalCode = _helper.GetOtpCode(seedCode);
                 codeInput.SendKeys(approvalCode);
-                ClickAndWaitForPageLoad(_twoFactorAuthenticationSendButton);
+                ClickAndWaitForPageLoad(_checkpointSubmitActualButton);
             }
         }
 
         public void NavigateToUserProfile(string userCode)
         {
-            NavigateTo($"{_facebookSettings}/{userCode}");
+            NavigateTo($"{_facebookSettings.Mobile.Home}/{userCode}");
         }
 
         public void Sleep(TimeSpan? duration = null)
         {
-            duration ??= TimeSpan.FromSeconds(1);
+            duration ??= TimeSpan.FromSeconds(2);
             Thread.Sleep(duration.Value);
         }
 
@@ -127,14 +139,15 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private void ClickAndWaitForPageLoad(By by)
         {
             if (TryFindElement(by, out var element))
-            {
-                element.Click();
-                WaitUntil(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(element));
-            }
+                ClickAndWaitForPageLoad(element);
             else
-            {
                 WaitUntilBodyVisible();
-            }
+        }
+
+        private void ClickAndWaitForPageLoad(IWebElement element)
+        {
+            element.Click();
+            WaitUntil(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(element));
         }
 
         private void WriteInput(By by, string inputValue)
@@ -155,6 +168,11 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                 element = default;
                 return false;
             }
+        }
+
+        private bool ElementExists(By by)
+        {
+            return TryFindElement(by, out var element);
         }
     }
 }

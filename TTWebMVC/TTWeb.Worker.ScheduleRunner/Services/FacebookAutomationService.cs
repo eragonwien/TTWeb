@@ -61,7 +61,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
             _browser.ByPassTwoFactorAuthentication(job.Sender.SeedCode);
             _browser.Sleep();
-           
+
             _browser.NavigateToUserProfile(job.Receiver.UserCode);
             _browser.Sleep();
 
