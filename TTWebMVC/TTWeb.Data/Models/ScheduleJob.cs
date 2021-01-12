@@ -31,6 +31,10 @@ namespace TTWeb.Data.Models
 
         public FacebookUser Receiver { get; set; }
 
+        public int RetryCount { get; set; }
+
+        public int MaxRetryCount { get; set; }
+
         public ICollection<ScheduleJobResult> Results { get; set; }
         public int Id { get; set; }
 

@@ -234,6 +234,14 @@ namespace TTWeb.Data.Extensions
                 .IsUnique();
 
             modelBuilder.Entity<ScheduleJob>()
+                .Property(m => m.MaxRetryCount)
+                .HasDefaultValue(5);
+
+            modelBuilder.Entity<ScheduleJob>()
+                .Property(m => m.RetryCount)
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<ScheduleJob>()
                 .HasOne(m => m.Schedule)
                 .WithMany(u => u.ScheduleJobs)
                 .HasForeignKey(m => m.ScheduleId)
@@ -341,9 +349,7 @@ namespace TTWeb.Data.Extensions
                     Action = ScheduleAction.Like,
                     IntervalType = ScheduleIntervalType.Daily,
                     SenderId = 1,
-                    OwnerId = 1,
-                    LockAt = DateTime.UtcNow,
-                    LockedUntil = DateTime.UtcNow.AddMinutes(5)
+                    OwnerId = 1
                 });
 
             return modelBuilder;

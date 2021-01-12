@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TTWeb.Data.Database;
@@ -9,9 +10,10 @@ using TTWeb.Data.Database;
 namespace TTWeb.Data.Migrations
 {
     [DbContext(typeof(TTWebContext))]
-    partial class TTWebContextModelSnapshot : ModelSnapshot
+    [Migration("20210112234623_AddsScheduleJobRetryCount")]
+    partial class AddsScheduleJobRetryCount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,6 +217,8 @@ namespace TTWeb.Data.Migrations
                             Id = 1,
                             Action = "Like",
                             IntervalType = "Daily",
+                            LockAt = new DateTime(2021, 1, 12, 23, 46, 22, 671, DateTimeKind.Utc).AddTicks(6961),
+                            LockedUntil = new DateTime(2021, 1, 12, 23, 51, 22, 671, DateTimeKind.Utc).AddTicks(6986),
                             OwnerId = 1,
                             PlanningStatus = 0,
                             SenderId = 1
