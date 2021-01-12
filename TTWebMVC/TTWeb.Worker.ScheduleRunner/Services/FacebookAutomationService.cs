@@ -49,7 +49,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                 _browser.Close();
             }
 
-            return new ProcessingResult<ScheduleJobModel>(succeed: true, result: job);
+            return result;
         }
 
         private void Like(ScheduleJobModel job)

@@ -101,7 +101,8 @@ namespace TTWeb.Worker.ScheduleRunner
 
             try
             {
-                job.Status = result.Succeed ? ProcessingStatus.Completed : ProcessingStatus.Error;
+                context.ScheduleJobs.Attach(job);
+                job.Status = result.Succeed ? ProcessingStatus.Completed : ProcessingStatus.Retry;
                 job.EndTime = DateTime.UtcNow;
 
                 await context.SaveChangesAsync(cancellationToken);

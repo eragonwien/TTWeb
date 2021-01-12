@@ -70,8 +70,8 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void Login(string username, string password)
         {
-            WriteInput(_loginEmailInput, username);
-            WriteInput(_loginPasswordInput, password);
+            WriteInput(_loginEmailInput, username, true);
+            WriteInput(_loginPasswordInput, password, true);
 
             ClickAndWaitForPageLoad(_loginButton);
         }
@@ -150,10 +150,12 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             WaitUntil(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(element));
         }
 
-        private void WriteInput(By by, string inputValue)
+        private void WriteInput(By by, string inputValue, bool required = false)
         {
             if (TryFindElement(by, out var input))
                 input.SendKeys(inputValue);
+            else if (required)
+                throw new NotFoundException($"Required element {by} not found");
         }
 
         private bool TryFindElement(By by, out IWebElement element)
