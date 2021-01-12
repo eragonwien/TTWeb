@@ -102,6 +102,18 @@ namespace TTWeb.Worker.ScheduleRunner
             try
             {
                 context.ScheduleJobs.Attach(job);
+
+                if (result.Succeed)
+                {
+                    job.Status = ProcessingStatus.Completed;
+                    job.RetryCount = 0;
+                }
+                else
+                {
+                    job.RetryCount++;
+                    job.Status = job.RetryCount < job.MaxRetryCount ? ProcessingStatus.Retry : ProcessingStatus.Error;
+                }
+
                 job.Status = result.Succeed ? ProcessingStatus.Completed : ProcessingStatus.Retry;
                 job.EndTime = DateTime.UtcNow;
 
