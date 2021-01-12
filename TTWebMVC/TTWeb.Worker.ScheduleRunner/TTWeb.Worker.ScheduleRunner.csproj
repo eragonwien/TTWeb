@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
@@ -32,6 +32,7 @@
 
 
 	<ItemGroup>
+		<ProjectReference Include="..\TTWeb.Helper.Otp\TTWeb.Helper.Otp.csproj" />
 		<ProjectReference Include="..\TTWeb.Worker.Core\TTWeb.Worker.Core.csproj" />
 	</ItemGroup>
 

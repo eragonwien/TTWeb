@@ -6,6 +6,7 @@ using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.AppSettings.Security;
 using TTWeb.BusinessLogic.Services;
+using TTWeb.Helper.Otp;
 using TTWeb.Worker.Core;
 using TTWeb.Worker.ScheduleRunner.Services;
 
@@ -34,7 +35,7 @@ namespace TTWeb.Worker.ScheduleRunner
                         .AddSingleton<IFacebookChromeDriverService, FacebookChromeDriverService>()
                         .AddSingleton<IFacebookAutomationService, FacebookAutomationService>()
                         .AddSingleton<IEncryptionHelper, EncryptionHelper>()
-                        .AddSingleton<ITwoFactorAuthenticationService, TwoFactorAuthenticationService>()
+                        .AddSingleton<IOtpHelperService, OtpHelperService>()
                         .AddHostedService<ScheduleRunnerWorker>();
                 });
         }

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -11,6 +9,7 @@ using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.AppSettings.Security;
 using TTWeb.BusinessLogic.Services;
 using TTWeb.Data.Database;
+using TTWeb.Helper.Otp;
 
 namespace TTWeb.BusinessLogic.Extensions
 {
@@ -36,6 +35,7 @@ namespace TTWeb.BusinessLogic.Extensions
             services.AddScoped<IScheduleJobService, ScheduleJobService>();
             services.AddScoped<IScheduleJobResultService, ScheduleJobResultService>();
             services.AddScoped<IConfigurationEntryService, ConfigurationEntryService>();
+            services.AddScoped<IOtpHelperService, OtpHelperService>();
             return services;
         }
 

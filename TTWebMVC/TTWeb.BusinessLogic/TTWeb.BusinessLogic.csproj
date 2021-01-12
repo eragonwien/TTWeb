@@ -24,6 +24,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\TTWeb.Data\TTWeb.Data.csproj" />
+		<ProjectReference Include="..\TTWeb.Helper.Otp\TTWeb.Helper.Otp.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>

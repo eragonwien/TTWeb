@@ -6,6 +6,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.Helper.Otp;
 using TTWeb.Worker.ScheduleRunner.Extensions;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
@@ -14,7 +15,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
     {
         private readonly IHostEnvironment _environment;
         private readonly AuthenticationProvidersFacebookAppSettings _facebookSettings;
-        private readonly ITwoFactorAuthenticationService _twoFactorAuthenticationService;
+        private readonly IOtpHelperService _otp;
         private ChromeDriver driver;
 
         private static readonly TimeSpan maxWaitingTime = TimeSpan.FromSeconds(20);
@@ -31,11 +32,11 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public FacebookChromeDriverService(IHostEnvironment environment,
             IOptions<AuthenticationAppSettings> authenticationAppSettingsOptions,
-            ITwoFactorAuthenticationService twoFactorAuthenticationService)
+            IOtpHelperService otp)
         {
             _environment = environment;
             _facebookSettings = authenticationAppSettingsOptions.Value.Providers.Facebook;
-            _twoFactorAuthenticationService = twoFactorAuthenticationService;
+            _otp = otp;
         }
 
         public void AcceptCookieAgreement()
@@ -132,8 +133,6 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
             if (!TryFindElement(_twoFactorAuthenticationButton, out var sendButton))
                 return;
-
-
         }
     }
 }

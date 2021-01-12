@@ -44,16 +44,16 @@ namespace TTWeb.Worker.ScheduleRunner
             _encryptionHelper = encryptionHelper;
         }
 
-        protected async override Task DoContinuousWorkAsync(CancellationToken cancellationToken)
+        protected override async Task DoContinuousWorkAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Worker running at: {DateTime.UtcNow}");
 
-            using var context = GetRequiredService<TTWebContext>();
+            await using var context = GetRequiredService<TTWebContext>();
             var queue = await EnqueueJobsAsync(context, cancellationToken);
 
             while (queue.TryDequeue(out var job) && !cancellationToken.IsCancellationRequested)
             {
-                using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+                await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
                 var scheduleJobModel = _mapper.Map<ScheduleJobModel>(job);
                 scheduleJobModel.Sender.Password = _encryptionHelper.Decrypt(scheduleJobModel.Sender.Password);
