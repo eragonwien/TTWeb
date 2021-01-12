@@ -17,7 +17,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private readonly IOtpHelperService _otp;
         private ChromeDriver driver;
 
-        private static readonly TimeSpan maxWaitingTime = TimeSpan.FromSeconds(20);
+        private static readonly TimeSpan timeout = TimeSpan.FromSeconds(20);
         private const int maxRetryCount = 5;
 
         #region By-paths
@@ -26,7 +26,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private readonly By _loginPasswordInput = By.Id("m_login_password");
         private readonly By _loginButton = By.XPath("//button[contains(@data-sigil, 'm_login_button')]");
         private readonly By _twoFactorAuthenticationCodeInput = By.Id("approvals_code");
-        private readonly By _twoFactorAuthenticationButton = By.Id("checkpointSubmitButton-actual-button");
+        private readonly By _twoFactorAuthenticationSendButton = By.Id("checkpointSubmitButton-actual-button");
 
         #endregion
 
@@ -71,10 +71,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             WriteInput(_loginEmailInput, username);
             WriteInput(_loginPasswordInput, password);
 
-            if (TryFindElement(_loginButton, out var loginButton))
-                loginButton.Click();
-
-            WaitUntilBodyVisible();
+            ClickAndWaitForPageLoad(_loginButton);
         }
 
         public void OpenStartPage()
@@ -86,17 +83,12 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         {
             for (var i = 0; i < maxRetryCount; i++)
             {
-                WaitUntilBodyVisible();
-
                 if (!TryFindElement(_twoFactorAuthenticationCodeInput, out var codeInput))
-                    return;
-
-                if (!TryFindElement(_twoFactorAuthenticationButton, out var sendButton))
                     return;
 
                 var approvalCode = _otp.GetCode(seedCode);
                 codeInput.SendKeys(approvalCode);
-                sendButton.Click();
+                ClickAndWaitForPageLoad(_twoFactorAuthenticationSendButton);
             }
         }
 
@@ -111,15 +103,28 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             WaitUntilBodyVisible();
         }
 
-        private void WaitUntil(Func<IWebDriver, IWebElement> waitCondition)
+        private void WaitUntil<TResult>(Func<IWebDriver, TResult> waitCondition)
         {
-            var wait = new WebDriverWait(driver, maxWaitingTime);
+            var wait = new WebDriverWait(driver, timeout);
             wait.Until(d => waitCondition);
         }
 
         private void WaitUntilBodyVisible()
         {
             WaitUntil(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.TagName("body")));
+        }
+
+        private void ClickAndWaitForPageLoad(By by)
+        {
+            if (TryFindElement(by, out var element))
+            {
+                element.Click();
+                WaitUntil(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(element));
+            }
+            else
+            {
+                WaitUntilBodyVisible();
+            }
         }
 
         private void WriteInput(By by, string inputValue)
