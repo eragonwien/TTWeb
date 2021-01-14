@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace TTWeb.BusinessLogic.Models.Entities
+﻿namespace TTWeb.BusinessLogic.Models.Entities
 {
     public class ScheduleJobResultModel : BaseEntityModel
     {
-        [Required] public int ScheduleJobId { get; set; }
+        public int ScheduleJobId { get; set; }
+        public string Message { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }
