@@ -9,9 +9,10 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         void OpenStartPage();
         void Login(string username, string password);
         void AcceptCookieAgreement();
-        void Like(int likeCount, int maxPostCount);
+        void LikeNewestStory();
         void ByPassTwoFactorAuthentication(string seedCode);
         void NavigateToUserProfile(string userCode);
         void Sleep(TimeSpan? duration = null);
+        string BuildLogMessage();
     }
 }

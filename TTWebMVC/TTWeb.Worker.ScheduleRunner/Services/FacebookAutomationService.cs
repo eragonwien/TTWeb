@@ -46,6 +46,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             }
             finally
             {
+                result.Message = _browser.BuildLogMessage();
                 _browser.Close();
             }
 
@@ -65,7 +66,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             _browser.NavigateToUserProfile(job.Receiver.UserCode);
             _browser.Sleep();
 
-            _browser.Like(1, 5);
+            _browser.LikeNewestStory();
         }
 
         private void Comment()

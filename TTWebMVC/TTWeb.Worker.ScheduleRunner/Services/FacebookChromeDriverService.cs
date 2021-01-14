@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -16,6 +19,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private readonly IHostEnvironment _environment;
         private readonly AuthenticationProvidersFacebookAppSettings _facebookSettings;
         private readonly IHelperService _helper;
+        private readonly StringBuilder logger = new();
         private ChromeDriver driver;
 
         private static readonly TimeSpan timeout = TimeSpan.FromSeconds(20);
@@ -29,6 +33,8 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private readonly By _twoFactorAuthenticationCodeInput = By.Id("approvals_code");
         private readonly By _checkpointSubmitActualButton = By.Id("checkpointSubmitButton-actual-button");
         private readonly By _checkpointSubmitButton = By.Id("checkpointSubmitButton");
+        private readonly By _userStories = By.XPath("//article[contains(@class, 'async_like')][contains(@data-sigil, 'story-div')]");
+        private readonly By _likeButtonOfStory = By.XPath(".//footer[contains(@class, '_22rc')]//*[contains(@data-sigil, 'ufi-inline-actions')]//*[contains(@class, '_52jj _15kl _3hwk')]/*[contains(@class, '_15ko _77li')][@role='button'][contains(@data-sigil, 'ufi-inline-like')][contains(@data-sigil, 'like-reaction-flyout')]");
 
         #endregion
 
@@ -44,12 +50,16 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         public void AcceptCookieAgreement()
         {
             if (TryFindElement(By.Id("accept-cookie-banner-label"), out var element) && element.IsVisible())
+            {
                 element.Click();
+                Log("Cookie Agreement accepted");
+            }
         }
 
         public void Close()
         {
             driver?.Close();
+            Log("Browser closed");
         }
 
         public void Launch()
@@ -61,11 +71,53 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                 options.AddArgument("--start-maximized");
 
             driver = new ChromeDriver(options);
+            Log("Browser launched");
         }
 
-        public void Like(int likeCount, int maxPostCount)
+        public void LikeNewestStory()
         {
-            throw new NotImplementedException();
+            var stories = GetUserStories();
+
+            foreach (var story in stories)
+            {
+                var likeButton = GetLikeButton(story);
+                if (likeButton == null)
+                {
+                    Log("Moving on to next story");
+                    continue;
+                }
+
+                if (likeButton.HasAttributeOfValue("aria-pressed", true))
+                {
+                    Log("Like button was already pressed");
+                    Log("Moving on to next story");
+                    continue;
+                }
+
+                ClickAndWaitForPageLoad(likeButton);
+                Log("Like button pressed");
+                return;
+            }
+
+            Log("No like button was pressed");
+        }
+
+        private IWebElement GetLikeButton(IWebElement story)
+        {
+            if (!TryFindElement(_likeButtonOfStory, story, out var likeButton))
+            {
+                Log("Like button for story not found");
+                likeButton = default;
+            }
+
+            return likeButton;
+        }
+
+        private ICollection<IWebElement> GetUserStories()
+        {
+            TryFindElements(_userStories, out var userStories);
+            Log($"{userStories.Count} user stories found");
+            return userStories;
         }
 
         public void Login(string username, string password)
@@ -74,6 +126,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             WriteInput(_loginPasswordInput, password, true);
 
             ClickAndWaitForPageLoad(_loginButton);
+            Log("Login pressed");
         }
 
         public void OpenStartPage()
@@ -100,6 +153,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                 counter++;
                 Sleep();
             } while (counter < maxRetryCount);
+            Log($"Bypassing completed after {counter} tries");
 
             void Enter2ApprovalCode(IWebElement codeInput)
             {
@@ -123,6 +177,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private void NavigateTo(string url)
         {
             driver.Navigate().GoToUrl(url);
+            Log($"Navigate to {url}");
             WaitUntilBodyVisible();
         }
 
@@ -173,9 +228,61 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             }
         }
 
+        private bool TryFindElement(By by, IWebElement source, out IWebElement element)
+        {
+            try
+            {
+                element = source.FindElement(by);
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                element = default;
+                return false;
+            }
+        }
+
+        private bool TryFindElements(By by, IWebElement source, out ICollection<IWebElement> elements)
+        {
+            try
+            {
+                elements = source.FindElements(by);
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                elements = new List<IWebElement>();
+                return false;
+            }
+        }
+
+        private bool TryFindElements(By by, out ICollection<IWebElement> elements)
+        {
+            try
+            {
+                elements = driver.FindElements(by);
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                elements = new List<IWebElement>();
+                return false;
+            }
+        }
+
         private bool ElementExists(By by)
         {
             return TryFindElement(by, out var element);
+        }
+
+        private void Log(string message)
+        {
+            logger.AppendLine(message);
+        }
+
+        public string BuildLogMessage()
+        {
+            return logger.ToString();
         }
     }
 }

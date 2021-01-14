@@ -47,11 +47,12 @@ namespace TTWeb.Worker.ScheduleRunner
             _logger.LogInformation($"Worker running at: {DateTime.UtcNow}");
 
             var queue = await EnqueueLockJobsAsync(cancellationToken);
+            _logger.LogInformation($"{queue.Count} entries were enqueued");
 
             while (queue.TryDequeue(out var job) && !cancellationToken.IsCancellationRequested)
                 await ProcessJobAsync(job, cancellationToken);
 
-            _logger.LogInformation($"Worker completed the queue at: {DateTime.UtcNow}");
+            _logger.LogInformation($"Worker completed the queue of {queue.Count} entries at: {DateTime.UtcNow}");
             _logger.LogInformation($"Worker restarts in {_schedulingAppSettings.Job.TriggerInterval.TotalSeconds}s.");
             await Task.Delay(_schedulingAppSettings.Job.TriggerInterval, cancellationToken);
         }
@@ -84,12 +85,12 @@ namespace TTWeb.Worker.ScheduleRunner
             scheduleJobModel.Receiver.Password = _encryptionHelper.Decrypt(scheduleJobModel.Receiver.Password);
 
             var result = await _facebookService.ProcessAsync(scheduleJobModel, cancellationToken);
+
             await UpdateStatusAsync(context, job, result, cancellationToken);
             await CreateScheduleJobResultAsync(context, job, cancellationToken);
 
             await transaction.CommitAsync(cancellationToken);
         }
-
         private async Task UpdateStatusAsync(
             TTWebContext context,
             ScheduleJob job,

@@ -38,7 +38,10 @@ namespace TTWeb.Data.Extensions
         {
             if (query == null) throw new ArgumentNullException(nameof(query));
 
-            query = query.Where(j => j.Status == ProcessingStatus.New || j.Status == ProcessingStatus.Retry);
+            query = query.Where(j =>
+                j.Status == ProcessingStatus.New ||
+                j.Status == ProcessingStatus.Retry ||
+                (j.Status == ProcessingStatus.InProgress && j.LockedUntil < DateTime.UtcNow));
 
             return query;
         }

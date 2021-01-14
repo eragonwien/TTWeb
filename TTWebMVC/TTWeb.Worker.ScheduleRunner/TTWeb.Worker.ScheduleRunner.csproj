@@ -35,6 +35,11 @@
 		<ProjectReference Include="..\TTWeb.Worker.Core\TTWeb.Worker.Core.csproj" />
 	</ItemGroup>
 
+
+	<ItemGroup>
+	  <Folder Include="Models\" />
+	</ItemGroup>
+
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="copy &quot;$(SolutionDir)\AppSettings\appsettings.*.json&quot;  &quot;$(MSBuildProjectDirectory)&quot;" />
 	</Target>
