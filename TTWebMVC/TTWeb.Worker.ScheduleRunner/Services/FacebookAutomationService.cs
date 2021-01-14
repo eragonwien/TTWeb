@@ -46,9 +46,9 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             }
             finally
             {
-                result.Message = _browser.BuildLogMessage();
                 _browser.Close();
             }
+            result.Message = _browser.BuildLogMessage();
 
             return result;
         }

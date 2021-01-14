@@ -87,7 +87,7 @@ namespace TTWeb.Worker.ScheduleRunner
             var result = await _facebookService.ProcessAsync(scheduleJobModel, cancellationToken);
 
             await UpdateStatusAsync(context, job, result, cancellationToken);
-            await CreateScheduleJobResultAsync(context, job, cancellationToken);
+            await CreateScheduleJobResultAsync(context, job, result, cancellationToken);
 
             await transaction.CommitAsync(cancellationToken);
         }
@@ -130,11 +130,19 @@ namespace TTWeb.Worker.ScheduleRunner
         private static async Task CreateScheduleJobResultAsync(
             TTWebContext context,
             ScheduleJob job,
+            ProcessingResult<ScheduleJobModel> result,
             CancellationToken cancellationToken)
         {
             if (job == null) throw new ArgumentNullException(nameof(job));
+            if (result is null) throw new ArgumentNullException(nameof(result));
 
-            var jobResult = new ScheduleJobResult { ScheduleJobId = job.Id };
+            var jobResult = new ScheduleJobResult
+            {
+                ScheduleJobId = job.Id,
+                Status = job.Status,
+                Message = result.Message
+            };
+
             await context.ScheduleJobsResults.AddAsync(jobResult, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
         }

@@ -55,34 +55,26 @@ namespace TTWeb.Data.Extensions
         {
             if (query == null) throw new ArgumentNullException(nameof(query));
 
-            query = query.HasLockValue();
-
             query = query.Where(s =>
 
                 // New entry
-                s.PlanningStatus == ProcessingStatus.New
+                s.PlanningStatus == ProcessingStatus.New ||
 
                 // Entry queued for retry
-                || s.PlanningStatus == ProcessingStatus.Retry
+                s.PlanningStatus == ProcessingStatus.Retry ||
 
                 // Schedule stuck in in-progress
-                || (s.PlanningStatus == ProcessingStatus.InProgress
-                    && s.LockedUntil.Value < planningStartTime)
+                (s.PlanningStatus == ProcessingStatus.InProgress &&
+                    s.LockedUntil.HasValue &&
+                    s.LockedUntil.Value < planningStartTime) ||
 
                 // Existing entry which has not been processed today
-                || (s.PlanningStatus == ProcessingStatus.Completed
-                    && s.CompletedAt.HasValue
-                    && s.CompletedAt.Value.Date < planningStartTime.Date)
+                (s.PlanningStatus == ProcessingStatus.Completed &&
+                    s.CompletedAt.HasValue &&
+                    s.CompletedAt.Value.Date < planningStartTime.Date)
             );
 
             return query;
-        }
-
-        private static IQueryable<T> HasLockValue<T>(this IQueryable<T> query) where T : Schedule
-        {
-            if (query == null) throw new ArgumentNullException(nameof(query));
-
-            return query.Where(s => s.LockAt.HasValue && s.LockedUntil.HasValue && s.LockedUntil > s.LockAt);
         }
 
         #endregion
