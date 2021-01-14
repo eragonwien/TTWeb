@@ -5,7 +5,7 @@ using TTWeb.BusinessLogic.Models.Account;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Data.Models;
 
-namespace TTWeb.BusinessLogic.MappingProfiles
+namespace TTWeb.BusinessLogic.Mapping
 {
     public class MappingProfile : Profile
     {

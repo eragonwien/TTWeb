@@ -3,7 +3,7 @@ using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using TTWeb.BusinessLogic.MappingProfiles;
+using TTWeb.BusinessLogic.Mapping;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
 using TTWeb.BusinessLogic.Models.AppSettings.Security;
