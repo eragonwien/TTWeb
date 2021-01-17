@@ -23,7 +23,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
             try
             {
-                _browser.Launch();
+                _browser.Launch(cancellationToken);
                 switch (job.Action)
                 {
                     case Data.Models.ScheduleAction.Like:
@@ -70,7 +70,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             _browser.NavigateToUserProfile(job.Receiver.UserCode);
             _browser.Sleep();
 
-            _browser.Comment();
+            _browser.Comment(job);
         }
 
         private void Post()

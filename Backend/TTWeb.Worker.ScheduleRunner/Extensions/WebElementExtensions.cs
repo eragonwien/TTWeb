@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using System;
+using System.Globalization;
 
 namespace TTWeb.Worker.ScheduleRunner.Extensions
 {
@@ -15,7 +16,7 @@ namespace TTWeb.Worker.ScheduleRunner.Extensions
             try
             {
                 var attribute = element.GetAttribute(attributeName);
-                return attribute.Equals(value);
+                return attribute?.ToLower(CultureInfo.InvariantCulture) == value?.ToString().ToLower(CultureInfo.InvariantCulture);
             }
             catch (Exception)
             {

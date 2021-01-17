@@ -12,6 +12,7 @@ using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services;
 using TTWeb.Worker.ScheduleRunner.Extensions;
+using TTWeb.Worker.ScheduleRunner.Models;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
 {
@@ -22,6 +23,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private readonly IHelperService _helper;
         private readonly StringBuilder logger = new();
         private ChromeDriver driver;
+        private CancellationToken CancellationToken = default;
 
         private static readonly TimeSpan timeout = TimeSpan.FromSeconds(20);
         private const int maxRetryCount = 5;
@@ -63,8 +65,11 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             Log("Browser closed");
         }
 
-        public void Launch()
+        public void Launch(CancellationToken cancellationToken)
         {
+            CancellationToken = cancellationToken;
+            if (CancellationToken.IsCancellationRequested) return;
+
             var options = new ChromeOptions();
             options.AddArgument("--disable-notifications");
 
@@ -77,11 +82,15 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void LikeNewestStory()
         {
+            if (CancellationToken.IsCancellationRequested) return;
+
             var stories = GetUserStories();
 
             foreach (var story in stories)
             {
-                var likeButton = GetLikeButton(story);
+                if (story == null) continue;
+
+                var likeButton = GetLikeButton(story.WebElement);
                 if (likeButton == null)
                 {
                     Log("Moving on to next story");
@@ -103,26 +112,10 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             Log("No like button was pressed");
         }
 
-        private IWebElement GetLikeButton(IWebElement story)
-        {
-            if (!TryFindElement(_likeButtonOfStory, story, out var likeButton))
-            {
-                Log("Like button for story not found");
-                likeButton = default;
-            }
-
-            return likeButton;
-        }
-
-        private ICollection<IWebElement> GetUserStories()
-        {
-            TryFindElements(_userStories, out var userStories);
-            Log($"{userStories.Count} user stories found");
-            return userStories;
-        }
-
         public void Login(string username, string password)
         {
+            if (CancellationToken.IsCancellationRequested) return;
+
             WriteInput(_loginEmailInput, username, true);
             WriteInput(_loginPasswordInput, password, true);
 
@@ -132,11 +125,15 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void OpenStartPage()
         {
+            if (CancellationToken.IsCancellationRequested) return;
+
             NavigateTo(_facebookSettings.Mobile.Home);
         }
 
         public void ByPassTwoFactorAuthentication(string seedCode)
         {
+            if (CancellationToken.IsCancellationRequested) return;
+
             if (string.IsNullOrWhiteSpace(seedCode)) return;
 
             var counter = 0;
@@ -166,13 +163,58 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void NavigateToUserProfile(string userCode)
         {
+            if (CancellationToken.IsCancellationRequested) return;
+
             NavigateTo($"{_facebookSettings.Mobile.Home}/{userCode}");
         }
 
         public void Sleep(TimeSpan? duration = null)
         {
+            if (CancellationToken.IsCancellationRequested) return;
+
             duration ??= TimeSpan.FromSeconds(3);
             Thread.Sleep(duration.Value);
+        }
+
+        public void Comment(ScheduleJobModel job)
+        {
+            if (CancellationToken.IsCancellationRequested) return;
+
+            throw new NotImplementedException();
+        }
+
+        public string BuildLogMessage()
+        {
+            return logger.ToString();
+        }
+
+        private IWebElement GetLikeButton(IWebElement story)
+        {
+            if (!TryFindElement(_likeButtonOfStory, story, out var likeButton))
+            {
+                Log("Like button for story not found");
+                likeButton = default;
+            }
+
+            return likeButton;
+        }
+
+        private ICollection<FacebookStoryModel> GetUserStories()
+        {
+            TryFindElements(_userStories, out var userStoryElements);
+            Log($"{userStoryElements.Count} user stories found");
+            return userStoryElements.Select(storyElement => new FacebookStoryModel(storyElement)).ToList();
+        }
+
+        public void Start(FacebookUserModel sender)
+        {
+            OpenStartPage();
+            AcceptCookieAgreement();
+            Login(sender.Username, sender.Password);
+            Sleep();
+
+            ByPassTwoFactorAuthentication(sender.SeedCode);
+            Sleep();
         }
 
         private void NavigateTo(string url)
@@ -279,22 +321,6 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private void Log(string message)
         {
             logger.AppendLine(message);
-        }
-
-        public string BuildLogMessage()
-        {
-            return logger.ToString();
-        }
-
-        public void Start(FacebookUserModel sender)
-        {
-            OpenStartPage();
-            AcceptCookieAgreement();
-            Login(sender.Username, sender.Password);
-            Sleep();
-
-            ByPassTwoFactorAuthentication(sender.SeedCode);
-            Sleep();
         }
     }
 }

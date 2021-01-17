@@ -5,7 +5,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 {
     public interface IFacebookChromeDriverService
     {
-        void Launch();
+        void Launch(System.Threading.CancellationToken cancellationToken);
         void Close();
         void OpenStartPage();
         void Login(string username, string password);
@@ -16,6 +16,6 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         void Sleep(TimeSpan? duration = null);
         string BuildLogMessage();
         void Start(FacebookUserModel sender);
-        void Comment();
+        void Comment(ScheduleJobModel job);
     }
 }
