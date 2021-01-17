@@ -9,6 +9,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
+using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Services;
 using TTWeb.Worker.ScheduleRunner.Extensions;
 
@@ -283,6 +284,17 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         public string BuildLogMessage()
         {
             return logger.ToString();
+        }
+
+        public void Start(FacebookUserModel sender)
+        {
+            OpenStartPage();
+            AcceptCookieAgreement();
+            Login(sender.Username, sender.Password);
+            Sleep();
+
+            ByPassTwoFactorAuthentication(sender.SeedCode);
+            Sleep();
         }
     }
 }

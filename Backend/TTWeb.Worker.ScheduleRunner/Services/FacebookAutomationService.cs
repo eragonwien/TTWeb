@@ -30,7 +30,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
                         Like(job);
                         break;
                     case Data.Models.ScheduleAction.Comment:
-                        Comment();
+                        Comment(job);
                         break;
                     case Data.Models.ScheduleAction.Post:
                         Post();
@@ -55,13 +55,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         private void Like(ScheduleJobModel job)
         {
-            _browser.OpenStartPage();
-            _browser.AcceptCookieAgreement();
-            _browser.Login(job.Sender.Username, job.Sender.Password);
-            _browser.Sleep();
-
-            _browser.ByPassTwoFactorAuthentication(job.Sender.SeedCode);
-            _browser.Sleep();
+            _browser.Start(job.Sender);
 
             _browser.NavigateToUserProfile(job.Receiver.UserCode);
             _browser.Sleep();
@@ -69,9 +63,14 @@ namespace TTWeb.Worker.ScheduleRunner.Services
             _browser.LikeNewestStory();
         }
 
-        private void Comment()
+        private void Comment(ScheduleJobModel job)
         {
-            throw new NotImplementedException();
+            _browser.Start(job.Sender);
+
+            _browser.NavigateToUserProfile(job.Receiver.UserCode);
+            _browser.Sleep();
+
+            _browser.Comment();
         }
 
         private void Post()

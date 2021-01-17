@@ -1,4 +1,5 @@
 ﻿using System;
+using TTWeb.BusinessLogic.Models.Entities;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
 {
@@ -14,5 +15,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         void NavigateToUserProfile(string userCode);
         void Sleep(TimeSpan? duration = null);
         string BuildLogMessage();
+        void Start(FacebookUserModel sender);
+        void Comment();
     }
 }
