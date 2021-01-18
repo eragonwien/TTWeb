@@ -68,7 +68,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         public void Launch(CancellationToken cancellationToken)
         {
             CancellationToken = cancellationToken;
-            if (CancellationToken.IsCancellationRequested) return;
+            cancellationToken.ThrowIfCancellationRequested();
 
             var options = new ChromeOptions();
             options.AddArgument("--disable-notifications");
@@ -82,7 +82,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void LikeNewestStory()
         {
-            if (CancellationToken.IsCancellationRequested) return;
+            CancellationToken.ThrowIfCancellationRequested();
 
             var stories = GetUserStories();
 
@@ -114,7 +114,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void Login(string username, string password)
         {
-            if (CancellationToken.IsCancellationRequested) return;
+            CancellationToken.ThrowIfCancellationRequested();
 
             WriteInput(_loginEmailInput, username, true);
             WriteInput(_loginPasswordInput, password, true);
@@ -125,14 +125,14 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void OpenStartPage()
         {
-            if (CancellationToken.IsCancellationRequested) return;
+            CancellationToken.ThrowIfCancellationRequested();
 
             NavigateTo(_facebookSettings.Mobile.Home);
         }
 
         public void ByPassTwoFactorAuthentication(string seedCode)
         {
-            if (CancellationToken.IsCancellationRequested) return;
+            CancellationToken.ThrowIfCancellationRequested();
 
             if (string.IsNullOrWhiteSpace(seedCode)) return;
 
@@ -163,14 +163,14 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void NavigateToUserProfile(string userCode)
         {
-            if (CancellationToken.IsCancellationRequested) return;
+            CancellationToken.ThrowIfCancellationRequested();
 
             NavigateTo($"{_facebookSettings.Mobile.Home}/{userCode}");
         }
 
         public void Sleep(TimeSpan? duration = null)
         {
-            if (CancellationToken.IsCancellationRequested) return;
+            CancellationToken.ThrowIfCancellationRequested();
 
             duration ??= TimeSpan.FromSeconds(3);
             Thread.Sleep(duration.Value);
@@ -178,7 +178,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         public void Comment(ScheduleJobModel job)
         {
-            if (CancellationToken.IsCancellationRequested) return;
+            CancellationToken.ThrowIfCancellationRequested();
 
             throw new NotImplementedException();
         }
@@ -226,6 +226,8 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         private void WaitUntil<TResult>(Func<IWebDriver, TResult> waitCondition)
         {
+            CancellationToken.ThrowIfCancellationRequested();
+
             var wait = new WebDriverWait(driver, timeout);
             wait.Until(d => waitCondition);
         }
@@ -237,6 +239,8 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         private void ClickAndWaitForPageLoad(By by)
         {
+            CancellationToken.ThrowIfCancellationRequested();
+
             if (TryFindElement(by, out var element))
                 ClickAndWaitForPageLoad(element);
             else
@@ -245,12 +249,14 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         private void ClickAndWaitForPageLoad(IWebElement element)
         {
+            CancellationToken.ThrowIfCancellationRequested();
             element.Click();
             WaitUntil(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(element));
         }
 
         private void WriteInput(By by, string inputValue, bool required = false)
         {
+            CancellationToken.ThrowIfCancellationRequested();
             if (TryFindElement(by, out var input))
                 input.SendKeys(inputValue);
             else if (required)
@@ -259,6 +265,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         private bool TryFindElement(By by, out IWebElement element)
         {
+            CancellationToken.ThrowIfCancellationRequested();
             try
             {
                 element = driver.FindElement(by);
@@ -273,6 +280,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         private bool TryFindElement(By by, IWebElement source, out IWebElement element)
         {
+            CancellationToken.ThrowIfCancellationRequested();
             try
             {
                 element = source.FindElement(by);
@@ -287,6 +295,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         private bool TryFindElements(By by, IWebElement source, out ICollection<IWebElement> elements)
         {
+            CancellationToken.ThrowIfCancellationRequested();
             try
             {
                 elements = source.FindElements(by);
@@ -301,6 +310,7 @@ namespace TTWeb.Worker.ScheduleRunner.Services
 
         private bool TryFindElements(By by, out ICollection<IWebElement> elements)
         {
+            CancellationToken.ThrowIfCancellationRequested();
             try
             {
                 elements = driver.FindElements(by);
