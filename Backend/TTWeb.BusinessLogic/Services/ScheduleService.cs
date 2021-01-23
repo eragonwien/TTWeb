@@ -44,6 +44,8 @@ namespace TTWeb.BusinessLogic.Services
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
+            // TODO: Checks for related mapping
+
             var schedule = _mapper.Map<Schedule>(model);
             await _context.Schedules.AddAsync(schedule);
             await _context.SaveChangesAsync();
