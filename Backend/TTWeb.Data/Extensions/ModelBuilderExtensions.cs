@@ -55,13 +55,13 @@ namespace TTWeb.Data.Extensions
                 .HasMany(e => e.OwnedFacebookUsers)
                 .WithOne(m => m.Owner)
                 .HasForeignKey(m => m.OwnerId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<LoginUser>()
                 .HasMany(e => e.OwnedSchedules)
                 .WithOne(m => m.Owner)
                 .HasForeignKey(m => m.OwnerId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             return modelBuilder;
         }
@@ -198,7 +198,7 @@ namespace TTWeb.Data.Extensions
                 .HasOne(m => m.Sender)
                 .WithMany(u => u.SenderSchedules)
                 .HasForeignKey(m => m.SenderId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Schedule>()
                 .HasMany(m => m.TimeFrames)
@@ -257,7 +257,7 @@ namespace TTWeb.Data.Extensions
                 .HasOne(m => m.Receiver)
                 .WithMany(u => u.ReceiverScheduleJobs)
                 .HasForeignKey(m => m.ReceiverId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
             return modelBuilder;
         }
