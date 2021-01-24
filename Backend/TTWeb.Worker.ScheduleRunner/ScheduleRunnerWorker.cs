@@ -54,7 +54,7 @@ namespace TTWeb.Worker.ScheduleRunner
 
             _logger.LogInformation($"Worker completed the queue of {queue.Count} entries at: {DateTime.UtcNow}");
             _logger.LogInformation($"Worker restarts in {_schedulingAppSettings.Job.TriggerInterval.TotalSeconds}s.");
-            await Task.Delay(_schedulingAppSettings.Job.TriggerInterval, cancellationToken);
+            await PauseAsync(_schedulingAppSettings.Job.TriggerInterval, cancellationToken);
         }
 
         private async Task<Queue<ScheduleJob>> EnqueueLockJobsAsync(CancellationToken cancellationToken)

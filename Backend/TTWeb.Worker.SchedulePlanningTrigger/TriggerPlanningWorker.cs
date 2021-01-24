@@ -48,7 +48,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             {
                 _logger.LogInformation($"No open schedule found at {planningStartTime}.");
                 _logger.LogInformation($"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}.");
-                await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
+                await PauseAsync(settings.Planning.TriggerInterval, cancellationToken);
                 return;
             }
 
@@ -70,7 +70,7 @@ namespace TTWeb.Worker.SchedulePlanningTrigger
             _logger.LogInformation($"{successResults.Length} schedules were planned.");
             _logger.LogInformation($"Next session starts at {DateTime.UtcNow.Add(settings.Planning.TriggerInterval)}.");
 
-            await Task.Delay(settings.Planning.TriggerInterval, cancellationToken);
+            await PauseAsync(settings.Planning.TriggerInterval, cancellationToken);
         }
 
         private async Task LockSchedulesAsync(List<Schedule> schedules, DateTime planningStartTime, TTWebContext context, CancellationToken cancellationToken)

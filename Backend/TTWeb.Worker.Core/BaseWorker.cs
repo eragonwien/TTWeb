@@ -36,6 +36,11 @@ namespace TTWeb.Worker.Core
             _scopeFactory.Dispose();
         }
 
+        protected async Task PauseAsync(TimeSpan duration, CancellationToken cancellationToken)
+        {
+            await Task.Delay(duration, cancellationToken).ContinueWith(task => { });
+        }
+
         protected abstract Task DoContinuousWorkAsync(CancellationToken cancellationToken);
     }
 }
