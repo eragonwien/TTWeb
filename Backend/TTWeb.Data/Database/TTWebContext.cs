@@ -34,16 +34,7 @@ namespace TTWeb.Data.Database
                 .ConfigureSchedule()
                 .ConfigureScheduleJob()
                 .ConfigureScheduleJobResult()
-                .ConfigureConfigurationEntry()
-                .SeedLoginUser()
-                .SeedLoginUserPermissionMapping()
-                .SeedFacebookUser()
-                .SeedSchedule()
-                .SeedFacebookUserReceiverMapping()
-                .SeedScheduleWeekdayMapping()
-                .SeedTimeFrame()
-                .SeedScheduleJob()
-                .SeedScheduleJobResult();
+                .ConfigureConfigurationEntry();
         }
 
         public static void UseDbContext(DbContextOptionsBuilder builder, IConfiguration configuration)
