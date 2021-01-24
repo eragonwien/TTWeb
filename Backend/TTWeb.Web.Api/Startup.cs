@@ -69,7 +69,7 @@ namespace TTWeb.Web.Api
             services.AddCors(options =>
             {
                 options.AddPolicy(AllowSpecificOriginsPolicy,
-                    b => { b.WithOrigins(securityAppSettings.Cors.Origins); });
+                    b => { b.WithOrigins(securityAppSettings?.Cors?.Origins); });
             });
 
             services
