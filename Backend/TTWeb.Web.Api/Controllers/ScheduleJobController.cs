@@ -24,5 +24,16 @@ namespace TTWeb.Web.Api.Controllers
         {
             return await _scheduleJobService.PeekAsync();
         }
+
+        [HttpPost("{id}/reset")]
+        public async Task ResetScheduleJob([FromRoute] int id)
+        {
+            var scheduleJob = await _scheduleJobService.GetOneAsync(id);
+
+            if (scheduleJob == null) return;
+
+            ThrowExceptionOnWrongOwner(scheduleJob.OwnerId);
+            await _scheduleJobService.ResetAsync(scheduleJob);
+        }
     }
 }

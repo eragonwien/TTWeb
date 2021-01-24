@@ -30,7 +30,15 @@ namespace TTWeb.BusinessLogic.Services
         private IQueryable<ScheduleJob> BaseQuery =>
             _context.ScheduleJobs
                 .Include(j => j.Sender)
-                .Include(j => j.Receiver);
+                .Include(j => j.Receiver)
+                .Include(j => j.Schedule);
+
+        public async Task<ScheduleJobModel> GetOneAsync(int id)
+        {
+            var scheduleJob = await BaseQuery.SingleOrDefaultAsync(j => j.Id == id);
+
+            return _mapper.Map<ScheduleJobModel>(scheduleJob);
+        }
 
         public async Task<ICollection<ScheduleJobModel>> PeekAsync()
         {
@@ -40,6 +48,29 @@ namespace TTWeb.BusinessLogic.Services
                 .Take(_jobAppSettings.CountPerRequest)
                 .Select(j => _mapper.Map<ScheduleJobModel>(j))
                 .ToListAsync();
+        }
+
+        public async Task ResetAsync(int id)
+        {
+            var scheduleJob = new ScheduleJob { Id = id };
+            _context.ScheduleJobs.Attach(scheduleJob);
+
+
+        }
+
+        public async Task ResetAsync(ScheduleJobModel scheduleJobModel)
+        {
+            if (scheduleJobModel is null) return;
+
+            var scheduleJob = _context.ScheduleJobs.GetOrAttachById(scheduleJobModel.Id);
+
+            scheduleJob.Status = ProcessingStatus.New;
+            scheduleJob.RetryCount = 0;
+            scheduleJob.LockAt = null;
+            scheduleJob.LockedUntil = null;
+            scheduleJob.EndTime = null;
+
+            await _context.SaveChangesAsync();
         }
     }
 }

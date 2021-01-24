@@ -59,7 +59,8 @@ namespace TTWeb.BusinessLogic.Mapping
                 .ForMember(b => b.Sender, o => o.Ignore())
                 .ForMember(b => b.SenderId, o => o.MapFrom(a => a.Sender.Id));
 
-            CreateMap<ScheduleJob, ScheduleJobModel>();
+            CreateMap<ScheduleJob, ScheduleJobModel>()
+                .ForMember(b => b.OwnerId, o => o.MapFrom(a => a.Schedule.OwnerId));
         }
     }
 }
