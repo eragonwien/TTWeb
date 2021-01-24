@@ -1,4 +1,4 @@
-﻿namespace TTWeb.BusinessLogic.Models.AppSettings.Security
+﻿namespace TTWeb.BusinessLogic.Models.AppSettings
 {
     public class SecurityEncryptionAppSettings
     {

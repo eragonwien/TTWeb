@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
+using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.Data.Database;
 using TTWeb.Data.Extensions;

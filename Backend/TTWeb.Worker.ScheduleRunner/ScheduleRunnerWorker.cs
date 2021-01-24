@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
+using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Models.Entities;
 using TTWeb.BusinessLogic.Models.Helpers;
 using TTWeb.BusinessLogic.Services;
