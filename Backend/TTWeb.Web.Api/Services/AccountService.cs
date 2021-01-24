@@ -42,8 +42,12 @@ namespace TTWeb.Web.Api.Services
                 return result.WithSuccess(false).WithReason("token is invalid");
 
             var loginUserModel = _mapper.Map<LoginUserModel>(loginModel);
+
+            // Loads user by email
             loginUserModel = await _loginUserService.GetByEmailAsync(loginUserModel.Email);
-            loginUserModel ??= await _loginUserService.CreateAsync(loginUserModel);
+
+            // User with this email does not exist, creates a new one
+            loginUserModel ??= await _loginUserService.CreateAsync(_mapper.Map<LoginUserModel>(loginModel));
 
             return result.WithSuccess().WithResult(loginUserModel);
         }
