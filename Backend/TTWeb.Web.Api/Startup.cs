@@ -7,8 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using TTWeb.BusinessLogic.Extensions;
-using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
-using TTWeb.BusinessLogic.Models.AppSettings.Security;
+using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.Data.Database;
 using TTWeb.Data.Models;
 using TTWeb.Web.Api.Extensions;
@@ -66,11 +65,15 @@ namespace TTWeb.Web.Api
             });
 
             var securityAppSettings = Configuration.GetSectionValue<SecurityAppSettings>(SecurityAppSettings.Section);
-            services.AddCors(options =>
+
+            if (securityAppSettings?.Cors?.Origins != null)
             {
-                options.AddPolicy(AllowSpecificOriginsPolicy,
-                    b => { b.WithOrigins(securityAppSettings.Cors.Origins); });
-            });
+                services.AddCors(options =>
+                {
+                    options.AddPolicy(AllowSpecificOriginsPolicy,
+                        b => { b.WithOrigins(securityAppSettings?.Cors?.Origins); });
+                });
+            }
 
             services
                 .AddControllers()

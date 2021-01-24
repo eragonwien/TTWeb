@@ -64,7 +64,7 @@ namespace TTWeb.BusinessLogic.Services
 
         public async Task DeleteAsync(int id, int? ownerId)
         {
-            var facebookUser = new FacebookUser {Id = id};
+            var facebookUser = new FacebookUser { Id = id };
             if (ownerId.HasValue)
                 facebookUser.OwnerId = ownerId.Value;
 

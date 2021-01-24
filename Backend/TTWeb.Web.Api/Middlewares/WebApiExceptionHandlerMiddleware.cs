@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
+using Npgsql;
 using TTWeb.BusinessLogic.Exceptions;
 using TTWeb.BusinessLogic.Models.Helpers;
 
@@ -38,7 +39,8 @@ namespace TTWeb.Web.Api.Middlewares
             HandleInnerException();
             var statusCode = HttpStatusCode.InternalServerError;
             var message = ex.Message;
-            var stackTrace = _env.IsDevelopment() ? ex.StackTrace : null;
+            var detailedMessage = ex.Message;
+            var stackTrace = ex.StackTrace;
 
             switch (ex)
             {
@@ -51,23 +53,29 @@ namespace TTWeb.Web.Api.Middlewares
                 case SqlException sqlException:
                     HandleSqlException(sqlException);
                     break;
+                case PostgresException postgresException:
+                    HandlePostgresSqlException(postgresException);
+                    break;
             }
+
+            message = _env.IsDevelopment() ? detailedMessage : message;
+            stackTrace = _env.IsDevelopment() ? stackTrace : null;
 
             await WriteResponseAsync();
 
             async Task WriteResponseAsync()
             {
                 httpContext.Response.ContentType = "application/json; charset=utf-8";
-                httpContext.Response.StatusCode = (int) statusCode;
-                await httpContext.Response.WriteAsync(new ErrorResponseModel(statusCode, message, stackTrace)
-                    .ToJsonString());
+                httpContext.Response.StatusCode = (int)statusCode;
+                await httpContext.Response.WriteAsync(new ErrorResponseModel(statusCode, message, stackTrace).ToJsonString());
             }
 
             void HandleInnerException()
             {
                 if (ex?.InnerException == null) return;
 
-                if (ex.InnerException is SqlException)
+                if (ex.InnerException is SqlException ||
+                    ex.InnerException is PostgresException)
                     ex = ex.InnerException;
             }
 
@@ -77,14 +85,37 @@ namespace TTWeb.Web.Api.Middlewares
                 {
                     case 547:
                         message = "Invalid reference Id of input";
-                        stackTrace = null;
                         break;
                     case 2601:
                         statusCode = HttpStatusCode.BadRequest;
                         message = "Duplicate insert error";
-                        stackTrace = null;
                         break;
                 }
+
+                stackTrace = sqlException.StackTrace;
+                detailedMessage = sqlException.Message;
+            }
+
+            void HandlePostgresSqlException(PostgresException postgresException)
+            {
+                switch (postgresException.SqlState)
+                {
+                    case PostgresErrorCodes.ForeignKeyViolation:
+                        statusCode = HttpStatusCode.BadRequest;
+                        message = "Request contains invalid reference";
+                        break;
+                    case PostgresErrorCodes.UniqueViolation:
+                        statusCode = HttpStatusCode.BadRequest;
+                        message = "This entry is already exists";
+                        break;
+                    default:
+                        statusCode = HttpStatusCode.InternalServerError;
+                        message = $"Unhandled Postgres SQL exception: {postgresException.Message}";
+                        break;
+                }
+
+                stackTrace = postgresException.StackTrace;
+                detailedMessage = postgresException.Message;
             }
         }
     }

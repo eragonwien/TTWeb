@@ -1,4 +1,4 @@
-﻿namespace TTWeb.BusinessLogic.Models.AppSettings.Scheduling
+﻿namespace TTWeb.BusinessLogic.Models.AppSettings
 {
     public class SchedulingAppSettings
     {

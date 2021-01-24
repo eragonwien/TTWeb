@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Options;
 using NETCore.Encrypt;
-using TTWeb.BusinessLogic.Models.AppSettings.Security;
+using TTWeb.BusinessLogic.Models.AppSettings;
 
 namespace TTWeb.BusinessLogic.Services
 {
@@ -16,13 +16,15 @@ namespace TTWeb.BusinessLogic.Services
 
         public string Encrypt(string plainText)
         {
-            if (plainText == null) throw new ArgumentNullException(nameof(plainText));
+            if (plainText == null) return null;
+
             return EncryptProvider.AESEncrypt(plainText, _encryptionAppSettings.Key, _encryptionAppSettings.Iv);
         }
 
         public string Decrypt(string encryptedText)
         {
-            if (encryptedText == null) throw new ArgumentNullException(nameof(encryptedText));
+            if (encryptedText == null) return null;
+
             return EncryptProvider.AESDecrypt(encryptedText, _encryptionAppSettings.Key, _encryptionAppSettings.Iv);
         }
     }

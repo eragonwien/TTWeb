@@ -4,9 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using TTWeb.BusinessLogic.Mapping;
-using TTWeb.BusinessLogic.Models.AppSettings.Authentication;
-using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
-using TTWeb.BusinessLogic.Models.AppSettings.Security;
+using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.BusinessLogic.Services;
 using TTWeb.Data.Database;
 
@@ -35,6 +33,7 @@ namespace TTWeb.BusinessLogic.Extensions
             services.AddScoped<IScheduleJobResultService, ScheduleJobResultService>();
             services.AddScoped<IConfigurationEntryService, ConfigurationEntryService>();
             services.AddScoped<IHelperService, HelperService>();
+
             return services;
         }
 

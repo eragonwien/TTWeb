@@ -55,13 +55,13 @@ namespace TTWeb.Data.Extensions
                 .HasMany(e => e.OwnedFacebookUsers)
                 .WithOne(m => m.Owner)
                 .HasForeignKey(m => m.OwnerId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<LoginUser>()
                 .HasMany(e => e.OwnedSchedules)
                 .WithOne(m => m.Owner)
                 .HasForeignKey(m => m.OwnerId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             return modelBuilder;
         }
@@ -198,7 +198,7 @@ namespace TTWeb.Data.Extensions
                 .HasOne(m => m.Sender)
                 .WithMany(u => u.SenderSchedules)
                 .HasForeignKey(m => m.SenderId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Schedule>()
                 .HasMany(m => m.TimeFrames)
@@ -257,7 +257,7 @@ namespace TTWeb.Data.Extensions
                 .HasOne(m => m.Receiver)
                 .WithMany(u => u.ReceiverScheduleJobs)
                 .HasForeignKey(m => m.ReceiverId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
             return modelBuilder;
         }
@@ -288,125 +288,6 @@ namespace TTWeb.Data.Extensions
             modelBuilder.Entity<ConfigurationEntry>()
                 .Property(m => m.Key)
                 .IsRequired();
-
-            return modelBuilder;
-        }
-
-        #endregion
-
-        #region Seeding
-
-        public static ModelBuilder SeedLoginUser(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<LoginUser>()
-                .HasData(new LoginUser
-                {
-                    Id = 1,
-                    Email = "test@test.com",
-                    FirstName = "test",
-                    LastName = "dev",
-                });
-
-            return modelBuilder;
-        }
-
-        public static ModelBuilder SeedLoginUserPermissionMapping(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<LoginUserPermissionMapping>()
-                .HasData(
-                    new LoginUserPermissionMapping
-                    { LoginUserId = 1, UserPermission = UserPermission.AccessOwnResources },
-                    new LoginUserPermissionMapping
-                    { LoginUserId = 1, UserPermission = UserPermission.AccessAllResources },
-                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageUsers },
-                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageDeployment },
-                    new LoginUserPermissionMapping { LoginUserId = 1, UserPermission = UserPermission.ManageWorker });
-
-            return modelBuilder;
-        }
-
-        public static ModelBuilder SeedFacebookUser(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<FacebookUser>()
-                .HasData(new FacebookUser
-                {
-                    Id = 1,
-                    Username = "eragonwien@gmail.com",
-                    Password = "1234",
-                    OwnerId = 1,
-                    Enabled = true
-                });
-
-            return modelBuilder;
-        }
-
-        public static ModelBuilder SeedSchedule(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Schedule>()
-                .HasData(new Schedule
-                {
-                    Id = 1,
-                    Action = ScheduleAction.Like,
-                    IntervalType = ScheduleIntervalType.Daily,
-                    SenderId = 1,
-                    OwnerId = 1
-                });
-
-            return modelBuilder;
-        }
-
-        public static ModelBuilder SeedFacebookUserReceiverMapping(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ScheduleReceiverMapping>()
-                .HasData(new ScheduleReceiverMapping { ReceiverId = 1, ScheduleId = 1 });
-
-            return modelBuilder;
-        }
-
-        public static ModelBuilder SeedScheduleWeekdayMapping(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ScheduleWeekdayMapping>()
-                .HasData(
-                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Monday },
-                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Wednesday },
-                    new ScheduleWeekdayMapping { ScheduleId = 1, Weekday = DayOfWeek.Friday });
-
-            return modelBuilder;
-        }
-
-        public static ModelBuilder SeedTimeFrame(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ScheduleTimeFrame>()
-                .HasData(new ScheduleTimeFrame
-                {
-                    ScheduleId = 1,
-                    From = TimeSpan.FromHours(9),
-                    To = TimeSpan.FromHours(14)
-                });
-
-            return modelBuilder;
-        }
-
-        public static ModelBuilder SeedScheduleJob(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ScheduleJob>()
-                .HasData(new ScheduleJob
-                {
-                    Id = 1,
-                    ScheduleId = 1,
-                    Action = ScheduleAction.Like,
-                    Status = ProcessingStatus.Paused,
-                    SenderId = 1,
-                    ReceiverId = 1
-                });
-
-            return modelBuilder;
-        }
-
-        public static ModelBuilder SeedScheduleJobResult(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ScheduleJobResult>()
-                .HasData(new ScheduleJobResult { Id = 1, ScheduleJobId = 1 });
 
             return modelBuilder;
         }

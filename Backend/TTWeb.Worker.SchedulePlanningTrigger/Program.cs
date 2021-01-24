@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TTWeb.BusinessLogic.Extensions;
-using TTWeb.BusinessLogic.Models.AppSettings.Scheduling;
+using TTWeb.BusinessLogic.Models.AppSettings;
 using TTWeb.Worker.Core;
 
 namespace TTWeb.Worker.SchedulePlanningTrigger
