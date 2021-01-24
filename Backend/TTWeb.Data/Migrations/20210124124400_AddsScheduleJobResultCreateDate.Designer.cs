@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TTWeb.Data.Database;
@@ -9,9 +10,10 @@ using TTWeb.Data.Database;
 namespace TTWeb.Data.Migrations
 {
     [DbContext(typeof(TTWebContext))]
-    partial class TTWebContextModelSnapshot : ModelSnapshot
+    [Migration("20210124124400_AddsScheduleJobResultCreateDate")]
+    partial class AddsScheduleJobResultCreateDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

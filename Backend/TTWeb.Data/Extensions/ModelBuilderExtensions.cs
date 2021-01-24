@@ -272,6 +272,10 @@ namespace TTWeb.Data.Extensions
                 .UseIdentityColumn();
 
             modelBuilder.Entity<ScheduleJobResult>()
+                .Property(m => m.CreateDate)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<ScheduleJobResult>()
                 .HasOne(m => m.ScheduleJob)
                 .WithMany(u => u.Results)
                 .HasForeignKey(m => m.ScheduleJobId)
