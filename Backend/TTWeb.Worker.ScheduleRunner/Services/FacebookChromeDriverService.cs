@@ -38,6 +38,8 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         private readonly By _checkpointSubmitButton = By.Id("checkpointSubmitButton");
         private readonly By _userStories = By.XPath("//article[contains(@class, 'async_like')][contains(@data-sigil, 'story-div')]");
         private readonly By _likeButtonOfStory = By.XPath(".//footer[contains(@class, '_22rc')]//*[contains(@data-sigil, 'ufi-inline-actions')]//*[contains(@class, '_52jj _15kl _3hwk')]/*[contains(@class, '_15ko _77li')][@role='button'][contains(@data-sigil, 'ufi-inline-like')][contains(@data-sigil, 'like-reaction-flyout')]");
+        private readonly By _hashTagsOfStory = By.XPath(".//*[contains(@class, '_5rgt _5nk5 _5msi')]//*[contains(@class, '_5ayv _qdx')]/span[contains(@class, '_5ayu')]");
+
 
         #endregion
 
@@ -203,7 +205,20 @@ namespace TTWeb.Worker.ScheduleRunner.Services
         {
             TryFindElements(_userStories, out var userStoryElements);
             Log($"{userStoryElements.Count} user stories found");
-            return userStoryElements.Select(storyElement => new FacebookStoryModel(storyElement)).ToList();
+
+            var userStories = userStoryElements.Select(storyElement => new FacebookStoryModel(storyElement)).ToList();
+            LoadHashTagsOfStories(userStories);
+
+            return userStories;
+
+            void LoadHashTagsOfStories(List<FacebookStoryModel> userStories)
+            {
+                foreach (var story in userStories)
+                {
+                    if (TryFindElements(_hashTagsOfStory, story.WebElement, out var hashTagElements))
+                        story.HashTags.AddRange(hashTagElements.Select(e => e.Text).Distinct());
+                }
+            }
         }
 
         public void Start(FacebookUserModel sender)
