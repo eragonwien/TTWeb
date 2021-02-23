@@ -32,28 +32,19 @@ namespace TTWeb.BusinessLogic.Models
 
         public ScheduleJobModel CalculateStartTime()
         {
-            switch (IntervalType)
+            return IntervalType switch
             {
-                case ScheduleIntervalType.Once:
-                    return CalculateStartTimeOnce();
-
-                case ScheduleIntervalType.Daily:
-                    return CalculateStartTimeDaily();
-
-                case ScheduleIntervalType.Weekly:
-                    return CalculateStartTimeWeekly();
-
-                case ScheduleIntervalType.Monthly:
-                    return CalculateStartTimeMonthly();
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                ScheduleIntervalType.Once => CalculateStartTimeOnce(),
+                ScheduleIntervalType.Daily => CalculateStartTimeDaily(),
+                ScheduleIntervalType.Weekly => CalculateStartTimeWeekly(),
+                ScheduleIntervalType.Monthly => CalculateStartTimeMonthly(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
 
         public ScheduleJobModel WithReceiver(int receiverId)
         {
-            if (Receiver == null) Receiver = new FacebookUserModel();
+            Receiver ??= new FacebookUserModel();
 
             Receiver.Id = receiverId;
 
@@ -72,8 +63,10 @@ namespace TTWeb.BusinessLogic.Models
 
         private ScheduleJobModel CalculateStartTimeOnce()
         {
-            // TODO: Requires exact date property
-            throw new NotImplementedException();
+            if (!StartDate.HasValue) throw new ArgumentException(nameof(StartDate));
+            if (!StartTime.HasValue) throw new ArgumentException(nameof(StartTime));
+
+            return this;
         }
 
         private ScheduleJobModel CalculateStartTimeDaily()

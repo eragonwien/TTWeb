@@ -11,6 +11,8 @@ namespace TTWeb.Data.Models
         public string ErrorMessage { get; set; }
         public DateTime CreateDate { get; set; }
 
+        // TODO: Adds OwnerId property
+
         public ScheduleJob ScheduleJob { get; set; }
     }
 }
