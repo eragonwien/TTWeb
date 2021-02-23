@@ -1,9 +1,7 @@
-﻿using System.Globalization;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NETCore.Encrypt;
-using TTWeb.BusinessLogic.Extensions;
-using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Models;
 using TTWeb.BusinessLogic.Services;
 
 namespace TTWeb.Web.Api.Controllers

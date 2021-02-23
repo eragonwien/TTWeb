@@ -1,10 +1,9 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using TTWeb.BusinessLogic.Mapping;
-using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Models;
 using TTWeb.BusinessLogic.Services;
 using TTWeb.Data.Database;
 

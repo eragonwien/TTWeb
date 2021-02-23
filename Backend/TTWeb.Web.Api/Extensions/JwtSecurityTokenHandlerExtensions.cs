@@ -4,8 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using TTWeb.BusinessLogic.Models.Account;
-using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Models;
 
 namespace TTWeb.Web.Api.Extensions
 {

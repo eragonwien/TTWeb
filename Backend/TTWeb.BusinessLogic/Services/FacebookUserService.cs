@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TTWeb.BusinessLogic.Exceptions;
-using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Models;
 using TTWeb.Data.Database;
 using TTWeb.Data.Extensions;
 using TTWeb.Data.Models;

@@ -1,5 +1,5 @@
 ﻿using System;
-using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Models;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
 {

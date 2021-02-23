@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TTWeb.BusinessLogic.Exceptions;
-using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Models;
 using TTWeb.BusinessLogic.Services;
 
 namespace TTWeb.Web.Api.Controllers

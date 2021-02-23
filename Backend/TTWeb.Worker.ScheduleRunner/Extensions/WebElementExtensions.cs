@@ -1,6 +1,6 @@
-﻿using OpenQA.Selenium;
-using System;
+﻿using System;
 using System.Globalization;
+using OpenQA.Selenium;
 
 namespace TTWeb.Worker.ScheduleRunner.Extensions
 {

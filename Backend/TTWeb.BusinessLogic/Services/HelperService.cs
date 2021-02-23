@@ -1,7 +1,7 @@
-﻿using OtpNet;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
+using OtpNet;
 using TTWeb.BusinessLogic.Extensions;
 
 namespace TTWeb.BusinessLogic.Services

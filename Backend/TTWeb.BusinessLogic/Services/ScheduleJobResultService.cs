@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Models;
 using TTWeb.Data.Database;
 using TTWeb.Data.Models;
 

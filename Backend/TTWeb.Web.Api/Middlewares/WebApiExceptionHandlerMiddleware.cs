@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 using TTWeb.BusinessLogic.Exceptions;
-using TTWeb.BusinessLogic.Models.Helpers;
+using TTWeb.BusinessLogic.Models;
 
 namespace TTWeb.Web.Api.Middlewares
 {

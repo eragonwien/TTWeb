@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TTWeb.BusinessLogic.Extensions;
-using TTWeb.BusinessLogic.Models.AppSettings;
+using TTWeb.BusinessLogic.Models;
 using TTWeb.BusinessLogic.Services;
 using TTWeb.Worker.Core;
 using TTWeb.Worker.ScheduleRunner.Services;

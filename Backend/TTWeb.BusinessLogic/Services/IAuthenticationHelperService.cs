@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using TTWeb.BusinessLogic.Models.Account;
-using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Models;
 
 namespace TTWeb.BusinessLogic.Services
 {

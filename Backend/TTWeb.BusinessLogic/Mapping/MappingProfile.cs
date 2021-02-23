@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
-using TTWeb.BusinessLogic.Models.Account;
-using TTWeb.BusinessLogic.Models.Entities;
+using TTWeb.BusinessLogic.Models;
 using TTWeb.Data.Models;
 
 namespace TTWeb.BusinessLogic.Mapping

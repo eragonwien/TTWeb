@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using TTWeb.BusinessLogic.Models.Entities;
-using TTWeb.BusinessLogic.Models.Helpers;
+using TTWeb.BusinessLogic.Models;
 
 namespace TTWeb.Worker.ScheduleRunner.Services
 {
